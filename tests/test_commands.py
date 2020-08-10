@@ -41,10 +41,13 @@ class CommandSettings(unittest.TestCase):
 
     def test_settings_json_string(self):
         feeds_json = '{"data.json": {"format": "json"}, "data.xml": {"format": "xml"}}'
-        opts, args = self.parser.parse_args(args=['-s', 'FEEDS={}'.format(feeds_json), 'spider.py'])
+        opts, args = self.parser.parse_args(
+            args=['-s', 'FEEDS={}'.format(feeds_json), 'spider.py'])
         self.command.process_options(args, opts)
-        self.assertIsInstance(self.command.settings['FEEDS'], scrapy.settings.BaseSettings)
-        self.assertEqual(dict(self.command.settings['FEEDS']), json.loads(feeds_json))
+        self.assertIsInstance(
+            self.command.settings['FEEDS'], scrapy.settings.BaseSettings)
+        self.assertEqual(
+            dict(self.command.settings['FEEDS']), json.loads(feeds_json))
 
 
 class ProjectTest(unittest.TestCase):
@@ -100,29 +103,41 @@ class StartprojectTest(ProjectTest):
         assert exists(join(self.proj_mod_path, 'spiders', '__init__.py'))
 
         self.assertEqual(1, self.call('startproject', self.project_name))
-        self.assertEqual(1, self.call('startproject', 'wrong---project---name'))
+        self.assertEqual(1, self.call(
+            'startproject', 'wrong---project---name'))
         self.assertEqual(1, self.call('startproject', 'sys'))
 
     def test_startproject_with_project_dir(self):
         project_dir = mkdtemp()
-        self.assertEqual(0, self.call('startproject', self.project_name, project_dir))
+        self.assertEqual(0, self.call(
+            'startproject', self.project_name, project_dir))
 
         assert exists(join(abspath(project_dir), 'scrapy.cfg'))
         assert exists(join(abspath(project_dir), 'testproject'))
-        assert exists(join(join(abspath(project_dir), self.project_name), '__init__.py'))
-        assert exists(join(join(abspath(project_dir), self.project_name), 'items.py'))
-        assert exists(join(join(abspath(project_dir), self.project_name), 'pipelines.py'))
-        assert exists(join(join(abspath(project_dir), self.project_name), 'settings.py'))
-        assert exists(join(join(abspath(project_dir), self.project_name), 'spiders', '__init__.py'))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), '__init__.py'))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), 'items.py'))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), 'pipelines.py'))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), 'settings.py'))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), 'spiders', '__init__.py'))
 
-        self.assertEqual(0, self.call('startproject', self.project_name, project_dir + '2'))
+        self.assertEqual(0, self.call(
+            'startproject', self.project_name, project_dir + '2'))
 
-        self.assertEqual(1, self.call('startproject', self.project_name, project_dir))
-        self.assertEqual(1, self.call('startproject', self.project_name + '2', project_dir))
-        self.assertEqual(1, self.call('startproject', 'wrong---project---name'))
+        self.assertEqual(1, self.call(
+            'startproject', self.project_name, project_dir))
+        self.assertEqual(1, self.call(
+            'startproject', self.project_name + '2', project_dir))
+        self.assertEqual(1, self.call(
+            'startproject', 'wrong---project---name'))
         self.assertEqual(1, self.call('startproject', 'sys'))
         self.assertEqual(2, self.call('startproject'))
-        self.assertEqual(2, self.call('startproject', self.project_name, project_dir, 'another_params'))
+        self.assertEqual(2, self.call(
+            'startproject', self.project_name, project_dir, 'another_params'))
 
 
 def get_permissions_dict(path, renamings=None, ignore=None):
@@ -335,8 +350,10 @@ class GenspiderCommandTest(CommandTest):
         args = ['--template=%s' % tplname] if tplname else []
         spname = 'test_spider'
         p, out, err = self.proc('genspider', spname, 'test.com', *args)
-        self.assertIn("Created spider %r using template %r in module" % (spname, tplname), out)
-        self.assertTrue(exists(join(self.proj_mod_path, 'spiders', 'test_spider.py')))
+        self.assertIn("Created spider %r using template %r in module" %
+                      (spname, tplname), out)
+        self.assertTrue(
+            exists(join(self.proj_mod_path, 'spiders', 'test_spider.py')))
         p, out, err = self.proc('genspider', spname, 'test.com', *args)
         self.assertIn("Spider %r already exists in module" % spname, out)
 
@@ -358,7 +375,8 @@ class GenspiderCommandTest(CommandTest):
 
     def test_same_name_as_project(self):
         self.assertEqual(2, self.call('genspider', self.project_name))
-        assert not exists(join(self.proj_mod_path, 'spiders', '%s.py' % self.project_name))
+        assert not exists(join(self.proj_mod_path, 'spiders',
+                               '%s.py' % self.project_name))
 
 
 class GenspiderStandaloneCommandTest(ProjectTest):
@@ -415,12 +433,14 @@ class MySpider(scrapy.Spider):
         self.assertIn("INFO: Spider closed (finished)", log)
 
     def test_run_fail_spider(self):
-        proc, _, _ = self.runspider("import scrapy\n" + inspect.getsource(ExceptionSpider))
+        proc, _, _ = self.runspider(
+            "import scrapy\n" + inspect.getsource(ExceptionSpider))
         ret = proc.returncode
         self.assertNotEqual(ret, 0)
 
     def test_run_good_spider(self):
-        proc, _, _ = self.runspider("import scrapy\n" + inspect.getsource(NoRequestsSpider))
+        proc, _, _ = self.runspider(
+            "import scrapy\n" + inspect.getsource(NoRequestsSpider))
         ret = proc.returncode
         self.assertEqual(ret, 0)
 
@@ -498,11 +518,13 @@ class BadSpider(scrapy.Spider):
         log = self.get_log(self.debug_log_spider, args=[
             '-s', 'TWISTED_REACTOR=twisted.internet.asyncioreactor.AsyncioSelectorReactor'
         ])
-        self.assertIn("Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log)
+        self.assertIn(
+            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log)
 
     def test_asyncio_enabled_false(self):
         log = self.get_log(self.debug_log_spider, args=[])
-        self.assertNotIn("Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log)
+        self.assertNotIn(
+            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log)
 
 
 class BenchCommandTest(CommandTest):

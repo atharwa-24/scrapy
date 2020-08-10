@@ -260,13 +260,15 @@ class FeedExporter:
             )
             uri = str(self.settings['FEED_URI'])  # handle pathlib.Path objects
             feed = {'format': self.settings.get('FEED_FORMAT', 'jsonlines')}
-            self.feeds[uri] = feed_complete_default_values_from_settings(feed, self.settings)
+            self.feeds[uri] = feed_complete_default_values_from_settings(
+                feed, self.settings)
         # End: Backward compatibility for FEED_URI and FEED_FORMAT settings
 
         # 'FEEDS' setting takes precedence over 'FEED_URI'
         for uri, feed in self.settings.getdict('FEEDS').items():
             uri = str(uri)  # handle pathlib.Path objects
-            self.feeds[uri] = feed_complete_default_values_from_settings(feed, self.settings)
+            self.feeds[uri] = feed_complete_default_values_from_settings(
+                feed, self.settings)
 
         self.storages = self._load_components('FEED_STORAGES')
         self.exporters = self._load_components('FEED_EXPORTERS')
@@ -367,7 +369,8 @@ class FeedExporter:
                 self.feeds[slot.uri_template]['batch_item_count']
                 and slot.itemcount >= self.feeds[slot.uri_template]['batch_item_count']
             ):
-                uri_params = self._get_uri_params(spider, self.feeds[slot.uri_template]['uri_params'], slot)
+                uri_params = self._get_uri_params(
+                    spider, self.feeds[slot.uri_template]['uri_params'], slot)
                 self._close_slot(slot, spider)
                 slots.append(self._start_new_batch(
                     batch_id=slot.batch_id + 1,
@@ -441,9 +444,11 @@ class FeedExporter:
         for k in dir(spider):
             params[k] = getattr(spider, k)
         utc_now = datetime.utcnow()
-        params['time'] = utc_now.replace(microsecond=0).isoformat().replace(':', '-')
+        params['time'] = utc_now.replace(
+            microsecond=0).isoformat().replace(':', '-')
         params['batch_time'] = utc_now.isoformat().replace(':', '-')
         params['batch_id'] = slot.batch_id + 1 if slot is not None else 1
-        uripar_function = load_object(uri_params) if uri_params else lambda x, y: None
+        uripar_function = load_object(
+            uri_params) if uri_params else lambda x, y: None
         uripar_function(params, spider)
         return params

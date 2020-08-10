@@ -46,7 +46,8 @@ class LxmlParserLinkExtractor:
         self.process_attr = process if callable(process) else _identity
         self.unique = unique
         self.strip = strip
-        self.link_key = operator.attrgetter("url") if canonicalized else _canonicalize_link_url
+        self.link_key = operator.attrgetter(
+            "url") if canonicalized else _canonicalize_link_url
 
     def _iter_links(self, document):
         for el in document.iter(etree.Element):
@@ -159,6 +160,7 @@ class LxmlLinkExtractor(FilteringLinkExtractor):
             docs = [response.selector]
         all_links = []
         for doc in docs:
-            links = self._extract_links(doc, response.url, response.encoding, base_url)
+            links = self._extract_links(
+                doc, response.url, response.encoding, base_url)
             all_links.extend(self._process_links(links))
         return unique_list(all_links)

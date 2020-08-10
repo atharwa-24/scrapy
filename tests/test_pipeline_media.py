@@ -48,7 +48,8 @@ class BaseMediaPipelineTestCase(unittest.TestCase):
     def test_default_media_downloaded(self):
         request = Request('http://url')
         response = Response('http://url', body=b'')
-        assert self.pipe.media_downloaded(response, request, self.info) is response
+        assert self.pipe.media_downloaded(
+            response, request, self.info) is response
 
     def test_default_media_failed(self):
         request = Request('http://url')
@@ -281,7 +282,8 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
         self.assertEqual(new_item['results'], [(True, rsp1)])
 
         # rsp2 is ignored, rsp1 must be in results because request fingerprints are the same
-        req2 = Request(req1.url, meta=dict(response=Response('http://donot.download.me')))
+        req2 = Request(req1.url, meta=dict(
+            response=Response('http://donot.download.me')))
         item = dict(requests=req2)
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertTrue(new_item is item)
@@ -292,7 +294,8 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
     def test_results_are_cached_for_requests_of_single_item(self):
         rsp1 = Response('http://url1')
         req1 = Request('http://url1', meta=dict(response=rsp1))
-        req2 = Request(req1.url, meta=dict(response=Response('http://donot.download.me')))
+        req2 = Request(req1.url, meta=dict(
+            response=Response('http://donot.download.me')))
         item = dict(requests=[req1, req2])
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertTrue(new_item is item)
@@ -326,7 +329,8 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
 
     @inlineCallbacks
     def test_use_media_to_download_result(self):
-        req = Request('http://url', meta=dict(result='ITSME', response=self.fail))
+        req = Request(
+            'http://url', meta=dict(result='ITSME', response=self.fail))
         item = dict(requests=req)
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertEqual(new_item['results'], [(True, 'ITSME')])
@@ -361,7 +365,8 @@ class MediaPipelineAllowRedirectSettingsTestCase(unittest.TestCase):
             if check:
                 self.assertIn(status, request.meta['handle_httpstatus_list'])
             else:
-                self.assertNotIn(status, request.meta['handle_httpstatus_list'])
+                self.assertNotIn(
+                    status, request.meta['handle_httpstatus_list'])
 
     def test_standard_setting(self):
         self._assert_request_no3xx(

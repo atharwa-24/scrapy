@@ -104,7 +104,8 @@ class ScrapesContract(Contract):
     def post_process(self, output):
         for x in output:
             if is_item(x):
-                missing = [arg for arg in self.args if arg not in ItemAdapter(x)]
+                missing = [
+                    arg for arg in self.args if arg not in ItemAdapter(x)]
                 if missing:
                     missing_str = ", ".join(missing)
                     raise ContractFail("Missing fields: %s" % missing_str)

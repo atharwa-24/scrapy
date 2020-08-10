@@ -75,7 +75,8 @@ class HeadersTest(unittest.TestCase):
         assert h.getlist('X-Forwarded-For') is olist
 
     def test_iterables(self):
-        idict = {'Content-Type': 'text/html', 'X-Forwarded-For': ['ip1', 'ip2']}
+        idict = {'Content-Type': 'text/html',
+                 'X-Forwarded-For': ['ip1', 'ip2']}
 
         h = Headers(idict)
         self.assertDictEqual(dict(h),

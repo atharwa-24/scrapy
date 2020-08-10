@@ -30,10 +30,12 @@ class FormRequest(Request):
             items = formdata.items() if isinstance(formdata, dict) else formdata
             querystr = _urlencode(items, self.encoding)
             if self.method == 'POST':
-                self.headers.setdefault(b'Content-Type', b'application/x-www-form-urlencoded')
+                self.headers.setdefault(
+                    b'Content-Type', b'application/x-www-form-urlencoded')
                 self._set_body(querystr)
             else:
-                self._set_url(self.url + ('&' if '?' in self.url else '?') + querystr)
+                self._set_url(
+                    self.url + ('&' if '?' in self.url else '?') + querystr)
 
     @classmethod
     def from_response(cls, response, formname=None, formid=None, formnumber=0, formdata=None,
@@ -168,7 +170,8 @@ def _select_value(ele, n, v):
         # This is a workround to bug in lxml fixed 2.3.1
         # fix https://github.com/lxml/lxml/commit/57f49eed82068a20da3db8f1b18ae00c1bab8b12#L1L1139
         selected_options = ele.xpath('.//option[@selected]')
-        v = [(o.get('value') or o.text or '').strip() for o in selected_options]
+        v = [(o.get('value') or o.text or '').strip()
+             for o in selected_options]
     return n, v
 
 
@@ -213,4 +216,5 @@ def _get_clickable(clickdata, form):
         raise ValueError("Multiple elements found (%r) matching the criteria "
                          "in clickdata: %r" % (el, clickdata))
     else:
-        raise ValueError('No clickable element matching clickdata: %r' % (clickdata,))
+        raise ValueError(
+            'No clickable element matching clickdata: %r' % (clickdata,))

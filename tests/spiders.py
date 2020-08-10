@@ -44,7 +44,8 @@ class FollowAllSpider(MetaSpider):
         super().__init__(*args, **kwargs)
         self.urls_visited = []
         self.times = []
-        qargs = {'total': total, 'show': show, 'order': order, 'maxlatency': maxlatency}
+        qargs = {'total': total, 'show': show,
+                 'order': order, 'maxlatency': maxlatency}
         url = self.mockserver.url("/follow?%s" % urlencode(qargs, doseq=1))
         self.start_urls = [url]
 
@@ -143,7 +144,8 @@ class AsyncDefAsyncioReqsReturnSpider(SimpleSpider):
             return
         reqs = []
         for i in range(1, 3):
-            req = Request(self.start_urls[0], dont_filter=True, meta={'req_id': i})
+            req = Request(self.start_urls[0],
+                          dont_filter=True, meta={'req_id': i})
             reqs.append(req)
         return reqs
 
@@ -283,7 +285,8 @@ class CrawlSpiderWithParseMethod(MockServerSpider, CrawlSpider):
 class CrawlSpiderWithErrback(CrawlSpiderWithParseMethod):
     name = 'crawl_spider_with_errback'
     rules = (
-        Rule(LinkExtractor(), callback='parse', errback='errback', follow=True),
+        Rule(LinkExtractor(), callback='parse',
+             errback='errback', follow=True),
     )
 
     def start_requests(self):

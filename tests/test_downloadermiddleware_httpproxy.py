@@ -25,7 +25,8 @@ class TestHttpProxyMiddleware(TestCase):
     def test_not_enabled(self):
         settings = Settings({'HTTPPROXY_ENABLED': False})
         crawler = Crawler(Spider, settings)
-        self.assertRaises(NotConfigured, partial(HttpProxyMiddleware.from_crawler, crawler))
+        self.assertRaises(NotConfigured, partial(
+            HttpProxyMiddleware.from_crawler, crawler))
 
     def test_no_environment_proxies(self):
         os.environ = {'dummy_proxy': 'reset_env_and_do_not_raise'}
@@ -56,7 +57,8 @@ class TestHttpProxyMiddleware(TestCase):
     def test_proxy_precedence_meta(self):
         os.environ['http_proxy'] = 'https://proxy.com'
         mw = HttpProxyMiddleware()
-        req = Request('http://scrapytest.org', meta={'proxy': 'https://new.proxy:3128'})
+        req = Request('http://scrapytest.org',
+                      meta={'proxy': 'https://new.proxy:3128'})
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://new.proxy:3128'})
 
@@ -66,12 +68,15 @@ class TestHttpProxyMiddleware(TestCase):
         req = Request('http://scrapytest.org')
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic dXNlcjpwYXNz')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic dXNlcjpwYXNz')
         # proxy from request.meta
-        req = Request('http://scrapytest.org', meta={'proxy': 'https://username:password@proxy:3128'})
+        req = Request('http://scrapytest.org',
+                      meta={'proxy': 'https://username:password@proxy:3128'})
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic dXNlcm5hbWU6cGFzc3dvcmQ=')
+        self.assertEqual(req.headers.get('Proxy-Authorization'),
+                         b'Basic dXNlcm5hbWU6cGFzc3dvcmQ=')
 
     def test_proxy_auth_empty_passwd(self):
         os.environ['http_proxy'] = 'https://user:@proxy:3128'
@@ -79,12 +84,15 @@ class TestHttpProxyMiddleware(TestCase):
         req = Request('http://scrapytest.org')
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic dXNlcjo=')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic dXNlcjo=')
         # proxy from request.meta
-        req = Request('http://scrapytest.org', meta={'proxy': 'https://username:@proxy:3128'})
+        req = Request('http://scrapytest.org',
+                      meta={'proxy': 'https://username:@proxy:3128'})
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic dXNlcm5hbWU6')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic dXNlcm5hbWU6')
 
     def test_proxy_auth_encoding(self):
         # utf-8 encoding
@@ -93,26 +101,32 @@ class TestHttpProxyMiddleware(TestCase):
         req = Request('http://scrapytest.org')
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic bcOhbjpwYXNz')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic bcOhbjpwYXNz')
 
         # proxy from request.meta
-        req = Request('http://scrapytest.org', meta={'proxy': 'https://\u00FCser:pass@proxy:3128'})
+        req = Request('http://scrapytest.org',
+                      meta={'proxy': 'https://\u00FCser:pass@proxy:3128'})
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic w7xzZXI6cGFzcw==')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic w7xzZXI6cGFzcw==')
 
         # default latin-1 encoding
         mw = HttpProxyMiddleware(auth_encoding='latin-1')
         req = Request('http://scrapytest.org')
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic beFuOnBhc3M=')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic beFuOnBhc3M=')
 
         # proxy from request.meta, latin-1 encoding
-        req = Request('http://scrapytest.org', meta={'proxy': 'https://\u00FCser:pass@proxy:3128'})
+        req = Request('http://scrapytest.org',
+                      meta={'proxy': 'https://\u00FCser:pass@proxy:3128'})
         assert mw.process_request(req, spider) is None
         self.assertEqual(req.meta, {'proxy': 'https://proxy:3128'})
-        self.assertEqual(req.headers.get('Proxy-Authorization'), b'Basic /HNlcjpwYXNz')
+        self.assertEqual(req.headers.get(
+            'Proxy-Authorization'), b'Basic /HNlcjpwYXNz')
 
     def test_proxy_already_seted(self):
         os.environ['http_proxy'] = 'https://proxy.for.http:3128'

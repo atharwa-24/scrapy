@@ -39,7 +39,8 @@ class BaseItemExporter:
         self.export_empty_fields = options.pop('export_empty_fields', False)
         self.indent = options.pop('indent', None)
         if not dont_fail and options:
-            raise TypeError("Unexpected options: %s" % ', '.join(options.keys()))
+            raise TypeError("Unexpected options: %s" %
+                            ', '.join(options.keys()))
 
     def export_item(self, item):
         raise NotImplementedError
@@ -77,7 +78,8 @@ class BaseItemExporter:
         for field_name in field_iter:
             if field_name in item:
                 field_meta = item.get_field_meta(field_name)
-                value = self.serialize_field(field_meta, field_name, item[field_name])
+                value = self.serialize_field(
+                    field_meta, field_name, item[field_name])
             else:
                 value = default_value
 

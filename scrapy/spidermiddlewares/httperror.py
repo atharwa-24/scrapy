@@ -26,7 +26,8 @@ class HttpErrorMiddleware:
 
     def __init__(self, settings):
         self.handle_httpstatus_all = settings.getbool('HTTPERROR_ALLOW_ALL')
-        self.handle_httpstatus_list = settings.getlist('HTTPERROR_ALLOWED_CODES')
+        self.handle_httpstatus_list = settings.getlist(
+            'HTTPERROR_ALLOWED_CODES')
 
     def process_spider_input(self, response, spider):
         if 200 <= response.status < 300:  # common case
@@ -39,7 +40,8 @@ class HttpErrorMiddleware:
         elif self.handle_httpstatus_all:
             return
         else:
-            allowed_statuses = getattr(spider, 'handle_httpstatus_list', self.handle_httpstatus_list)
+            allowed_statuses = getattr(
+                spider, 'handle_httpstatus_list', self.handle_httpstatus_list)
         if response.status in allowed_statuses:
             return
         raise HttpError(response, 'Ignoring non-200 response')

@@ -132,7 +132,8 @@ class ImagesPipeline(FilesPipeline):
         yield path, image, buf
 
         for thumb_id, size in self.thumbs.items():
-            thumb_path = self.thumb_path(request, thumb_id, response=response, info=info)
+            thumb_path = self.thumb_path(
+                request, thumb_id, response=response, info=info)
             thumb_image, thumb_buf = self.convert_image(image, size)
             yield thumb_path, thumb_image, thumb_buf
 
@@ -163,7 +164,8 @@ class ImagesPipeline(FilesPipeline):
 
     def item_completed(self, results, item, info):
         with suppress(KeyError):
-            ItemAdapter(item)[self.images_result_field] = [x for ok, x in results if ok]
+            ItemAdapter(item)[self.images_result_field] = [
+                x for ok, x in results if ok]
         return item
 
     def file_path(self, request, response=None, info=None):

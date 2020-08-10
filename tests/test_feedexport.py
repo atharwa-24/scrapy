@@ -388,11 +388,14 @@ class GCSFeedStorageTest(unittest.TestCase):
         try:
             from google.cloud.storage import Client  # noqa
         except ImportError:
-            raise unittest.SkipTest("GCSFeedStorage requires google-cloud-storage")
+            raise unittest.SkipTest(
+                "GCSFeedStorage requires google-cloud-storage")
 
-        settings = {'GCS_PROJECT_ID': '123', 'FEED_STORAGE_GCS_ACL': 'publicRead'}
+        settings = {'GCS_PROJECT_ID': '123',
+                    'FEED_STORAGE_GCS_ACL': 'publicRead'}
         crawler = get_crawler(settings_dict=settings)
-        storage = GCSFeedStorage.from_crawler(crawler, 'gs://mybucket/export.csv')
+        storage = GCSFeedStorage.from_crawler(
+            crawler, 'gs://mybucket/export.csv')
         assert storage.project_id == '123'
         assert storage.acl == 'publicRead'
         assert storage.bucket_name == 'mybucket'
@@ -402,16 +405,19 @@ class GCSFeedStorageTest(unittest.TestCase):
         try:
             from google.cloud.storage import Client  # noqa
         except ImportError:
-            raise unittest.SkipTest("GCSFeedStorage requires google-cloud-storage")
+            raise unittest.SkipTest(
+                "GCSFeedStorage requires google-cloud-storage")
 
         settings = {'GCS_PROJECT_ID': '123', 'FEED_STORAGE_GCS_ACL': ''}
         crawler = get_crawler(settings_dict=settings)
-        storage = GCSFeedStorage.from_crawler(crawler, 'gs://mybucket/export.csv')
+        storage = GCSFeedStorage.from_crawler(
+            crawler, 'gs://mybucket/export.csv')
         assert storage.acl is None
 
         settings = {'GCS_PROJECT_ID': '123', 'FEED_STORAGE_GCS_ACL': None}
         crawler = get_crawler(settings_dict=settings)
-        storage = GCSFeedStorage.from_crawler(crawler, 'gs://mybucket/export.csv')
+        storage = GCSFeedStorage.from_crawler(
+            crawler, 'gs://mybucket/export.csv')
         assert storage.acl is None
 
     @defer.inlineCallbacks
@@ -419,7 +425,8 @@ class GCSFeedStorageTest(unittest.TestCase):
         try:
             from google.cloud.storage import Client  # noqa
         except ImportError:
-            raise unittest.SkipTest("GCSFeedStorage requires google-cloud-storage")
+            raise unittest.SkipTest(
+                "GCSFeedStorage requires google-cloud-storage")
 
         uri = 'gs://mybucket/export.csv'
         project_id = 'myproject-123'
@@ -436,7 +443,8 @@ class GCSFeedStorageTest(unittest.TestCase):
             m.assert_called_once_with(project=project_id)
             client_mock.get_bucket.assert_called_once_with('mybucket')
             bucket_mock.blob.assert_called_once_with('export.csv')
-            blob_mock.upload_from_file.assert_called_once_with(f, predefined_acl=acl)
+            blob_mock.upload_from_file.assert_called_once_with(
+                f, predefined_acl=acl)
 
 
 class StdoutFeedStorageTest(unittest.TestCase):
@@ -654,7 +662,8 @@ class FeedExportTest(FeedExportTestBase):
             },
         })
         data = yield self.exported_data(items, settings)
-        parsed = [json.loads(to_unicode(line)) for line in data['jl'].splitlines()]
+        parsed = [json.loads(to_unicode(line))
+                  for line in data['jl'].splitlines()]
         rows = [{k: v for k, v in row.items() if v} for row in rows]
         self.assertEqual(rows, parsed)
 
@@ -1229,7 +1238,8 @@ class BatchDeliveriesTest(FeedExportTestBase):
         rows = [{k: v for k, v in row.items() if v} for row in rows]
         data = yield self.exported_data(items, settings)
         for batch in data['jl']:
-            got_batch = [json.loads(to_unicode(batch_item)) for batch_item in batch.splitlines()]
+            got_batch = [json.loads(to_unicode(batch_item))
+                         for batch_item in batch.splitlines()]
             expected_batch, rows = rows[:batch_size], rows[batch_size:]
             self.assertEqual(expected_batch, got_batch)
 
@@ -1262,7 +1272,8 @@ class BatchDeliveriesTest(FeedExportTestBase):
         data = yield self.exported_data(items, settings)
         for batch in data['xml']:
             root = lxml.etree.fromstring(batch)
-            got_batch = [{e.tag: e.text for e in it} for it in root.findall('item')]
+            got_batch = [{e.tag: e.text for e in it}
+                         for it in root.findall('item')]
             expected_batch, rows = rows[:batch_size], rows[batch_size:]
             self.assertEqual(expected_batch, got_batch)
 
@@ -1282,14 +1293,17 @@ class BatchDeliveriesTest(FeedExportTestBase):
         xml_rows = rows.copy()
         for batch in data['xml']:
             root = lxml.etree.fromstring(batch)
-            got_batch = [{e.tag: e.text for e in it} for it in root.findall('item')]
-            expected_batch, xml_rows = xml_rows[:batch_size], xml_rows[batch_size:]
+            got_batch = [{e.tag: e.text for e in it}
+                         for it in root.findall('item')]
+            expected_batch, xml_rows = xml_rows[:
+                                                batch_size], xml_rows[batch_size:]
             self.assertEqual(expected_batch, got_batch)
         # JSON
         json_rows = rows.copy()
         for batch in data['json']:
             got_batch = json.loads(batch.decode('utf-8'))
-            expected_batch, json_rows = json_rows[:batch_size], json_rows[batch_size:]
+            expected_batch, json_rows = json_rows[:
+                                                  batch_size], json_rows[batch_size:]
             self.assertEqual(expected_batch, got_batch)
 
     @defer.inlineCallbacks
@@ -1393,7 +1407,8 @@ class BatchDeliveriesTest(FeedExportTestBase):
 
     @defer.inlineCallbacks
     def test_export_multiple_configs(self):
-        items = [dict({'foo': 'FOO', 'bar': 'BAR'}), dict({'foo': 'FOO1', 'bar': 'BAR1'})]
+        items = [dict({'foo': 'FOO', 'bar': 'BAR'}),
+                 dict({'foo': 'FOO1', 'bar': 'BAR1'})]
 
         formats = {
             'json': ['[\n{"bar": "BAR"}\n]'.encode('utf-8'),
@@ -1547,7 +1562,8 @@ class BatchDeliveriesTest(FeedExportTestBase):
             yield runner.crawl(TestSpider)
 
         for file_uri in my_bucket.objects.filter(Prefix=prefix):
-            content = get_s3_content_and_delete(s3_test_bucket_name, file_uri.key)
+            content = get_s3_content_and_delete(
+                s3_test_bucket_name, file_uri.key)
             if not content and not items:
                 break
             content = json.loads(content.decode('utf-8'))

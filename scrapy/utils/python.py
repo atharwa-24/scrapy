@@ -165,7 +165,8 @@ def memoizemethod_noargs(method):
     return new_method
 
 
-_BINARYCHARS = {to_bytes(chr(i)) for i in range(32)} - {b"\0", b"\t", b"\n", b"\r"}
+_BINARYCHARS = {to_bytes(chr(i)) for i in range(32)} - \
+    {b"\0", b"\t", b"\n", b"\r"}
 _BINARYCHARS |= {ord(ch) for ch in _BINARYCHARS}
 
 
@@ -280,7 +281,8 @@ def equal_attributes(obj1, obj2, attributes):
 class WeakKeyCache:
 
     def __init__(self, default_factory):
-        warnings.warn("The WeakKeyCache class is deprecated", category=ScrapyDeprecationWarning, stacklevel=2)
+        warnings.warn("The WeakKeyCache class is deprecated",
+                      category=ScrapyDeprecationWarning, stacklevel=2)
         self.default_factory = default_factory
         self._weakdict = weakref.WeakKeyDictionary()
 

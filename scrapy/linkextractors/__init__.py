@@ -5,6 +5,7 @@ This package contains a collection of Link Extractors.
 
 For more info see docs/topics/link-extractors.rst
 """
+from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor as LinkExtractor
 import re
 from urllib.parse import urlparse
 from warnings import warn
@@ -116,8 +117,10 @@ class FilteringLinkExtractor:
         if self.deny_domains and url_is_from_any_domain(url, self.deny_domains):
             return False
 
-        allowed = (regex.search(url) for regex in self.allow_res) if self.allow_res else [True]
-        denied = (regex.search(url) for regex in self.deny_res) if self.deny_res else []
+        allowed = (regex.search(url)
+                   for regex in self.allow_res) if self.allow_res else [True]
+        denied = (regex.search(url)
+                  for regex in self.deny_res) if self.deny_res else []
         return any(allowed) and not any(denied)
 
     def _process_links(self, links):
@@ -133,4 +136,3 @@ class FilteringLinkExtractor:
 
 
 # Top-level imports
-from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor as LinkExtractor

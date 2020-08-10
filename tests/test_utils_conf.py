@@ -74,20 +74,26 @@ class BuildComponentListTest(unittest.TestCase):
         d = {'a': 10, 'b': None, 'c': 15, 'd': 5.0}
         self.assertEqual(build_component_list(d, convert=lambda x: x),
                          ['d', 'a', 'c'])
-        d = {'a': 33333333333333333333, 'b': 11111111111111111111, 'c': 22222222222222222222}
+        d = {'a': 33333333333333333333,
+             'b': 11111111111111111111, 'c': 22222222222222222222}
         self.assertEqual(build_component_list(d, convert=lambda x: x),
                          ['b', 'c', 'a'])
         # raise exception for invalid values
         d = {'one': '5'}
-        self.assertRaises(ValueError, build_component_list, {}, d, convert=lambda x: x)
+        self.assertRaises(ValueError, build_component_list,
+                          {}, d, convert=lambda x: x)
         d = {'one': '1.0'}
-        self.assertRaises(ValueError, build_component_list, {}, d, convert=lambda x: x)
+        self.assertRaises(ValueError, build_component_list,
+                          {}, d, convert=lambda x: x)
         d = {'one': [1, 2, 3]}
-        self.assertRaises(ValueError, build_component_list, {}, d, convert=lambda x: x)
+        self.assertRaises(ValueError, build_component_list,
+                          {}, d, convert=lambda x: x)
         d = {'one': {'a': 'a', 'b': 2}}
-        self.assertRaises(ValueError, build_component_list, {}, d, convert=lambda x: x)
+        self.assertRaises(ValueError, build_component_list,
+                          {}, d, convert=lambda x: x)
         d = {'one': 'lorem ipsum'}
-        self.assertRaises(ValueError, build_component_list, {}, d, convert=lambda x: x)
+        self.assertRaises(ValueError, build_component_list,
+                          {}, d, convert=lambda x: x)
 
 
 class UtilsConfTestCase(unittest.TestCase):
@@ -102,13 +108,15 @@ class FeedExportConfigTestCase(unittest.TestCase):
 
     def test_feed_export_config_invalid_format(self):
         settings = Settings()
-        self.assertRaises(UsageError, feed_process_params_from_cli, settings, ['items.dat'], 'noformat')
+        self.assertRaises(UsageError, feed_process_params_from_cli, settings, [
+                          'items.dat'], 'noformat')
 
     def test_feed_export_config_mismatch(self):
         settings = Settings()
         self.assertRaises(
             UsageError,
-            feed_process_params_from_cli, settings, ['items1.dat', 'items2.dat'], 'noformat'
+            feed_process_params_from_cli, settings, [
+                'items1.dat', 'items2.dat'], 'noformat'
         )
 
     def test_feed_export_config_backward_compatible(self):
@@ -123,15 +131,19 @@ class FeedExportConfigTestCase(unittest.TestCase):
     def test_feed_export_config_explicit_formats(self):
         settings = Settings()
         self.assertEqual(
-            {'items_1.dat': {'format': 'json'}, 'items_2.dat': {'format': 'xml'}, 'items_3.dat': {'format': 'csv'}},
-            feed_process_params_from_cli(settings, ['items_1.dat:json', 'items_2.dat:xml', 'items_3.dat:csv'])
+            {'items_1.dat': {'format': 'json'}, 'items_2.dat': {
+                'format': 'xml'}, 'items_3.dat': {'format': 'csv'}},
+            feed_process_params_from_cli(
+                settings, ['items_1.dat:json', 'items_2.dat:xml', 'items_3.dat:csv'])
         )
 
     def test_feed_export_config_implicit_formats(self):
         settings = Settings()
         self.assertEqual(
-            {'items_1.json': {'format': 'json'}, 'items_2.xml': {'format': 'xml'}, 'items_3.csv': {'format': 'csv'}},
-            feed_process_params_from_cli(settings, ['items_1.json', 'items_2.xml', 'items_3.csv'])
+            {'items_1.json': {'format': 'json'}, 'items_2.xml': {
+                'format': 'xml'}, 'items_3.csv': {'format': 'csv'}},
+            feed_process_params_from_cli(
+                settings, ['items_1.json', 'items_2.xml', 'items_3.csv'])
         )
 
     def test_feed_export_config_stdout(self):

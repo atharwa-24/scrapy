@@ -40,7 +40,8 @@ class Crawler:
 
     def __init__(self, spidercls, settings=None):
         if isinstance(spidercls, Spider):
-            raise ValueError('The spidercls argument must be a class, not an object')
+            raise ValueError(
+                'The spidercls argument must be a class, not an object')
 
         if isinstance(settings, dict) or settings is None:
             settings = Settings(settings)
@@ -133,7 +134,8 @@ class CrawlerRunner:
         """ Get SpiderLoader instance from settings """
         cls_path = settings.get('SPIDER_LOADER_CLASS')
         loader_cls = load_object(cls_path)
-        excs = (DoesNotImplement, MultipleInvalid) if MultipleInvalid else DoesNotImplement
+        excs = (DoesNotImplement,
+                MultipleInvalid) if MultipleInvalid else DoesNotImplement
         try:
             verifyClass(ISpiderLoader, loader_cls)
         except excs:
@@ -319,10 +321,12 @@ class CrawlerProcess(CrawlerRunner):
             d.addBoth(self._stop_reactor)
 
         resolver_class = load_object(self.settings["DNS_RESOLVER"])
-        resolver = create_instance(resolver_class, self.settings, self, reactor=reactor)
+        resolver = create_instance(
+            resolver_class, self.settings, self, reactor=reactor)
         resolver.install_on_reactor()
         tp = reactor.getThreadPool()
-        tp.adjustPoolsize(maxthreads=self.settings.getint('REACTOR_THREADPOOL_MAXSIZE'))
+        tp.adjustPoolsize(maxthreads=self.settings.getint(
+            'REACTOR_THREADPOOL_MAXSIZE'))
         reactor.addSystemEventTrigger('before', 'shutdown', self.stop)
         reactor.run(installSignalHandlers=False)  # blocking call
 

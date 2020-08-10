@@ -149,7 +149,8 @@ def log_scrapy_info(settings):
     ]
     logger.info("Versions: %(versions)s", {'versions': ", ".join(versions)})
     from twisted.internet import reactor
-    logger.debug("Using reactor: %s.%s", reactor.__module__, reactor.__class__.__name__)
+    logger.debug("Using reactor: %s.%s", reactor.__module__,
+                 reactor.__class__.__name__)
 
 
 class StreamLogger:
@@ -158,6 +159,7 @@ class StreamLogger:
     Taken from:
         https://www.electricmonk.nl/log/2011/08/14/redirect-stdout-and-stderr-to-a-logger-in-python/
     """
+
     def __init__(self, logger, log_level=logging.INFO):
         self.logger = logger
         self.log_level = log_level

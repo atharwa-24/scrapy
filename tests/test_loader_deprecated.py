@@ -72,7 +72,8 @@ class BasicItemLoaderTest(unittest.TestCase):
                 return value
 
         class MyLoader(ItemLoader):
-            name_out = Compose(lambda vs: vs[0])  # take first which allows empty values
+            # take first which allows empty values
+            name_out = Compose(lambda vs: vs[0])
             price_out = Compose(TakeFirst(), float)
             sku_out = Compose(TakeFirst(), validate_sku)
 
@@ -129,7 +130,8 @@ class BasicItemLoaderTest(unittest.TestCase):
         self.assertEqual(il.get_collected_values('summary'), [{'key': 1}])
 
         il.add_value(None, 'Jim', lambda x: {'name': x})
-        self.assertEqual(il.get_collected_values('name'), ['Marta', 'Pepe', 'Jim'])
+        self.assertEqual(il.get_collected_values(
+            'name'), ['Marta', 'Pepe', 'Jim'])
 
     def test_add_zero(self):
         il = NameItemLoader()
@@ -150,11 +152,15 @@ class BasicItemLoaderTest(unittest.TestCase):
 
     def test_get_value(self):
         il = NameItemLoader()
-        self.assertEqual('FOO', il.get_value(['foo', 'bar'], TakeFirst(), str.upper))
-        self.assertEqual(['foo', 'bar'], il.get_value(['name:foo', 'name:bar'], re='name:(.*)$'))
-        self.assertEqual('foo', il.get_value(['name:foo', 'name:bar'], TakeFirst(), re='name:(.*)$'))
+        self.assertEqual('FOO', il.get_value(
+            ['foo', 'bar'], TakeFirst(), str.upper))
+        self.assertEqual(['foo', 'bar'], il.get_value(
+            ['name:foo', 'name:bar'], re='name:(.*)$'))
+        self.assertEqual('foo', il.get_value(
+            ['name:foo', 'name:bar'], TakeFirst(), re='name:(.*)$'))
 
-        il.add_value('name', ['name:foo', 'name:bar'], TakeFirst(), re='name:(.*)$')
+        il.add_value('name', ['name:foo', 'name:bar'],
+                     TakeFirst(), re='name:(.*)$')
         self.assertEqual(['foo'], il.get_collected_values('name'))
         il.replace_value('name', 'name:bar', re='name:(.*)$')
         self.assertEqual(['bar'], il.get_collected_values('name'))
@@ -259,7 +265,8 @@ class BasicItemLoaderTest(unittest.TestCase):
 
     def test_extend_default_input_processors(self):
         class ChildDefaultedItemLoader(DefaultedItemLoader):
-            name_in = MapCompose(DefaultedItemLoader.default_input_processor, str.swapcase)
+            name_in = MapCompose(
+                DefaultedItemLoader.default_input_processor, str.swapcase)
 
         il = ChildDefaultedItemLoader()
         il.add_value('name', 'marta')
@@ -379,7 +386,8 @@ class BasicItemLoaderTest(unittest.TestCase):
 
     def test_compose_processor(self):
         class TestItemLoader(NameItemLoader):
-            name_out = Compose(lambda v: v[0], lambda v: v.title(), lambda v: v[:-1])
+            name_out = Compose(
+                lambda v: v[0], lambda v: v.title(), lambda v: v[:-1])
 
         il = TestItemLoader()
         il.add_value('name', ['marta', 'other'])
@@ -483,7 +491,8 @@ class InitializationFromDictTest(unittest.TestCase):
         il.add_value('name', ['item', 'loader'])
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
-        self.assertEqual(dict(loaded_item), {'name': ['foo', 'item', 'loader']})
+        self.assertEqual(dict(loaded_item), {
+                         'name': ['foo', 'item', 'loader']})
 
     def test_add_value_list_singlevalue(self):
         """Values added after initialization should be appended"""
@@ -501,7 +510,8 @@ class InitializationFromDictTest(unittest.TestCase):
         il.add_value('name', ['item', 'loader'])
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
-        self.assertEqual(dict(loaded_item), {'name': ['foo', 'bar', 'item', 'loader']})
+        self.assertEqual(dict(loaded_item), {
+                         'name': ['foo', 'bar', 'item', 'loader']})
 
     def test_get_output_value_singlevalue(self):
         """Getting output value must not remove value from item"""
@@ -547,31 +557,36 @@ class NoInputReprocessingFromDictTest(unittest.TestCase):
     """
     Loaders initialized from loaded items must not reprocess fields (dict instances)
     """
+
     def test_avoid_reprocessing_with_initial_values_single(self):
         il = NoInputReprocessingDictLoader(item=dict(title='foo'))
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, dict(title='foo'))
-        self.assertEqual(NoInputReprocessingDictLoader(item=il_loaded).load_item(), dict(title='foo'))
+        self.assertEqual(NoInputReprocessingDictLoader(
+            item=il_loaded).load_item(), dict(title='foo'))
 
     def test_avoid_reprocessing_with_initial_values_list(self):
         il = NoInputReprocessingDictLoader(item=dict(title=['foo', 'bar']))
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, dict(title='foo'))
-        self.assertEqual(NoInputReprocessingDictLoader(item=il_loaded).load_item(), dict(title='foo'))
+        self.assertEqual(NoInputReprocessingDictLoader(
+            item=il_loaded).load_item(), dict(title='foo'))
 
     def test_avoid_reprocessing_without_initial_values_single(self):
         il = NoInputReprocessingDictLoader()
         il.add_value('title', 'foo')
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, dict(title='FOO'))
-        self.assertEqual(NoInputReprocessingDictLoader(item=il_loaded).load_item(), dict(title='FOO'))
+        self.assertEqual(NoInputReprocessingDictLoader(
+            item=il_loaded).load_item(), dict(title='FOO'))
 
     def test_avoid_reprocessing_without_initial_values_list(self):
         il = NoInputReprocessingDictLoader()
         il.add_value('title', ['foo', 'bar'])
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, dict(title='FOO'))
-        self.assertEqual(NoInputReprocessingDictLoader(item=il_loaded).load_item(), dict(title='FOO'))
+        self.assertEqual(NoInputReprocessingDictLoader(
+            item=il_loaded).load_item(), dict(title='FOO'))
 
 
 class TestOutputProcessorDict(unittest.TestCase):

@@ -185,7 +185,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_rule_without_link_extractor(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             name = "test"
@@ -205,7 +206,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_links(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             name = "test"
@@ -228,7 +230,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_links_filter(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             import re
@@ -254,7 +257,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_links_generator(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             name = "test"
@@ -278,7 +282,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_request(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         def process_request_change_domain(request):
             return request.replace(url=request.url.replace('.org', '.com'))
@@ -304,7 +309,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_request_with_response(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         def process_request_meta_response_class(request, response):
             request.meta['response_class'] = response.__class__.__name__
@@ -314,7 +320,8 @@ class CrawlSpiderTest(SpiderTest):
             name = "test"
             allowed_domains = ['example.org']
             rules = (
-                Rule(LinkExtractor(), process_request=process_request_meta_response_class),
+                Rule(LinkExtractor(),
+                     process_request=process_request_meta_response_class),
             )
 
         spider = _CrawlSpider()
@@ -330,7 +337,8 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_request_instance_method(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             name = "test"
@@ -356,13 +364,15 @@ class CrawlSpiderTest(SpiderTest):
 
     def test_process_request_instance_method_with_response(self):
 
-        response = HtmlResponse("http://example.org/somepage/index.html", body=self.test_body)
+        response = HtmlResponse(
+            "http://example.org/somepage/index.html", body=self.test_body)
 
         class _CrawlSpider(self.spider_class):
             name = "test"
             allowed_domains = ['example.org']
             rules = (
-                Rule(LinkExtractor(), process_request='process_request_meta_response_class'),
+                Rule(LinkExtractor(),
+                     process_request='process_request_meta_response_class'),
             )
 
             def process_request_meta_response_class(self, request, response):
@@ -432,15 +442,18 @@ class SitemapSpiderTest(SpiderTest):
         self.assertSitemapBody(r, self.BODY)
 
     def test_get_sitemap_body_xml_url(self):
-        r = TextResponse(url="http://www.example.com/sitemap.xml", body=self.BODY)
+        r = TextResponse(
+            url="http://www.example.com/sitemap.xml", body=self.BODY)
         self.assertSitemapBody(r, self.BODY)
 
     def test_get_sitemap_body_xml_url_compressed(self):
-        r = Response(url="http://www.example.com/sitemap.xml.gz", body=self.GZBODY)
+        r = Response(url="http://www.example.com/sitemap.xml.gz",
+                     body=self.GZBODY)
         self.assertSitemapBody(r, self.BODY)
 
         # .xml.gz but body decoded by HttpCompression middleware already
-        r = Response(url="http://www.example.com/sitemap.xml.gz", body=self.BODY)
+        r = Response(url="http://www.example.com/sitemap.xml.gz",
+                     body=self.BODY)
         self.assertSitemapBody(r, self.BODY)
 
     def test_get_sitemap_urls_from_robotstxt(self):
@@ -474,7 +487,8 @@ Sitemap: /sitemap-relative-url.xml
             <xhtml:link rel="alternate" hreflang="it"/><!-- wrong tag without href -->
         </url>
     </urlset>"""
-        r = TextResponse(url="http://www.example.com/sitemap.xml", body=sitemap)
+        r = TextResponse(
+            url="http://www.example.com/sitemap.xml", body=sitemap)
         spider = self.spider_class("example.com")
         self.assertEqual([req.url for req in spider._parse_sitemap(r)],
                          ['http://www.example.com/english/'])
@@ -508,7 +522,8 @@ Sitemap: /sitemap-relative-url.xml
                     if date_time.year > 2008:
                         yield entry
 
-        r = TextResponse(url="http://www.example.com/sitemap.xml", body=sitemap)
+        r = TextResponse(
+            url="http://www.example.com/sitemap.xml", body=sitemap)
         spider = self.spider_class("example.com")
         self.assertEqual([req.url for req in spider._parse_sitemap(r)],
                          ['http://www.example.com/english/',
@@ -543,7 +558,8 @@ Sitemap: /sitemap-relative-url.xml
                             entry['loc'] = link
                             yield entry
 
-        r = TextResponse(url="http://www.example.com/sitemap.xml", body=sitemap)
+        r = TextResponse(
+            url="http://www.example.com/sitemap.xml", body=sitemap)
         spider = self.spider_class("example.com")
         self.assertEqual([req.url for req in spider._parse_sitemap(r)],
                          ['http://www.example.com/english/article_1/',
@@ -570,11 +586,13 @@ Sitemap: /sitemap-relative-url.xml
             def sitemap_filter(self, entries):
                 from datetime import datetime
                 for entry in entries:
-                    date_time = datetime.strptime(entry['lastmod'].split('T')[0], '%Y-%m-%d')
+                    date_time = datetime.strptime(
+                        entry['lastmod'].split('T')[0], '%Y-%m-%d')
                     if date_time.year > 2004:
                         yield entry
 
-        r = TextResponse(url="http://www.example.com/sitemap.xml", body=sitemap)
+        r = TextResponse(
+            url="http://www.example.com/sitemap.xml", body=sitemap)
         spider = self.spider_class("example.com")
         self.assertEqual([req.url for req in spider._parse_sitemap(r)],
                          ['http://www.example.com/sitemap1.xml',

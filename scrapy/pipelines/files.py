@@ -85,7 +85,8 @@ class S3FilesStore:
     AWS_USE_SSL = None
     AWS_VERIFY = None
 
-    POLICY = 'private'  # Overriden from settings.FILES_STORE_S3_ACL in FilesPipeline.from_settings
+    # Overriden from settings.FILES_STORE_S3_ACL in FilesPipeline.from_settings
+    POLICY = 'private'
     HEADERS = {
         'Cache-Control': 'max-age=172800',
     }
@@ -129,7 +130,8 @@ class S3FilesStore:
     def _get_boto_bucket(self):
         # disable ssl (is_secure=False) because of this python bug:
         # https://bugs.python.org/issue5103
-        c = self.S3Connection(self.AWS_ACCESS_KEY_ID, self.AWS_SECRET_ACCESS_KEY, is_secure=False)
+        c = self.S3Connection(self.AWS_ACCESS_KEY_ID,
+                              self.AWS_SECRET_ACCESS_KEY, is_secure=False)
         return c.get_bucket(self.bucket, validate=False)
 
     def _get_boto_key(self, path):
@@ -283,7 +285,8 @@ class FTPFilesStore:
 
     def __init__(self, uri):
         if not uri.startswith("ftp://"):
-            raise ValueError("Incorrect URI scheme in %s, expected 'ftp'" % uri)
+            raise ValueError(
+                "Incorrect URI scheme in %s, expected 'ftp'" % uri)
         u = urlparse(uri)
         self.port = u.port
         self.host = u.hostname
@@ -309,7 +312,8 @@ class FTPFilesStore:
                 if self.USE_ACTIVE_MODE:
                     ftp.set_pasv(False)
                 file_path = "%s/%s" % (self.basedir, path)
-                last_modified = float(ftp.voidcmd("MDTM %s" % file_path)[4:].strip())
+                last_modified = float(ftp.voidcmd(
+                    "MDTM %s" % file_path)[4:].strip())
                 m = hashlib.md5()
                 ftp.retrbinary('RETR %s' % file_path, m.update)
                 return {'last_modified': last_modified, 'checksum': m.hexdigest()}
@@ -515,7 +519,8 @@ class FilesPipeline(MediaPipeline):
 
     def inc_stats(self, spider, status):
         spider.crawler.stats.inc_value('file_count', spider=spider)
-        spider.crawler.stats.inc_value('file_status_count/%s' % status, spider=spider)
+        spider.crawler.stats.inc_value(
+            'file_status_count/%s' % status, spider=spider)
 
     # Overridable Interface
     def get_media_requests(self, item, info):
@@ -532,7 +537,8 @@ class FilesPipeline(MediaPipeline):
 
     def item_completed(self, results, item, info):
         with suppress(KeyError):
-            ItemAdapter(item)[self.files_result_field] = [x for ok, x in results if ok]
+            ItemAdapter(item)[self.files_result_field] = [
+                x for ok, x in results if ok]
         return item
 
     def file_path(self, request, response=None, info=None):

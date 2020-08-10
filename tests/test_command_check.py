@@ -10,7 +10,8 @@ class CheckCommandTest(CommandTest):
     def setUp(self):
         super(CheckCommandTest, self).setUp()
         self.spider_name = 'check_spider'
-        self.spider = abspath(join(self.proj_mod_path, 'spiders', 'checkspider.py'))
+        self.spider = abspath(
+            join(self.proj_mod_path, 'spiders', 'checkspider.py'))
 
     def _write_contract(self, contracts, parse_def):
         with open(self.spider, 'w') as file:

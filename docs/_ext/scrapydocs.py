@@ -42,7 +42,8 @@ def collect_scrapy_settings_refs(app, doctree):
 
     for node in doctree.traverse(is_setting_index):
         targetnode = get_setting_target(node)
-        assert isinstance(targetnode, nodes.target), "Next node is not a target"
+        assert isinstance(
+            targetnode, nodes.target), "Next node is not a target"
 
         setting_name, refid = get_setting_name_and_refid(node)
 
@@ -80,24 +81,24 @@ def replace_settingslist_nodes(app, doctree, fromdocname):
 
 def setup(app):
     app.add_crossref_type(
-        directivename = "setting",
-        rolename      = "setting",
-        indextemplate = "pair: %s; setting",
+        directivename="setting",
+        rolename="setting",
+        indextemplate="pair: %s; setting",
     )
     app.add_crossref_type(
-        directivename = "signal",
-        rolename      = "signal",
-        indextemplate = "pair: %s; signal",
+        directivename="signal",
+        rolename="signal",
+        indextemplate="pair: %s; signal",
     )
     app.add_crossref_type(
-        directivename = "command",
-        rolename      = "command",
-        indextemplate = "pair: %s; command",
+        directivename="command",
+        rolename="command",
+        indextemplate="pair: %s; command",
     )
     app.add_crossref_type(
-        directivename = "reqmeta",
-        rolename      = "reqmeta",
-        indextemplate = "pair: %s; reqmeta",
+        directivename="reqmeta",
+        rolename="reqmeta",
+        indextemplate="pair: %s; reqmeta",
     )
     app.add_role('source', source_role)
     app.add_role('commit', commit_role)
