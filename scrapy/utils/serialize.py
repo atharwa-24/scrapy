@@ -1,11 +1,13 @@
-import json
 import datetime
 import decimal
+import json
 
-from itemadapter import is_item, ItemAdapter
+from itemadapter import is_item
+from itemadapter import ItemAdapter
 from twisted.internet import defer
 
-from scrapy.http import Request, Response
+from scrapy.http import Request
+from scrapy.http import Response
 
 
 class ScrapyJSONEncoder(json.JSONEncoder):
@@ -33,7 +35,7 @@ class ScrapyJSONEncoder(json.JSONEncoder):
         elif isinstance(o, Response):
             return "<%s %s %s>" % (type(o).__name__, o.status, o.url)
         else:
-            return super(ScrapyJSONEncoder, self).default(o)
+            return super().default(o)
 
 
 class ScrapyJSONDecoder(json.JSONDecoder):

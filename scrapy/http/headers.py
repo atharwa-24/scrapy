@@ -1,4 +1,5 @@
 from w3lib.http import headers_dict_to_raw
+
 from scrapy.utils.datatypes import CaselessDict
 from scrapy.utils.python import to_unicode
 
@@ -6,9 +7,9 @@ from scrapy.utils.python import to_unicode
 class Headers(CaselessDict):
     """Case insensitive http headers dictionary"""
 
-    def __init__(self, seq=None, encoding='utf-8'):
+    def __init__(self, seq=None, encoding="utf-8"):
         self.encoding = encoding
-        super(Headers, self).__init__(seq)
+        super().__init__(seq)
 
     def normkey(self, key):
         """Normalize key to bytes"""
@@ -20,7 +21,7 @@ class Headers(CaselessDict):
             value = []
         elif isinstance(value, (str, bytes)):
             value = [value]
-        elif not hasattr(value, '__iter__'):
+        elif not hasattr(value, "__iter__"):
             value = [value]
 
         return [self._tobytes(x) for x in value]
@@ -33,23 +34,23 @@ class Headers(CaselessDict):
         elif isinstance(x, int):
             return str(x).encode(self.encoding)
         else:
-            raise TypeError('Unsupported value type: {}'.format(type(x)))
+            raise TypeError("Unsupported value type: {}".format(type(x)))
 
     def __getitem__(self, key):
         try:
-            return super(Headers, self).__getitem__(key)[-1]
+            return super().__getitem__(key)[-1]
         except IndexError:
             return None
 
     def get(self, key, def_val=None):
         try:
-            return super(Headers, self).get(key, def_val)[-1]
+            return super().get(key, def_val)[-1]
         except IndexError:
             return None
 
     def getlist(self, key, def_val=None):
         try:
-            return super(Headers, self).__getitem__(key)
+            return super().__getitem__(key)
         except KeyError:
             if def_val is not None:
                 return self.normvalue(def_val)
@@ -79,11 +80,12 @@ class Headers(CaselessDict):
         """ Return headers as a CaselessDict with unicode keys
         and unicode values. Multiple values are joined with ','.
         """
-        return CaselessDict(
-            (to_unicode(key, encoding=self.encoding),
-             to_unicode(b','.join(value), encoding=self.encoding))
-            for key, value in self.items())
+        return CaselessDict((
+            to_unicode(key, encoding=self.encoding),
+            to_unicode(b",".join(value), encoding=self.encoding),
+        ) for key, value in self.items())
 
     def __copy__(self):
         return self.__class__(self)
+
     copy = __copy__

@@ -4,7 +4,6 @@ Python Standard Library.
 
 This module must not depend on any module outside the Standard Library.
 """
-
 import collections
 import weakref
 from collections.abc import Mapping
@@ -15,7 +14,7 @@ class CaselessDict(dict):
     __slots__ = ()
 
     def __init__(self, seq=None):
-        super(CaselessDict, self).__init__()
+        super().__init__()
         if seq:
             self.update(seq)
 
@@ -30,10 +29,12 @@ class CaselessDict(dict):
 
     def __contains__(self, key):
         return dict.__contains__(self, self.normkey(key))
+
     has_key = __contains__
 
     def __copy__(self):
         return self.__class__(self)
+
     copy = __copy__
 
     def normkey(self, key):
@@ -48,12 +49,13 @@ class CaselessDict(dict):
         return dict.get(self, self.normkey(key), self.normvalue(def_val))
 
     def setdefault(self, key, def_val=None):
-        return dict.setdefault(self, self.normkey(key), self.normvalue(def_val))
+        return dict.setdefault(self, self.normkey(key),
+                               self.normvalue(def_val))
 
     def update(self, seq):
         seq = seq.items() if isinstance(seq, Mapping) else seq
         iseq = ((self.normkey(k), self.normvalue(v)) for k, v in seq)
-        super(CaselessDict, self).update(iseq)
+        super().update(iseq)
 
     @classmethod
     def fromkeys(cls, keys, value=None):
@@ -70,14 +72,14 @@ class LocalCache(collections.OrderedDict):
     """
 
     def __init__(self, limit=None):
-        super(LocalCache, self).__init__()
+        super().__init__()
         self.limit = limit
 
     def __setitem__(self, key, value):
         if self.limit:
             while len(self) >= self.limit:
                 self.popitem(last=False)
-        super(LocalCache, self).__setitem__(key, value)
+        super().__setitem__(key, value)
 
 
 class LocalWeakReferencedCache(weakref.WeakKeyDictionary):
@@ -93,18 +95,18 @@ class LocalWeakReferencedCache(weakref.WeakKeyDictionary):
     """
 
     def __init__(self, limit=None):
-        super(LocalWeakReferencedCache, self).__init__()
+        super().__init__()
         self.data = LocalCache(limit=limit)
 
     def __setitem__(self, key, value):
         try:
-            super(LocalWeakReferencedCache, self).__setitem__(key, value)
+            super().__setitem__(key, value)
         except TypeError:
             pass  # key is not weak-referenceable, skip caching
 
     def __getitem__(self, key):
         try:
-            return super(LocalWeakReferencedCache, self).__getitem__(key)
+            return super().__getitem__(key)
         except (TypeError, KeyError):
             return None  # key is either not weak-referenceable or not cached
 

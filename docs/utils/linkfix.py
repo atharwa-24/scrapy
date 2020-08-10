@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 """
 
 Linkfix - a companion to sphinx's linkcheck builder.
@@ -11,7 +10,6 @@ https://github.com/scrapy/scrapy/issues/606
 
 Author: dufferzafar
 """
-
 import re
 
 
@@ -23,7 +21,7 @@ def main():
     _contents = None
 
     # A regex that matches standard linkcheck output lines
-    line_re = re.compile(u'(.*)\:\d+\:\s\[(.*)\]\s(?:(.*)\sto\s(.*)|(.*))')
+    line_re = re.compile(r"(.*)\:\d+\:\s\[(.*)\]\s(?:(.*)\sto\s(.*)|(.*))")
 
     # Read lines from the linkcheck output file
     try:
@@ -66,5 +64,5 @@ def main():
             print("Not Understood: " + line)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

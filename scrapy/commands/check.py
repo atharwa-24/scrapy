@@ -1,11 +1,13 @@
 import time
 from collections import defaultdict
-from unittest import TextTestRunner, TextTestResult as _TextTestResult
+from unittest import TextTestResult as _TextTestResult
+from unittest import TextTestRunner
 
 from scrapy.commands import ScrapyCommand
 from scrapy.contracts import ContractsManager
-from scrapy.utils.misc import load_object, set_environ
 from scrapy.utils.conf import build_component_list
+from scrapy.utils.misc import load_object
+from scrapy.utils.misc import set_environ
 
 
 class TextTestResult(_TextTestResult):
@@ -32,14 +34,14 @@ class TextTestResult(_TextTestResult):
             write("OK")
 
         if infos:
-            writeln(" (%s)" % (", ".join(infos),))
+            writeln(" (%s)" % (", ".join(infos), ))
         else:
             write("\n")
 
 
 class Command(ScrapyCommand):
     requires_project = True
-    default_settings = {'LOG_ENABLED': False}
+    default_settings = {"LOG_ENABLED": False}
 
     def syntax(self):
         return "[options] <spider>"
@@ -49,48 +51,63 @@ class Command(ScrapyCommand):
 
     def add_options(self, parser):
         ScrapyCommand.add_options(self, parser)
-        parser.add_option("-l", "--list", dest="list", action="store_true",
-                          help="only list contracts, without checking them")
-        parser.add_option("-v", "--verbose", dest="verbose", default=False, action='store_true',
-                          help="print contract tests for all spiders")
+        parser.add_option(
+            "-l",
+            "--list",
+            dest="list",
+            action="store_true",
+            help="only list contracts, without checking them",
+        )
+        parser.add_option(
+            "-v",
+            "--verbose",
+            dest="verbose",
+            default=False,
+            action="store_true",
+            help="print contract tests for all spiders",
+        )
 
     def run(self, args, opts):
         # load contracts
-        contracts = build_component_list(self.settings.getwithbase('SPIDER_CONTRACTS'))
+        contracts = build_component_list(
+            self.settings.getwithbase("SPIDER_CONTRACTS"))
         conman = ContractsManager(load_object(c) for c in contracts)
         runner = TextTestRunner(verbosity=2 if opts.verbose else 1)
-        result = TextTestResult(runner.stream, runner.descriptions, runner.verbosity)
+        result = TextTestResult(runner.stream, runner.descriptions,
+                                runner.verbosity)
 
         # contract requests
         contract_reqs = defaultdict(list)
 
         spider_loader = self.crawler_process.spider_loader
 
-        with set_environ(SCRAPY_CHECK='true'):
+        with set_environ(SCRAPY_CHECK="true"):
             for spidername in args or spider_loader.list():
                 spidercls = spider_loader.load(spidername)
-                spidercls.start_requests = lambda s: conman.from_spider(s, result)
+                spidercls.start_requests = lambda s: conman.from_spider(
+                    s, result)
 
-                tested_methods = conman.tested_methods_from_spidercls(spidercls)
+                tested_methods = conman.tested_methods_from_spidercls(
+                    spidercls)
                 if opts.list:
                     for method in tested_methods:
                         contract_reqs[spidercls.name].append(method)
                 elif tested_methods:
                     self.crawler_process.crawl(spidercls)
 
-        # start checks
-        if opts.list:
-            for spider, methods in sorted(contract_reqs.items()):
-                if not methods and not opts.verbose:
-                    continue
-                print(spider)
-                for method in sorted(methods):
-                    print('  * %s' % method)
-        else:
-            start = time.time()
-            self.crawler_process.start()
-            stop = time.time()
+            # start checks
+            if opts.list:
+                for spider, methods in sorted(contract_reqs.items()):
+                    if not methods and not opts.verbose:
+                        continue
+                    print(spider)
+                    for method in sorted(methods):
+                        print("  * %s" % method)
+            else:
+                start = time.time()
+                self.crawler_process.start()
+                stop = time.time()
 
-            result.printErrors()
-            result.printSummary(start, stop)
-            self.exitcode = int(not result.wasSuccessful())
+                result.printErrors()
+                result.printSummary(start, stop)
+                self.exitcode = int(not result.wasSuccessful())

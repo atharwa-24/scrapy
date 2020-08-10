@@ -6,10 +6,13 @@ import gc
 import inspect
 import re
 import sys
+import warnings
 import weakref
-from functools import partial, wraps
+from functools import partial
+from functools import wraps
 from itertools import chain
 
+from scrapy.exceptions import ScrapyDeprecationWarning
 from scrapy.utils.decorators import deprecated
 
 
@@ -82,34 +85,34 @@ def unique(list_, key=lambda x: x):
     return result
 
 
-def to_unicode(text, encoding=None, errors='strict'):
+def to_unicode(text, encoding=None, errors="strict"):
     """Return the unicode representation of a bytes object ``text``. If
     ``text`` is already an unicode object, return it as-is."""
     if isinstance(text, str):
         return text
     if not isinstance(text, (bytes, str)):
-        raise TypeError('to_unicode must receive a bytes or str '
-                        'object, got %s' % type(text).__name__)
+        raise TypeError("to_unicode must receive a bytes or str "
+                        "object, got %s" % type(text).__name__)
     if encoding is None:
-        encoding = 'utf-8'
+        encoding = "utf-8"
     return text.decode(encoding, errors)
 
 
-def to_bytes(text, encoding=None, errors='strict'):
+def to_bytes(text, encoding=None, errors="strict"):
     """Return the binary representation of ``text``. If ``text``
     is already a bytes object, return it as-is."""
     if isinstance(text, bytes):
         return text
     if not isinstance(text, str):
-        raise TypeError('to_bytes must receive a str or bytes '
-                        'object, got %s' % type(text).__name__)
+        raise TypeError("to_bytes must receive a str or bytes "
+                        "object, got %s" % type(text).__name__)
     if encoding is None:
-        encoding = 'utf-8'
+        encoding = "utf-8"
     return text.encode(encoding, errors)
 
 
-@deprecated('to_unicode')
-def to_native_str(text, encoding=None, errors='strict'):
+@deprecated("to_unicode")
+def to_native_str(text, encoding=None, errors="strict"):
     """ Return str representation of ``text``. """
     return to_unicode(text, encoding, errors)
 
@@ -127,10 +130,11 @@ def re_rsearch(pattern, text, chunk_size=1024):
     In case the pattern wasn't found, None is returned, otherwise it returns a tuple containing
     the start position of the match, and the ending (regarding the entire text).
     """
+
     def _chunk_iter():
         offset = len(text)
         while True:
-            offset -= (chunk_size * 1024)
+            offset -= chunk_size * 1024
             if offset <= 0:
                 break
             yield (text[offset:], offset)
@@ -158,10 +162,12 @@ def memoizemethod_noargs(method):
         if self not in cache:
             cache[self] = method(self, *args, **kwargs)
         return cache[self]
+
     return new_method
 
 
-_BINARYCHARS = {to_bytes(chr(i)) for i in range(32)} - {b"\0", b"\t", b"\n", b"\r"}
+_BINARYCHARS = {to_bytes(chr(i))
+                for i in range(32)} - {b"\0", b"\t", b"\n", b"\r"}
 _BINARYCHARS |= {ord(ch) for ch in _BINARYCHARS}
 
 
@@ -202,17 +208,19 @@ def get_func_args(func, stripself=False):
     elif inspect.ismethoddescriptor(func):
         return []
     elif isinstance(func, partial):
-        return [x for x in get_func_args(func.func)[len(func.args):]
-                if not (func.keywords and x in func.keywords)]
-    elif hasattr(func, '__call__'):
+        return [
+            x for x in get_func_args(func.func)[len(func.args):]
+            if not (func.keywords and x in func.keywords)
+        ]
+    elif hasattr(func, "__call__"):
         if inspect.isroutine(func):
             return []
-        elif getattr(func, '__name__', None) == '__call__':
+        elif getattr(func, "__name__", None) == "__call__":
             return []
         else:
             return get_func_args(func.__call__, True)
     else:
-        raise TypeError('%s is not callable' % type(func))
+        raise TypeError("%s is not callable" % type(func))
     if stripself:
         func_args.pop(0)
     return func_args
@@ -242,10 +250,10 @@ def get_spec(func):
 
     if inspect.isfunction(func) or inspect.ismethod(func):
         spec = _getargspec_py23(func)
-    elif hasattr(func, '__call__'):
+    elif hasattr(func, "__call__"):
         spec = _getargspec_py23(func.__call__)
     else:
-        raise TypeError('%s is not callable' % type(func))
+        raise TypeError("%s is not callable" % type(func))
 
     defaults = spec.defaults or []
 
@@ -274,8 +282,12 @@ def equal_attributes(obj1, obj2, attributes):
 
 
 class WeakKeyCache:
-
     def __init__(self, default_factory):
+        warnings.warn(
+            "The WeakKeyCache class is deprecated",
+            category=ScrapyDeprecationWarning,
+            stacklevel=2,
+        )
         self.default_factory = default_factory
         self._weakdict = weakref.WeakKeyDictionary()
 
@@ -320,11 +332,14 @@ def global_object_name(obj):
 
 
 if hasattr(sys, "pypy_version_info"):
+
     def garbage_collect():
         # Collecting weakreferences can take two collections on PyPy.
         gc.collect()
         gc.collect()
+
 else:
+
     def garbage_collect():
         gc.collect()
 
