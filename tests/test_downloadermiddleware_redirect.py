@@ -1,9 +1,11 @@
 import unittest
 
-from scrapy.downloadermiddlewares.redirect import (MetaRefreshMiddleware,
-                                                   RedirectMiddleware)
+from scrapy.downloadermiddlewares.redirect import MetaRefreshMiddleware
+from scrapy.downloadermiddlewares.redirect import RedirectMiddleware
 from scrapy.exceptions import IgnoreRequest
-from scrapy.http import HtmlResponse, Request, Response
+from scrapy.http import HtmlResponse
+from scrapy.http import Request
+from scrapy.http import Response
 from scrapy.spiders import Spider
 from scrapy.utils.test import get_crawler
 

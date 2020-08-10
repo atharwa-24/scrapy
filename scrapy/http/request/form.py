@@ -4,15 +4,17 @@ This module implements the FormRequest class which is a more convenient class
 
 See documentation in docs/topics/request-response.rst
 """
-
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urlencode
+from urllib.parse import urljoin
 
 import lxml.html
 from parsel.selector import create_root_node
-from scrapy.http.request import Request
-from scrapy.utils.python import is_listlike, to_bytes
-from scrapy.utils.response import get_base_url
 from w3lib.html import strip_html5_whitespace
+
+from scrapy.http.request import Request
+from scrapy.utils.python import is_listlike
+from scrapy.utils.python import to_bytes
+from scrapy.utils.response import get_base_url
 
 
 class FormRequest(Request):

@@ -5,15 +5,17 @@ import asyncio
 import time
 from urllib.parse import urlencode
 
+from twisted.internet import defer
+
 from scrapy import signals
 from scrapy.exceptions import StopDownload
 from scrapy.http import Request
 from scrapy.item import Item
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import Spider
-from scrapy.spiders.crawl import CrawlSpider, Rule
+from scrapy.spiders.crawl import CrawlSpider
+from scrapy.spiders.crawl import Rule
 from scrapy.utils.test import get_from_asyncio_queue
-from twisted.internet import defer
 
 
 class MockServerSpider(Spider):

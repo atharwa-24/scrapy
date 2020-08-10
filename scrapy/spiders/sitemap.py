@@ -1,10 +1,13 @@
 import logging
 import re
 
-from scrapy.http import Request, XmlResponse
+from scrapy.http import Request
+from scrapy.http import XmlResponse
 from scrapy.spiders import Spider
-from scrapy.utils.gz import gunzip, gzip_magic_number
-from scrapy.utils.sitemap import Sitemap, sitemap_urls_from_robots
+from scrapy.utils.gz import gunzip
+from scrapy.utils.gz import gzip_magic_number
+from scrapy.utils.sitemap import Sitemap
+from scrapy.utils.sitemap import sitemap_urls_from_robots
 
 logger = logging.getLogger(__name__)
 

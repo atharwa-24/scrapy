@@ -4,18 +4,26 @@ import warnings
 from io import BytesIO
 from unittest import mock
 
-from scrapy import signals
-from scrapy.exceptions import ScrapyDeprecationWarning
-from scrapy.http import (HtmlResponse, Request, Response, TextResponse,
-                         XmlResponse)
-from scrapy.linkextractors import LinkExtractor
-from scrapy.settings import Settings
-from scrapy.spiders import (CrawlSpider, CSVFeedSpider, Rule, SitemapSpider,
-                            Spider, XMLFeedSpider)
-from scrapy.spiders.init import InitSpider
-from scrapy.utils.test import get_crawler
 from testfixtures import LogCapture
 from twisted.trial import unittest
+
+from scrapy import signals
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.http import HtmlResponse
+from scrapy.http import Request
+from scrapy.http import Response
+from scrapy.http import TextResponse
+from scrapy.http import XmlResponse
+from scrapy.linkextractors import LinkExtractor
+from scrapy.settings import Settings
+from scrapy.spiders import CrawlSpider
+from scrapy.spiders import CSVFeedSpider
+from scrapy.spiders import Rule
+from scrapy.spiders import SitemapSpider
+from scrapy.spiders import Spider
+from scrapy.spiders import XMLFeedSpider
+from scrapy.spiders.init import InitSpider
+from scrapy.utils.test import get_crawler
 
 
 class SpiderTest(unittest.TestCase):

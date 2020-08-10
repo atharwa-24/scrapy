@@ -1,15 +1,17 @@
 import logging
 from unittest import TestCase
 
+from testfixtures import LogCapture
+
 from scrapy.downloadermiddlewares.cookies import CookiesMiddleware
 from scrapy.downloadermiddlewares.defaultheaders import \
     DefaultHeadersMiddleware
 from scrapy.exceptions import NotConfigured
-from scrapy.http import Request, Response
+from scrapy.http import Request
+from scrapy.http import Response
 from scrapy.spiders import Spider
 from scrapy.utils.python import to_bytes
 from scrapy.utils.test import get_crawler
-from testfixtures import LogCapture
 
 
 class CookiesMiddlewareTest(TestCase):

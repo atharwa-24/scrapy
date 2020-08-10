@@ -3,6 +3,9 @@ import shutil
 import tempfile
 import unittest
 
+from twisted.internet import defer
+from twisted.trial.unittest import TestCase
+
 from scrapy.core.downloader import Downloader
 from scrapy.core.scheduler import Scheduler
 from scrapy.crawler import Crawler
@@ -11,8 +14,6 @@ from scrapy.spiders import Spider
 from scrapy.utils.httpobj import urlparse_cached
 from scrapy.utils.test import get_crawler
 from tests.mockserver import MockServer
-from twisted.internet import defer
-from twisted.trial.unittest import TestCase
 
 MockEngine = collections.namedtuple("MockEngine", ["downloader"])
 MockSlot = collections.namedtuple("MockSlot", ["active"])

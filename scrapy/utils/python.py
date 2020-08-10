@@ -8,7 +8,8 @@ import re
 import sys
 import warnings
 import weakref
-from functools import partial, wraps
+from functools import partial
+from functools import wraps
 from itertools import chain
 
 from scrapy.exceptions import ScrapyDeprecationWarning

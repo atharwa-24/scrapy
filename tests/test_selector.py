@@ -1,8 +1,11 @@
 import weakref
 
-from scrapy.http import HtmlResponse, TextResponse, XmlResponse
-from scrapy.selector import Selector
 from twisted.trial import unittest
+
+from scrapy.http import HtmlResponse
+from scrapy.http import TextResponse
+from scrapy.http import XmlResponse
+from scrapy.selector import Selector
 
 
 class SelectorTestCase(unittest.TestCase):

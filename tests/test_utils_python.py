@@ -7,10 +7,15 @@ from itertools import count
 from sys import version_info
 from warnings import catch_warnings
 
-from scrapy.utils.python import (MutableChain, WeakKeyCache, binary_is_text,
-                                 equal_attributes, get_func_args,
-                                 memoizemethod_noargs, to_bytes, to_unicode,
-                                 without_none_values)
+from scrapy.utils.python import binary_is_text
+from scrapy.utils.python import equal_attributes
+from scrapy.utils.python import get_func_args
+from scrapy.utils.python import memoizemethod_noargs
+from scrapy.utils.python import MutableChain
+from scrapy.utils.python import to_bytes
+from scrapy.utils.python import to_unicode
+from scrapy.utils.python import WeakKeyCache
+from scrapy.utils.python import without_none_values
 
 __doctests__ = ["scrapy.utils.python"]
 

@@ -5,7 +5,8 @@ import warnings
 from configparser import ConfigParser
 from operator import itemgetter
 
-from scrapy.exceptions import ScrapyDeprecationWarning, UsageError
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.exceptions import UsageError
 from scrapy.settings import BaseSettings
 from scrapy.utils.deprecate import update_classpath
 from scrapy.utils.python import without_none_values

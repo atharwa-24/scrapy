@@ -12,10 +12,11 @@ Scrapy developers, if you add a setting here remember to:
   (docs/topics/settings.rst)
 
 """
-
 import sys
 from importlib import import_module
-from os.path import abspath, dirname, join
+from os.path import abspath
+from os.path import dirname
+from os.path import join
 
 AJAXCRAWL_ENABLED = False
 

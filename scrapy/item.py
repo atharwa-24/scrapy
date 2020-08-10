@@ -3,7 +3,6 @@ Scrapy Item
 
 See documentation in docs/topics/item.rst
 """
-
 from abc import ABCMeta
 from collections.abc import MutableMapping
 from copy import deepcopy

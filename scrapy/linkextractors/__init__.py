@@ -10,11 +10,13 @@ from urllib.parse import urlparse
 from warnings import warn
 
 from parsel.csstranslator import HTMLTranslator
+from w3lib.url import canonicalize_url
+
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor as LinkExtractor
 from scrapy.utils.deprecate import ScrapyDeprecationWarning
 from scrapy.utils.misc import arg_to_iter
-from scrapy.utils.url import url_has_any_extension, url_is_from_any_domain
-from w3lib.url import canonicalize_url
+from scrapy.utils.url import url_has_any_extension
+from scrapy.utils.url import url_is_from_any_domain
 
 # common file extensions that are not followed if they occur in links
 IGNORED_EXTENSIONS = [

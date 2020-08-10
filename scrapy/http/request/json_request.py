@@ -4,7 +4,6 @@ This module implements the JsonRequest class which is a more convenient class
 
 See documentation in docs/topics/request-response.rst
 """
-
 import copy
 import json
 import warnings

@@ -6,7 +6,8 @@ from unittest import TextTestRunner
 from scrapy.commands import ScrapyCommand
 from scrapy.contracts import ContractsManager
 from scrapy.utils.conf import build_component_list
-from scrapy.utils.misc import load_object, set_environ
+from scrapy.utils.misc import load_object
+from scrapy.utils.misc import set_environ
 
 
 class TextTestResult(_TextTestResult):

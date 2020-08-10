@@ -1,19 +1,23 @@
 from unittest import TextTestResult
 
-from scrapy import FormRequest
-from scrapy.contracts import Contract, ContractsManager
-from scrapy.contracts.default import (CallbackKeywordArgumentsContract,
-                                      ReturnsContract, ScrapesContract,
-                                      UrlContract)
-from scrapy.crawler import CrawlerRunner
-from scrapy.http import Request
-from scrapy.item import Field, Item
-from scrapy.spidermiddlewares.httperror import HttpError
-from scrapy.spiders import Spider
-from tests.mockserver import MockServer
 from twisted.internet import defer
 from twisted.python import failure
 from twisted.trial import unittest
+
+from scrapy import FormRequest
+from scrapy.contracts import Contract
+from scrapy.contracts import ContractsManager
+from scrapy.contracts.default import CallbackKeywordArgumentsContract
+from scrapy.contracts.default import ReturnsContract
+from scrapy.contracts.default import ScrapesContract
+from scrapy.contracts.default import UrlContract
+from scrapy.crawler import CrawlerRunner
+from scrapy.http import Request
+from scrapy.item import Field
+from scrapy.item import Item
+from scrapy.spidermiddlewares.httperror import HttpError
+from scrapy.spiders import Spider
+from tests.mockserver import MockServer
 
 
 class TestItem(Item):

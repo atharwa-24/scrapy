@@ -1,4 +1,5 @@
-from os.path import abspath, join
+from os.path import abspath
+from os.path import join
 
 from tests.test_commands import CommandTest
 

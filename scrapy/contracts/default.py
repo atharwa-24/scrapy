@@ -1,6 +1,8 @@
 import json
 
-from itemadapter import ItemAdapter, is_item
+from itemadapter import is_item
+from itemadapter import ItemAdapter
+
 from scrapy.contracts import Contract
 from scrapy.exceptions import ContractFail
 from scrapy.http import Request

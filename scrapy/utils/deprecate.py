@@ -1,5 +1,4 @@
 """Some helpers for deprecation messages"""
-
 import inspect
 import warnings
 

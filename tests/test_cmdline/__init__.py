@@ -6,7 +6,8 @@ import sys
 import tempfile
 import unittest
 from io import StringIO
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from subprocess import Popen
 
 from scrapy.utils.test import get_testenv
 

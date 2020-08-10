@@ -1,17 +1,20 @@
 import unittest
 
-from scrapy.crawler import CrawlerRunner
-from scrapy.exceptions import DropItem
-from scrapy.http import Request, Response
-from scrapy.item import Field, Item
-from scrapy.logformatter import LogFormatter
-from scrapy.spiders import Spider
 from testfixtures import LogCapture
-from tests.mockserver import MockServer
-from tests.spiders import ItemSpider
 from twisted.internet import defer
 from twisted.python.failure import Failure
 from twisted.trial.unittest import TestCase as TwistedTestCase
+
+from scrapy.crawler import CrawlerRunner
+from scrapy.exceptions import DropItem
+from scrapy.http import Request
+from scrapy.http import Response
+from scrapy.item import Field
+from scrapy.item import Item
+from scrapy.logformatter import LogFormatter
+from scrapy.spiders import Spider
+from tests.mockserver import MockServer
+from tests.spiders import ItemSpider
 
 
 class CustomItem(Item):

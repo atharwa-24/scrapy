@@ -2,14 +2,20 @@ import unittest
 from unittest import mock
 from warnings import catch_warnings
 
-from scrapy.exceptions import NotSupported, ScrapyDeprecationWarning
-from scrapy.http import (Headers, HtmlResponse, Request, Response,
-                         TextResponse, XmlResponse)
+from w3lib.encoding import resolve_encoding
+
+from scrapy.exceptions import NotSupported
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.http import Headers
+from scrapy.http import HtmlResponse
+from scrapy.http import Request
+from scrapy.http import Response
+from scrapy.http import TextResponse
+from scrapy.http import XmlResponse
 from scrapy.link import Link
 from scrapy.selector import Selector
 from scrapy.utils.python import to_unicode
 from tests import get_testdata
-from w3lib.encoding import resolve_encoding
 
 
 class BaseResponseTest(unittest.TestCase):

@@ -8,13 +8,18 @@ import sys
 import tempfile
 from contextlib import contextmanager
 from itertools import chain
-from os.path import abspath, exists, join
+from os.path import abspath
+from os.path import exists
+from os.path import join
 from pathlib import Path
-from shutil import copytree, rmtree
+from shutil import copytree
+from shutil import rmtree
 from stat import S_IWRITE as ANYONE_WRITE_PERMISSION
 from tempfile import mkdtemp
 from threading import Timer
 from unittest import skipIf
+
+from twisted.trial import unittest
 
 import scrapy
 from scrapy.commands import ScrapyCommand
@@ -22,8 +27,8 @@ from scrapy.commands.startproject import IGNORE
 from scrapy.settings import Settings
 from scrapy.utils.python import to_unicode
 from scrapy.utils.test import get_testenv
-from tests.test_crawler import ExceptionSpider, NoRequestsSpider
-from twisted.trial import unittest
+from tests.test_crawler import ExceptionSpider
+from tests.test_crawler import NoRequestsSpider
 
 
 class CommandSettings(unittest.TestCase):

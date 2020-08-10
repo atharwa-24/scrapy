@@ -1,9 +1,10 @@
 """
 XPath selectors based on lxml
 """
-
 from parsel import Selector as _ParselSelector
-from scrapy.http import HtmlResponse, XmlResponse
+
+from scrapy.http import HtmlResponse
+from scrapy.http import XmlResponse
 from scrapy.utils.python import to_bytes
 from scrapy.utils.trackref import object_ref
 

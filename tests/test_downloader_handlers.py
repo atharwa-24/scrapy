@@ -4,6 +4,28 @@ import shutil
 import tempfile
 from unittest import mock
 
+from testfixtures import LogCapture
+from twisted.cred import checkers
+from twisted.cred import credentials
+from twisted.cred import portal
+from twisted.internet import defer
+from twisted.internet import error
+from twisted.internet import reactor
+from twisted.protocols.policies import WrappingFactory
+from twisted.python.filepath import FilePath
+from twisted.trial import unittest
+from twisted.web import resource
+from twisted.web import server
+from twisted.web import static
+from twisted.web import util
+from twisted.web._newclient import ResponseFailed
+from twisted.web.http import _DataLoss
+from twisted.web.test.test_webclient import ForeverTakingResource
+from twisted.web.test.test_webclient import HostHeaderResource
+from twisted.web.test.test_webclient import NoLengthResource
+from twisted.web.test.test_webclient import PayloadResource
+from w3lib.url import path_to_file_uri
+
 from scrapy.core.downloader.handlers import DownloadHandlers
 from scrapy.core.downloader.handlers.datauri import DataURIDownloadHandler
 from scrapy.core.downloader.handlers.file import FileDownloadHandler
@@ -11,29 +33,21 @@ from scrapy.core.downloader.handlers.http import HTTPDownloadHandler
 from scrapy.core.downloader.handlers.http10 import HTTP10DownloadHandler
 from scrapy.core.downloader.handlers.http11 import HTTP11DownloadHandler
 from scrapy.core.downloader.handlers.s3 import S3DownloadHandler
-from scrapy.exceptions import NotConfigured, ScrapyDeprecationWarning
-from scrapy.http import Headers, Request
+from scrapy.exceptions import NotConfigured
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.http import Headers
+from scrapy.http import Request
 from scrapy.http.response.text import TextResponse
 from scrapy.responsetypes import responsetypes
 from scrapy.spiders import Spider
 from scrapy.utils.misc import create_instance
 from scrapy.utils.python import to_bytes
-from scrapy.utils.test import get_crawler, skip_if_no_boto
-from testfixtures import LogCapture
-from tests.mockserver import Echo, MockServer, ssl_context_factory
+from scrapy.utils.test import get_crawler
+from scrapy.utils.test import skip_if_no_boto
+from tests.mockserver import Echo
+from tests.mockserver import MockServer
+from tests.mockserver import ssl_context_factory
 from tests.spiders import SingleRequestSpider
-from twisted.cred import checkers, credentials, portal
-from twisted.internet import defer, error, reactor
-from twisted.protocols.policies import WrappingFactory
-from twisted.python.filepath import FilePath
-from twisted.trial import unittest
-from twisted.web import resource, server, static, util
-from twisted.web._newclient import ResponseFailed
-from twisted.web.http import _DataLoss
-from twisted.web.test.test_webclient import (ForeverTakingResource,
-                                             HostHeaderResource,
-                                             NoLengthResource, PayloadResource)
-from w3lib.url import path_to_file_uri
 
 
 class DummyDH:

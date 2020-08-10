@@ -1,11 +1,14 @@
 import unittest
 import warnings
 
-from scrapy.exceptions import ScrapyDeprecationWarning, UsageError
-from scrapy.settings import BaseSettings, Settings
-from scrapy.utils.conf import (arglist_to_dict, build_component_list,
-                               feed_complete_default_values_from_settings,
-                               feed_process_params_from_cli)
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.exceptions import UsageError
+from scrapy.settings import BaseSettings
+from scrapy.settings import Settings
+from scrapy.utils.conf import arglist_to_dict
+from scrapy.utils.conf import build_component_list
+from scrapy.utils.conf import feed_complete_default_values_from_settings
+from scrapy.utils.conf import feed_process_params_from_cli
 
 
 class BuildComponentListTest(unittest.TestCase):

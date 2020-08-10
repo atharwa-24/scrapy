@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 """
 
 Linkfix - a companion to sphinx's linkcheck builder.
@@ -11,7 +10,6 @@ https://github.com/scrapy/scrapy/issues/606
 
 Author: dufferzafar
 """
-
 import re
 
 

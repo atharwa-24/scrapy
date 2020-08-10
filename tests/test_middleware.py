@@ -1,7 +1,8 @@
+from twisted.trial import unittest
+
 from scrapy.exceptions import NotConfigured
 from scrapy.middleware import MiddlewareManager
 from scrapy.settings import Settings
-from twisted.trial import unittest
 
 
 class M1:

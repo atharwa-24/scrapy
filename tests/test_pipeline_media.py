@@ -1,5 +1,13 @@
+from testfixtures import LogCapture
+from twisted.internet import reactor
+from twisted.internet.defer import Deferred
+from twisted.internet.defer import inlineCallbacks
+from twisted.python.failure import Failure
+from twisted.trial import unittest
+
 from scrapy import signals
-from scrapy.http import Request, Response
+from scrapy.http import Request
+from scrapy.http import Response
 from scrapy.pipelines.files import FileException
 from scrapy.pipelines.media import MediaPipeline
 from scrapy.settings import Settings
@@ -7,11 +15,6 @@ from scrapy.spiders import Spider
 from scrapy.utils.log import failure_to_exc_info
 from scrapy.utils.request import request_fingerprint
 from scrapy.utils.signal import disconnect_all
-from testfixtures import LogCapture
-from twisted.internet import reactor
-from twisted.internet.defer import Deferred, inlineCallbacks
-from twisted.python.failure import Failure
-from twisted.trial import unittest
 
 
 def _mocked_download_func(request, info):

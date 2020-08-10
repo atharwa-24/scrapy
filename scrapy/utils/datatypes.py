@@ -4,7 +4,6 @@ Python Standard Library.
 
 This module must not depend on any module outside the Standard Library.
 """
-
 import collections
 import weakref
 from collections.abc import Mapping

@@ -9,12 +9,18 @@ from io import BytesIO
 
 import lxml.etree
 from itemadapter import ItemAdapter
-from scrapy.exporters import (BaseItemExporter, CsvItemExporter,
-                              JsonItemExporter, JsonLinesItemExporter,
-                              MarshalItemExporter, PickleItemExporter,
-                              PprintItemExporter, PythonItemExporter,
-                              XmlItemExporter)
-from scrapy.item import Field, Item
+
+from scrapy.exporters import BaseItemExporter
+from scrapy.exporters import CsvItemExporter
+from scrapy.exporters import JsonItemExporter
+from scrapy.exporters import JsonLinesItemExporter
+from scrapy.exporters import MarshalItemExporter
+from scrapy.exporters import PickleItemExporter
+from scrapy.exporters import PprintItemExporter
+from scrapy.exporters import PythonItemExporter
+from scrapy.exporters import XmlItemExporter
+from scrapy.item import Field
+from scrapy.item import Item
 from scrapy.utils.python import to_unicode
 
 

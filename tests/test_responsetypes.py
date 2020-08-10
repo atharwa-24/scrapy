@@ -1,7 +1,10 @@
 import unittest
 
-from scrapy.http import (Headers, HtmlResponse, Response, TextResponse,
-                         XmlResponse)
+from scrapy.http import Headers
+from scrapy.http import HtmlResponse
+from scrapy.http import Response
+from scrapy.http import TextResponse
+from scrapy.http import XmlResponse
 from scrapy.responsetypes import responsetypes
 
 

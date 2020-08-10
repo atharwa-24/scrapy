@@ -7,7 +7,9 @@ from contextlib import contextmanager
 
 from scrapy.downloadermiddlewares.httpcache import HttpCacheMiddleware
 from scrapy.exceptions import IgnoreRequest
-from scrapy.http import HtmlResponse, Request, Response
+from scrapy.http import HtmlResponse
+from scrapy.http import Request
+from scrapy.http import Response
 from scrapy.settings import Settings
 from scrapy.spiders import Spider
 from scrapy.utils.test import get_crawler

@@ -6,7 +6,6 @@ usage:
     scrapy runspider qpsclient.py --loglevel=INFO --set RANDOMIZE_DOWNLOAD_DELAY=0 --set CONCURRENT_REQUESTS=50 -a qps=10 -a latency=0.3
 
 """
-
 from scrapy.http import Request
 from scrapy.spiders import Spider
 

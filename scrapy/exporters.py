@@ -1,7 +1,6 @@
 """
 Item Exporters are used to export/serialize items into different formats.
 """
-
 import csv
 import io
 import marshal
@@ -10,10 +9,14 @@ import pprint
 import warnings
 from xml.sax.saxutils import XMLGenerator
 
-from itemadapter import ItemAdapter, is_item
+from itemadapter import is_item
+from itemadapter import ItemAdapter
+
 from scrapy.exceptions import ScrapyDeprecationWarning
 from scrapy.item import _BaseItem
-from scrapy.utils.python import is_listlike, to_bytes, to_unicode
+from scrapy.utils.python import is_listlike
+from scrapy.utils.python import to_bytes
+from scrapy.utils.python import to_unicode
 from scrapy.utils.serialize import ScrapyJSONEncoder
 
 __all__ = [

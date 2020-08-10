@@ -2,14 +2,19 @@
 These tests are kept as references from the ones that were ported to a itemloaders library.
 Once we remove the references from scrapy, we can remove these tests.
 """
-
 import unittest
 import warnings
 from functools import partial
 
-from itemloaders.processors import (Compose, Identity, Join, MapCompose,
-                                    SelectJmes, TakeFirst)
-from scrapy.item import Field, Item
+from itemloaders.processors import Compose
+from itemloaders.processors import Identity
+from itemloaders.processors import Join
+from itemloaders.processors import MapCompose
+from itemloaders.processors import SelectJmes
+from itemloaders.processors import TakeFirst
+
+from scrapy.item import Field
+from scrapy.item import Item
 from scrapy.loader import ItemLoader
 from scrapy.loader.common import wrap_loader_context
 from scrapy.utils.deprecate import ScrapyDeprecationWarning

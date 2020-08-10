@@ -4,7 +4,8 @@ import unittest
 from warnings import catch_warnings
 
 from scrapy.exceptions import ScrapyDeprecationWarning
-from scrapy.http import HtmlResponse, XmlResponse
+from scrapy.http import HtmlResponse
+from scrapy.http import XmlResponse
 from scrapy.link import Link
 from scrapy.linkextractors import FilteringLinkExtractor
 from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor

@@ -2,9 +2,14 @@ import unittest
 
 import attr
 from itemadapter import ItemAdapter
-from itemloaders.processors import Compose, Identity, MapCompose, TakeFirst
+from itemloaders.processors import Compose
+from itemloaders.processors import Identity
+from itemloaders.processors import MapCompose
+from itemloaders.processors import TakeFirst
+
 from scrapy.http import HtmlResponse
-from scrapy.item import Field, Item
+from scrapy.item import Field
+from scrapy.item import Item
 from scrapy.loader import ItemLoader
 from scrapy.selector import Selector
 

@@ -1,9 +1,15 @@
 import os
 
-from scrapy.http import Response, TextResponse, XmlResponse
-from scrapy.utils.iterators import _body_or_str, csviter, xmliter, xmliter_lxml
-from tests import get_testdata
 from twisted.trial import unittest
+
+from scrapy.http import Response
+from scrapy.http import TextResponse
+from scrapy.http import XmlResponse
+from scrapy.utils.iterators import _body_or_str
+from scrapy.utils.iterators import csviter
+from scrapy.utils.iterators import xmliter
+from scrapy.utils.iterators import xmliter_lxml
+from tests import get_testdata
 
 FOOBAR_NL = "foo{}bar".format(os.linesep)
 

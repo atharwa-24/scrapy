@@ -1,10 +1,14 @@
 from OpenSSL import SSL
-from scrapy.core.downloader.tls import DEFAULT_CIPHERS, ScrapyClientTLSOptions
-from twisted.internet.ssl import (AcceptableCiphers, CertificateOptions,
-                                  optionsForClientTLS, platformTrust)
+from twisted.internet.ssl import AcceptableCiphers
+from twisted.internet.ssl import CertificateOptions
+from twisted.internet.ssl import optionsForClientTLS
+from twisted.internet.ssl import platformTrust
 from twisted.web.client import BrowserLikePolicyForHTTPS
 from twisted.web.iweb import IPolicyForHTTPS
 from zope.interface.declarations import implementer
+
+from scrapy.core.downloader.tls import DEFAULT_CIPHERS
+from scrapy.core.downloader.tls import ScrapyClientTLSOptions
 
 
 @implementer(IPolicyForHTTPS)

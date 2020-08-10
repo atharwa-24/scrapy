@@ -1,5 +1,4 @@
 """Download handlers for http and https schemes"""
-
 import ipaddress
 import logging
 import re
@@ -9,24 +8,35 @@ from io import BytesIO
 from time import time
 from urllib.parse import urldefrag
 
-from scrapy import signals
-from scrapy.core.downloader.tls import openssl_methods
-from scrapy.core.downloader.webclient import _parse
-from scrapy.exceptions import ScrapyDeprecationWarning, StopDownload
-from scrapy.http import Headers
-from scrapy.responsetypes import responsetypes
-from scrapy.utils.misc import create_instance, load_object
-from scrapy.utils.python import to_bytes, to_unicode
-from twisted.internet import defer, protocol, ssl
+from twisted.internet import defer
+from twisted.internet import protocol
+from twisted.internet import ssl
 from twisted.internet.endpoints import TCP4ClientEndpoint
 from twisted.internet.error import TimeoutError
 from twisted.python.failure import Failure
-from twisted.web.client import (URI, Agent, HTTPConnectionPool, ResponseDone,
-                                ResponseFailed)
-from twisted.web.http import PotentialDataLoss, _DataLoss
+from twisted.web.client import Agent
+from twisted.web.client import HTTPConnectionPool
+from twisted.web.client import ResponseDone
+from twisted.web.client import ResponseFailed
+from twisted.web.client import URI
+from twisted.web.http import _DataLoss
+from twisted.web.http import PotentialDataLoss
 from twisted.web.http_headers import Headers as TxHeaders
-from twisted.web.iweb import UNKNOWN_LENGTH, IBodyProducer
+from twisted.web.iweb import IBodyProducer
+from twisted.web.iweb import UNKNOWN_LENGTH
 from zope.interface import implementer
+
+from scrapy import signals
+from scrapy.core.downloader.tls import openssl_methods
+from scrapy.core.downloader.webclient import _parse
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.exceptions import StopDownload
+from scrapy.http import Headers
+from scrapy.responsetypes import responsetypes
+from scrapy.utils.misc import create_instance
+from scrapy.utils.misc import load_object
+from scrapy.utils.python import to_bytes
+from scrapy.utils.python import to_unicode
 
 logger = logging.getLogger(__name__)
 

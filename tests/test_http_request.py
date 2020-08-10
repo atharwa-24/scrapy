@@ -4,11 +4,18 @@ import unittest
 import warnings
 import xmlrpc.client
 from unittest import mock
-from urllib.parse import parse_qs, unquote_to_bytes, urlparse
+from urllib.parse import parse_qs
+from urllib.parse import unquote_to_bytes
+from urllib.parse import urlparse
 
-from scrapy.http import (FormRequest, Headers, HtmlResponse, JsonRequest,
-                         Request, XmlRpcRequest)
-from scrapy.utils.python import to_bytes, to_unicode
+from scrapy.http import FormRequest
+from scrapy.http import Headers
+from scrapy.http import HtmlResponse
+from scrapy.http import JsonRequest
+from scrapy.http import Request
+from scrapy.http import XmlRpcRequest
+from scrapy.utils.python import to_bytes
+from scrapy.utils.python import to_unicode
 
 
 class RequestTest(unittest.TestCase):

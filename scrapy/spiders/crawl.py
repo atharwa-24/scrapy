@@ -4,12 +4,12 @@ for scraping typical web sites that requires crawling pages.
 
 See documentation in docs/topics/spiders.rst
 """
-
 import copy
 import warnings
 
 from scrapy.exceptions import ScrapyDeprecationWarning
-from scrapy.http import HtmlResponse, Request
+from scrapy.http import HtmlResponse
+from scrapy.http import Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import Spider
 from scrapy.utils.python import get_func_args

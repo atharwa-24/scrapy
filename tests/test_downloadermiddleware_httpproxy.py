@@ -1,13 +1,14 @@
 import os
 from functools import partial
 
+from twisted.trial.unittest import TestCase
+
 from scrapy.crawler import Crawler
 from scrapy.downloadermiddlewares.httpproxy import HttpProxyMiddleware
 from scrapy.exceptions import NotConfigured
 from scrapy.http import Request
 from scrapy.settings import Settings
 from scrapy.spiders import Spider
-from twisted.trial.unittest import TestCase
 
 spider = Spider("foo")
 

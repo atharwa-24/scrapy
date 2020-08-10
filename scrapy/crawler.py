@@ -3,22 +3,30 @@ import pprint
 import signal
 import warnings
 
-from scrapy import Spider, signals
+from twisted.internet import defer
+from zope.interface.exceptions import DoesNotImplement
+from zope.interface.verify import verifyClass
+
+from scrapy import signals
+from scrapy import Spider
 from scrapy.core.engine import ExecutionEngine
 from scrapy.exceptions import ScrapyDeprecationWarning
 from scrapy.extension import ExtensionManager
 from scrapy.interfaces import ISpiderLoader
-from scrapy.settings import Settings, overridden_settings
+from scrapy.settings import overridden_settings
+from scrapy.settings import Settings
 from scrapy.signalmanager import SignalManager
-from scrapy.utils.log import (LogCounterHandler, configure_logging,
-                              get_scrapy_root_handler,
-                              install_scrapy_root_handler, log_scrapy_info)
-from scrapy.utils.misc import create_instance, load_object
-from scrapy.utils.ossignal import install_shutdown_handlers, signal_names
-from scrapy.utils.reactor import install_reactor, verify_installed_reactor
-from twisted.internet import defer
-from zope.interface.exceptions import DoesNotImplement
-from zope.interface.verify import verifyClass
+from scrapy.utils.log import configure_logging
+from scrapy.utils.log import get_scrapy_root_handler
+from scrapy.utils.log import install_scrapy_root_handler
+from scrapy.utils.log import log_scrapy_info
+from scrapy.utils.log import LogCounterHandler
+from scrapy.utils.misc import create_instance
+from scrapy.utils.misc import load_object
+from scrapy.utils.ossignal import install_shutdown_handlers
+from scrapy.utils.ossignal import signal_names
+from scrapy.utils.reactor import install_reactor
+from scrapy.utils.reactor import verify_installed_reactor
 
 try:
     # zope >= 5.0 only supports MultipleInvalid
