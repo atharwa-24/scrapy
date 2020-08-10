@@ -9,7 +9,8 @@ from w3lib.http import basic_auth_header
 
 class CurlParser(argparse.ArgumentParser):
     def error(self, message):
-        error_msg = "There was an error parsing the curl command: {}".format(message)
+        error_msg = "There was an error parsing the curl command: {}".format(
+            message)
         raise ValueError(error_msg)
 
 
@@ -19,7 +20,6 @@ curl_parser.add_argument("-H", "--header", dest="headers", action="append")
 curl_parser.add_argument("-X", "--request", dest="method")
 curl_parser.add_argument("-d", "--data", "--data-raw", dest="data")
 curl_parser.add_argument("-u", "--user", dest="auth")
-
 
 safe_to_ignore_arguments = [
     ["--compressed"],

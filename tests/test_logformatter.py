@@ -36,13 +36,12 @@ class LogFormatterTestCase(unittest.TestCase):
         logkws = self.formatter.crawled(req, res, self.spider)
         logline = logkws["msg"] % logkws["args"]
         self.assertEqual(
-            logline, "Crawled (200) <GET http://www.example.com> (referer: None)"
-        )
+            logline,
+            "Crawled (200) <GET http://www.example.com> (referer: None)")
 
     def test_crawled_without_referer(self):
-        req = Request(
-            "http://www.example.com", headers={"referer": "http://example.com"}
-        )
+        req = Request("http://www.example.com",
+                      headers={"referer": "http://example.com"})
         res = Response("http://www.example.com", flags=["cached"])
         logkws = self.formatter.crawled(req, res, self.spider)
         logline = logkws["msg"] % logkws["args"]
@@ -77,7 +76,8 @@ class LogFormatterTestCase(unittest.TestCase):
         item = {"key": "value"}
         exception = Exception()
         response = Response("http://www.example.com")
-        logkws = self.formatter.item_error(item, exception, response, self.spider)
+        logkws = self.formatter.item_error(item, exception, response,
+                                           self.spider)
         logline = logkws["msg"] % logkws["args"]
         self.assertEqual(logline, "Error processing {'key': 'value'}")
 
@@ -85,11 +85,11 @@ class LogFormatterTestCase(unittest.TestCase):
         # In practice, the complete traceback is shown by passing the
         # 'exc_info' argument to the logging function
         failure = Failure(Exception())
-        request = Request(
-            "http://www.example.com", headers={"Referer": "http://example.org"}
-        )
+        request = Request("http://www.example.com",
+                          headers={"Referer": "http://example.org"})
         response = Response("http://www.example.com", request=request)
-        logkws = self.formatter.spider_error(failure, request, response, self.spider)
+        logkws = self.formatter.spider_error(failure, request, response,
+                                             self.spider)
         logline = logkws["msg"] % logkws["args"]
         self.assertEqual(
             logline,
@@ -103,20 +103,20 @@ class LogFormatterTestCase(unittest.TestCase):
         request = Request("http://www.example.com")
         logkws = self.formatter.download_error(failure, request, self.spider)
         logline = logkws["msg"] % logkws["args"]
-        self.assertEqual(logline, "Error downloading <GET http://www.example.com>")
+        self.assertEqual(logline,
+                         "Error downloading <GET http://www.example.com>")
 
     def test_download_error_long(self):
         # In practice, the complete traceback is shown by passing the
         # 'exc_info' argument to the logging function
         failure = Failure(Exception())
         request = Request("http://www.example.com")
-        logkws = self.formatter.download_error(
-            failure, request, self.spider, "Some message"
-        )
+        logkws = self.formatter.download_error(failure, request, self.spider,
+                                               "Some message")
         logline = logkws["msg"] % logkws["args"]
         self.assertEqual(
-            logline, "Error downloading <GET http://www.example.com>: Some message"
-        )
+            logline,
+            "Error downloading <GET http://www.example.com>: Some message")
 
     def test_scraped(self):
         item = CustomItem()
@@ -127,8 +127,7 @@ class LogFormatterTestCase(unittest.TestCase):
         lines = logline.splitlines()
         assert all(isinstance(x, str) for x in lines)
         self.assertEqual(
-            lines, ["Scraped from <200 http://www.example.com>", "name: \xa3"]
-        )
+            lines, ["Scraped from <200 http://www.example.com>", "name: \xa3"])
 
 
 class LogFormatterSubclass(LogFormatter):
@@ -155,8 +154,8 @@ class LogformatterSubclassTest(LogFormatterTestCase):
         logkws = self.formatter.crawled(req, res, self.spider)
         logline = logkws["msg"] % logkws["args"]
         self.assertEqual(
-            logline, "Crawled (200) <GET http://www.example.com> (referer: None) []"
-        )
+            logline,
+            "Crawled (200) <GET http://www.example.com> (referer: None) []")
 
     def test_crawled_without_referer(self):
         req = Request(
@@ -211,7 +210,9 @@ class ShowOrSkipMessagesTestCase(TwistedTestCase):
         self.mockserver.__enter__()
         self.base_settings = {
             "LOG_LEVEL": "DEBUG",
-            "ITEM_PIPELINES": {__name__ + ".DropSomeItemsPipeline": 300,},
+            "ITEM_PIPELINES": {
+                __name__ + ".DropSomeItemsPipeline": 300,
+            },
         }
 
     def tearDown(self):

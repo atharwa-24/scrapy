@@ -36,20 +36,20 @@ class CommandSettings(unittest.TestCase):
         self.command = ScrapyCommand()
         self.command.settings = Settings()
         self.parser = optparse.OptionParser(
-            formatter=optparse.TitledHelpFormatter(), conflict_handler="resolve",
+            formatter=optparse.TitledHelpFormatter(),
+            conflict_handler="resolve",
         )
         self.command.add_options(self.parser)
 
     def test_settings_json_string(self):
         feeds_json = '{"data.json": {"format": "json"}, "data.xml": {"format": "xml"}}'
         opts, args = self.parser.parse_args(
-            args=["-s", "FEEDS={}".format(feeds_json), "spider.py"]
-        )
+            args=["-s", "FEEDS={}".format(feeds_json), "spider.py"])
         self.command.process_options(args, opts)
-        self.assertIsInstance(
-            self.command.settings["FEEDS"], scrapy.settings.BaseSettings
-        )
-        self.assertEqual(dict(self.command.settings["FEEDS"]), json.loads(feeds_json))
+        self.assertIsInstance(self.command.settings["FEEDS"],
+                              scrapy.settings.BaseSettings)
+        self.assertEqual(dict(self.command.settings["FEEDS"]),
+                         json.loads(feeds_json))
 
 
 class ProjectTest(unittest.TestCase):
@@ -68,20 +68,21 @@ class ProjectTest(unittest.TestCase):
     def call(self, *new_args, **kwargs):
         with tempfile.TemporaryFile() as out:
             args = (sys.executable, "-m", "scrapy.cmdline") + new_args
-            return subprocess.call(
-                args, stdout=out, stderr=out, cwd=self.cwd, env=self.env, **kwargs
-            )
+            return subprocess.call(args,
+                                   stdout=out,
+                                   stderr=out,
+                                   cwd=self.cwd,
+                                   env=self.env,
+                                   **kwargs)
 
     def proc(self, *new_args, **popen_kwargs):
         args = (sys.executable, "-m", "scrapy.cmdline") + new_args
-        p = subprocess.Popen(
-            args,
-            cwd=self.cwd,
-            env=self.env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            **popen_kwargs
-        )
+        p = subprocess.Popen(args,
+                             cwd=self.cwd,
+                             env=self.env,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             **popen_kwargs)
 
         def kill_proc():
             p.kill()
@@ -110,45 +111,45 @@ class StartprojectTest(ProjectTest):
         assert exists(join(self.proj_mod_path, "spiders", "__init__.py"))
 
         self.assertEqual(1, self.call("startproject", self.project_name))
-        self.assertEqual(1, self.call("startproject", "wrong---project---name"))
+        self.assertEqual(1, self.call("startproject",
+                                      "wrong---project---name"))
         self.assertEqual(1, self.call("startproject", "sys"))
 
     def test_startproject_with_project_dir(self):
         project_dir = mkdtemp()
-        self.assertEqual(0, self.call("startproject", self.project_name, project_dir))
+        self.assertEqual(
+            0, self.call("startproject", self.project_name, project_dir))
 
         assert exists(join(abspath(project_dir), "scrapy.cfg"))
         assert exists(join(abspath(project_dir), "testproject"))
         assert exists(
-            join(join(abspath(project_dir), self.project_name), "__init__.py")
-        )
-        assert exists(join(join(abspath(project_dir), self.project_name), "items.py"))
+            join(join(abspath(project_dir), self.project_name), "__init__.py"))
         assert exists(
-            join(join(abspath(project_dir), self.project_name), "pipelines.py")
-        )
+            join(join(abspath(project_dir), self.project_name), "items.py"))
         assert exists(
-            join(join(abspath(project_dir), self.project_name), "settings.py")
-        )
+            join(join(abspath(project_dir), self.project_name),
+                 "pipelines.py"))
         assert exists(
-            join(
-                join(abspath(project_dir), self.project_name), "spiders", "__init__.py"
-            )
-        )
+            join(join(abspath(project_dir), self.project_name), "settings.py"))
+        assert exists(
+            join(join(abspath(project_dir), self.project_name), "spiders",
+                 "__init__.py"))
 
         self.assertEqual(
-            0, self.call("startproject", self.project_name, project_dir + "2")
-        )
+            0, self.call("startproject", self.project_name, project_dir + "2"))
 
-        self.assertEqual(1, self.call("startproject", self.project_name, project_dir))
         self.assertEqual(
-            1, self.call("startproject", self.project_name + "2", project_dir)
-        )
-        self.assertEqual(1, self.call("startproject", "wrong---project---name"))
+            1, self.call("startproject", self.project_name, project_dir))
+        self.assertEqual(
+            1, self.call("startproject", self.project_name + "2", project_dir))
+        self.assertEqual(1, self.call("startproject",
+                                      "wrong---project---name"))
         self.assertEqual(1, self.call("startproject", "sys"))
         self.assertEqual(2, self.call("startproject"))
         self.assertEqual(
             2,
-            self.call("startproject", self.project_name, project_dir, "another_params"),
+            self.call("startproject", self.project_name, project_dir,
+                      "another_params"),
         )
 
 
@@ -166,7 +167,8 @@ def get_permissions_dict(path, renamings=None, ignore=None):
             absolute_path = os.path.join(root, node)
             relative_path = os.path.relpath(absolute_path, path)
             for search_string, replacement in renamings:
-                relative_path = relative_path.replace(search_string, replacement)
+                relative_path = relative_path.replace(search_string,
+                                                      replacement)
             permissions = os.stat(absolute_path).st_mode
             permissions_dict[relative_path] = permissions
     return permissions_dict
@@ -187,8 +189,8 @@ class StartprojectTemplatesTest(ProjectTest):
         args = ["--set", "TEMPLATES_DIR=%s" % self.tmpl]
         p, out, err = self.proc("startproject", self.project_name, *args)
         self.assertIn(
-            "New Scrapy project '%s', using template directory" % self.project_name, out
-        )
+            "New Scrapy project '%s', using template directory" %
+            self.project_name, out)
         self.assertIn(self.tmpl_proj, out)
         assert exists(join(self.proj_path, "root_template"))
 
@@ -204,12 +206,20 @@ class StartprojectTemplatesTest(ProjectTest):
             (".tmpl", ""),
         )
         expected_permissions = get_permissions_dict(
-            project_template, renamings, IGNORE,
+            project_template,
+            renamings,
+            IGNORE,
         )
 
         destination = mkdtemp()
         process = subprocess.Popen(
-            (sys.executable, "-m", "scrapy.cmdline", "startproject", project_name,),
+            (
+                sys.executable,
+                "-m",
+                "scrapy.cmdline",
+                "startproject",
+                project_name,
+            ),
             cwd=destination,
             env=self.env,
         )
@@ -236,7 +246,9 @@ class StartprojectTemplatesTest(ProjectTest):
             (".tmpl", ""),
         )
         expected_permissions = get_permissions_dict(
-            project_template, renamings, IGNORE,
+            project_template,
+            renamings,
+            IGNORE,
         )
 
         def _make_read_only(path):
@@ -282,7 +294,9 @@ class StartprojectTemplatesTest(ProjectTest):
             (".tmpl", ""),
         )
         expected_permissions = get_permissions_dict(
-            project_template, renamings, IGNORE,
+            project_template,
+            renamings,
+            IGNORE,
         )
 
         destination = mkdtemp()
@@ -290,8 +304,14 @@ class StartprojectTemplatesTest(ProjectTest):
 
         existing_nodes = {
             oct(permissions)[2:] + extension: permissions
-            for extension in ("", ".d")
-            for permissions in (0o444, 0o555, 0o644, 0o666, 0o755, 0o777,)
+            for extension in ("", ".d") for permissions in (
+                0o444,
+                0o555,
+                0o644,
+                0o666,
+                0o755,
+                0o777,
+            )
         }
         os.mkdir(project_dir)
         project_dir_path = Path(project_dir)
@@ -344,9 +364,10 @@ class GenspiderCommandTest(CommandTest):
         spname = "test_spider"
         p, out, err = self.proc("genspider", spname, "test.com", *args)
         self.assertIn(
-            "Created spider %r using template %r in module" % (spname, tplname), out
-        )
-        self.assertTrue(exists(join(self.proj_mod_path, "spiders", "test_spider.py")))
+            "Created spider %r using template %r in module" %
+            (spname, tplname), out)
+        self.assertTrue(
+            exists(join(self.proj_mod_path, "spiders", "test_spider.py")))
         p, out, err = self.proc("genspider", spname, "test.com", *args)
         self.assertIn("Spider %r already exists in module" % spname, out)
 
@@ -369,8 +390,7 @@ class GenspiderCommandTest(CommandTest):
     def test_same_name_as_project(self):
         self.assertEqual(2, self.call("genspider", self.project_name))
         assert not exists(
-            join(self.proj_mod_path, "spiders", "%s.py" % self.project_name)
-        )
+            join(self.proj_mod_path, "spiders", "%s.py" % self.project_name))
 
 
 class GenspiderStandaloneCommandTest(ProjectTest):
@@ -425,21 +445,20 @@ class MySpider(scrapy.Spider):
         self.assertIn("INFO: Spider closed (finished)", log)
 
     def test_run_fail_spider(self):
-        proc, _, _ = self.runspider(
-            "import scrapy\n" + inspect.getsource(ExceptionSpider)
-        )
+        proc, _, _ = self.runspider("import scrapy\n" +
+                                    inspect.getsource(ExceptionSpider))
         ret = proc.returncode
         self.assertNotEqual(ret, 0)
 
     def test_run_good_spider(self):
-        proc, _, _ = self.runspider(
-            "import scrapy\n" + inspect.getsource(NoRequestsSpider)
-        )
+        proc, _, _ = self.runspider("import scrapy\n" +
+                                    inspect.getsource(NoRequestsSpider))
         ret = proc.returncode
         self.assertEqual(ret, 0)
 
     def test_runspider_log_level(self):
-        log = self.get_log(self.debug_log_spider, args=("-s", "LOG_LEVEL=INFO"))
+        log = self.get_log(self.debug_log_spider,
+                           args=("-s", "LOG_LEVEL=INFO"))
         self.assertNotIn("DEBUG: It Works!", log)
         self.assertIn("INFO: Spider opened", log)
 
@@ -467,13 +486,15 @@ class MySpider(scrapy.Spider):
         self.assertIn("INFO: Spider opened", log)
 
     def test_runspider_log_short_names(self):
-        log1 = self.get_log(self.debug_log_spider, args=("-s", "LOG_SHORT_NAMES=1"))
+        log1 = self.get_log(self.debug_log_spider,
+                            args=("-s", "LOG_SHORT_NAMES=1"))
         print(log1)
         self.assertIn("[myspider] DEBUG: It Works!", log1)
         self.assertIn("[scrapy]", log1)
         self.assertNotIn("[scrapy.core.engine]", log1)
 
-        log2 = self.get_log(self.debug_log_spider, args=("-s", "LOG_SHORT_NAMES=0"))
+        log2 = self.get_log(self.debug_log_spider,
+                            args=("-s", "LOG_SHORT_NAMES=0"))
         print(log2)
         self.assertIn("[myspider] DEBUG: It Works!", log2)
         self.assertNotIn("[scrapy]", log2)
@@ -521,20 +542,19 @@ class BadSpider(scrapy.Spider):
             ],
         )
         self.assertIn(
-            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log
-        )
+            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+            log)
 
     def test_asyncio_enabled_false(self):
         log = self.get_log(self.debug_log_spider, args=[])
         self.assertNotIn(
-            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor", log
-        )
+            "Using reactor: twisted.internet.asyncioreactor.AsyncioSelectorReactor",
+            log)
 
 
 class BenchCommandTest(CommandTest):
     def test_run(self):
-        _, _, log = self.proc(
-            "bench", "-s", "LOGSTATS_INTERVAL=0.001", "-s", "CLOSESPIDER_TIMEOUT=0.01"
-        )
+        _, _, log = self.proc("bench", "-s", "LOGSTATS_INTERVAL=0.001", "-s",
+                              "CLOSESPIDER_TIMEOUT=0.01")
         self.assertIn("INFO: Crawled", log)
         self.assertNotIn("Unhandled Error", log)

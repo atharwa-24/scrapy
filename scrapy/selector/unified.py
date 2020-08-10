@@ -19,7 +19,9 @@ def _st(response, st):
 
 def _response_from_text(text, st):
     rt = XmlResponse if st == "xml" else HtmlResponse
-    return rt(url="about:blank", encoding="utf-8", body=to_bytes(text, "utf-8"))
+    return rt(url="about:blank",
+              encoding="utf-8",
+              body=to_bytes(text, "utf-8"))
 
 
 class SelectorList(_ParselSelector.selectorlist_cls, object_ref):
@@ -63,12 +65,15 @@ class Selector(_ParselSelector, object_ref):
     __slots__ = ["response"]
     selectorlist_cls = SelectorList
 
-    def __init__(self, response=None, text=None, type=None, root=None, **kwargs):
+    def __init__(self,
+                 response=None,
+                 text=None,
+                 type=None,
+                 root=None,
+                 **kwargs):
         if response is not None and text is not None:
-            raise ValueError(
-                "%s.__init__() received both response and text"
-                % self.__class__.__name__
-            )
+            raise ValueError("%s.__init__() received both response and text" %
+                             self.__class__.__name__)
 
         st = _st(response, type or self._default_type)
 

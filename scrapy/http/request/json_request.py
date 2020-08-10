@@ -34,8 +34,7 @@ class JsonRequest(Request):
         super().__init__(*args, **kwargs)
         self.headers.setdefault("Content-Type", "application/json")
         self.headers.setdefault(
-            "Accept", "application/json, text/javascript, */*; q=0.01"
-        )
+            "Accept", "application/json, text/javascript, */*; q=0.01")
 
     def replace(self, *args, **kwargs):
         body_passed = kwargs.get("body", None) is not None

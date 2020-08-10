@@ -29,9 +29,8 @@ class BaseMediaPipelineTestCase(unittest.TestCase):
 
     def setUp(self):
         self.spider = Spider("media.com")
-        self.pipe = self.pipeline_class(
-            download_func=_mocked_download_func, settings=Settings(self.settings)
-        )
+        self.pipe = self.pipeline_class(download_func=_mocked_download_func,
+                                        settings=Settings(self.settings))
         self.pipe.open_spider(self.spider)
         self.info = self.pipe.spiderinfo
 
@@ -51,7 +50,8 @@ class BaseMediaPipelineTestCase(unittest.TestCase):
     def test_default_media_downloaded(self):
         request = Request("http://url")
         response = Response("http://url", body=b"")
-        assert self.pipe.media_downloaded(response, request, self.info) is response
+        assert self.pipe.media_downloaded(response, request,
+                                          self.info) is response
 
     def test_default_media_failed(self):
         request = Request("http://url")
@@ -306,8 +306,7 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
 
         # rsp2 is ignored, rsp1 must be in results because request fingerprints are the same
         req2 = Request(
-            req1.url, meta=dict(response=Response("http://donot.download.me"))
-        )
+            req1.url, meta=dict(response=Response("http://donot.download.me")))
         item = dict(requests=req2)
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertTrue(new_item is item)
@@ -319,8 +318,7 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
         rsp1 = Response("http://url1")
         req1 = Request("http://url1", meta=dict(response=rsp1))
         req2 = Request(
-            req1.url, meta=dict(response=Response("http://donot.download.me"))
-        )
+            req1.url, meta=dict(response=Response("http://donot.download.me")))
         item = dict(requests=[req1, req2])
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertTrue(new_item is item)
@@ -344,7 +342,8 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
             return dfd
 
         def rsp2_func():
-            self.fail("it must cache rsp1 result and must not try to redownload")
+            self.fail(
+                "it must cache rsp1 result and must not try to redownload")
 
         req1 = Request("http://url", meta=dict(response=rsp1_func))
         req2 = Request(req1.url, meta=dict(response=rsp2_func))
@@ -354,7 +353,8 @@ class MediaPipelineTestCase(BaseMediaPipelineTestCase):
 
     @inlineCallbacks
     def test_use_media_to_download_result(self):
-        req = Request("http://url", meta=dict(result="ITSME", response=self.fail))
+        req = Request("http://url",
+                      meta=dict(result="ITSME", response=self.fail))
         item = dict(requests=req)
         new_item = yield self.pipe.process_item(item, self.spider)
         self.assertEqual(new_item["results"], [(True, "ITSME")])
@@ -373,14 +373,14 @@ class MediaPipelineAllowRedirectSettingsTestCase(unittest.TestCase):
         self.assertIn("handle_httpstatus_list", request.meta)
         for status, check in [
             (200, True),
-            # These are the status codes we want
-            # the downloader to handle itself
+                # These are the status codes we want
+                # the downloader to handle itself
             (301, False),
             (302, False),
             (302, False),
             (307, False),
             (308, False),
-            # we still want to get 4xx and 5xx
+                # we still want to get 4xx and 5xx
             (400, True),
             (404, True),
             (500, True),
@@ -388,21 +388,24 @@ class MediaPipelineAllowRedirectSettingsTestCase(unittest.TestCase):
             if check:
                 self.assertIn(status, request.meta["handle_httpstatus_list"])
             else:
-                self.assertNotIn(status, request.meta["handle_httpstatus_list"])
+                self.assertNotIn(status,
+                                 request.meta["handle_httpstatus_list"])
 
     def test_standard_setting(self):
-        self._assert_request_no3xx(MediaPipeline, {"MEDIA_ALLOW_REDIRECTS": True})
+        self._assert_request_no3xx(MediaPipeline,
+                                   {"MEDIA_ALLOW_REDIRECTS": True})
 
     def test_subclass_standard_setting(self):
         class UserDefinedPipeline(MediaPipeline):
             pass
 
-        self._assert_request_no3xx(UserDefinedPipeline, {"MEDIA_ALLOW_REDIRECTS": True})
+        self._assert_request_no3xx(UserDefinedPipeline,
+                                   {"MEDIA_ALLOW_REDIRECTS": True})
 
     def test_subclass_specific_setting(self):
         class UserDefinedPipeline(MediaPipeline):
             pass
 
         self._assert_request_no3xx(
-            UserDefinedPipeline, {"USERDEFINEDPIPELINE_MEDIA_ALLOW_REDIRECTS": True}
-        )
+            UserDefinedPipeline,
+            {"USERDEFINEDPIPELINE_MEDIA_ALLOW_REDIRECTS": True})

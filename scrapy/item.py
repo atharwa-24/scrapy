@@ -60,7 +60,8 @@ class ItemMeta(_BaseItemMeta):
 
     def __new__(mcs, class_name, bases, attrs):
         classcell = attrs.pop("__classcell__", None)
-        new_bases = tuple(base._class for base in bases if hasattr(base, "_class"))
+        new_bases = tuple(base._class for base in bases
+                          if hasattr(base, "_class"))
         _class = super().__new__(mcs, "x_" + class_name, new_bases, attrs)
 
         fields = getattr(_class, "fields", {})
@@ -105,9 +106,8 @@ class DictItem(MutableMapping, BaseItem):
         if key in self.fields:
             self._values[key] = value
         else:
-            raise KeyError(
-                "%s does not support field: %s" % (self.__class__.__name__, key)
-            )
+            raise KeyError("%s does not support field: %s" %
+                           (self.__class__.__name__, key))
 
     def __delitem__(self, key):
         del self._values[key]
@@ -119,7 +119,8 @@ class DictItem(MutableMapping, BaseItem):
 
     def __setattr__(self, name, value):
         if not name.startswith("_"):
-            raise AttributeError("Use item[%r] = %r to set field value" % (name, value))
+            raise AttributeError("Use item[%r] = %r to set field value" %
+                                 (name, value))
         super().__setattr__(name, value)
 
     def __len__(self):

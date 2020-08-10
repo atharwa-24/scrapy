@@ -253,9 +253,8 @@ class HttpTestCase(unittest.TestCase):
         else:
             self.port = reactor.listenTCP(0, self.wrapper, interface=self.host)
         self.portno = self.port.getHost().port
-        self.download_handler = create_instance(
-            self.download_handler_cls, None, get_crawler()
-        )
+        self.download_handler = create_instance(self.download_handler_cls,
+                                                None, get_crawler())
         self.download_request = self.download_handler.download_request
 
     @defer.inlineCallbacks
@@ -316,9 +315,8 @@ class HttpTestCase(unittest.TestCase):
 
     def test_host_header_not_in_request_headers(self):
         def _test(response):
-            self.assertEqual(
-                response.body, to_bytes("%s:%d" % (self.host, self.portno))
-            )
+            self.assertEqual(response.body,
+                             to_bytes("%s:%d" % (self.host, self.portno)))
             self.assertEqual(request.headers, {})
 
         request = Request(self.getURL("host"))
@@ -352,9 +350,9 @@ class HttpTestCase(unittest.TestCase):
         def _test(response):
             self.assertEqual(response.body, b"0")
 
-        request = Request(
-            self.getURL("contentlength"), method="POST", headers={"Host": "example.com"}
-        )
+        request = Request(self.getURL("contentlength"),
+                          method="POST",
+                          headers={"Host": "example.com"})
         return self.download_request(request, Spider("foo")).addCallback(_test)
 
     def test_content_length_zero_bodyless_post_only_one(self):
@@ -426,18 +424,22 @@ class Http11TestCase(HttpTestCase):
         yield d
 
         d = self.download_request(request, Spider("foo", download_maxsize=9))
-        yield self.assertFailure(d, defer.CancelledError, error.ConnectionAborted)
+        yield self.assertFailure(d, defer.CancelledError,
+                                 error.ConnectionAborted)
 
     @defer.inlineCallbacks
     def test_download_with_maxsize_very_large_file(self):
-        with mock.patch("scrapy.core.downloader.handlers.http11.logger") as logger:
+        with mock.patch(
+                "scrapy.core.downloader.handlers.http11.logger") as logger:
             request = Request(self.getURL("largechunkedfile"))
 
             def check(logger):
                 logger.error.assert_called_once_with(mock.ANY, mock.ANY)
 
-            d = self.download_request(request, Spider("foo", download_maxsize=1500))
-            yield self.assertFailure(d, defer.CancelledError, error.ConnectionAborted)
+            d = self.download_request(request,
+                                      Spider("foo", download_maxsize=1500))
+            yield self.assertFailure(d, defer.CancelledError,
+                                     error.ConnectionAborted)
 
             # As the error message is logged in the dataReceived callback, we
             # have to give a bit of time to the reactor to process the queue
@@ -452,13 +454,15 @@ class Http11TestCase(HttpTestCase):
         meta = {"download_maxsize": 2}
         request = Request(self.getURL("file"), meta=meta)
         d = self.download_request(request, Spider("foo"))
-        yield self.assertFailure(d, defer.CancelledError, error.ConnectionAborted)
+        yield self.assertFailure(d, defer.CancelledError,
+                                 error.ConnectionAborted)
 
     @defer.inlineCallbacks
     def test_download_with_small_maxsize_per_spider(self):
         request = Request(self.getURL("file"))
         d = self.download_request(request, Spider("foo", download_maxsize=2))
-        yield self.assertFailure(d, defer.CancelledError, error.ConnectionAborted)
+        yield self.assertFailure(d, defer.CancelledError,
+                                 error.ConnectionAborted)
 
     def test_download_with_large_maxsize_per_spider(self):
         request = Request(self.getURL("file"))
@@ -489,21 +493,27 @@ class Http11TestCase(HttpTestCase):
         return d
 
     def test_download_broken_chunked_content_cause_data_loss(self):
-        return self.test_download_broken_content_cause_data_loss("broken-chunked")
+        return self.test_download_broken_content_cause_data_loss(
+            "broken-chunked")
 
     def test_download_broken_content_allow_data_loss(self, url="broken"):
-        request = Request(self.getURL(url), meta={"download_fail_on_dataloss": False})
+        request = Request(self.getURL(url),
+                          meta={"download_fail_on_dataloss": False})
         d = self.download_request(request, Spider("foo"))
         d.addCallback(lambda r: r.flags)
         d.addCallback(self.assertEqual, ["dataloss"])
         return d
 
     def test_download_broken_chunked_content_allow_data_loss(self):
-        return self.test_download_broken_content_allow_data_loss("broken-chunked")
+        return self.test_download_broken_content_allow_data_loss(
+            "broken-chunked")
 
-    def test_download_broken_content_allow_data_loss_via_setting(self, url="broken"):
-        crawler = get_crawler(settings_dict={"DOWNLOAD_FAIL_ON_DATALOSS": False})
-        download_handler = create_instance(self.download_handler_cls, None, crawler)
+    def test_download_broken_content_allow_data_loss_via_setting(
+            self, url="broken"):
+        crawler = get_crawler(
+            settings_dict={"DOWNLOAD_FAIL_ON_DATALOSS": False})
+        download_handler = create_instance(self.download_handler_cls, None,
+                                           crawler)
         request = Request(self.getURL(url))
         d = download_handler.download_request(request, Spider("foo"))
         d.addCallback(lambda r: r.flags)
@@ -512,8 +522,7 @@ class Http11TestCase(HttpTestCase):
 
     def test_download_broken_chunked_content_allow_data_loss_via_setting(self):
         return self.test_download_broken_content_allow_data_loss_via_setting(
-            "broken-chunked"
-        )
+            "broken-chunked")
 
 
 class Https11TestCase(Http11TestCase):
@@ -521,15 +530,14 @@ class Https11TestCase(Http11TestCase):
 
     tls_log_message = (
         'SSL connection certificate: issuer "/C=IE/O=Scrapy/CN=localhost", '
-        'subject "/C=IE/O=Scrapy/CN=localhost"'
-    )
+        'subject "/C=IE/O=Scrapy/CN=localhost"')
 
     @defer.inlineCallbacks
     def test_tls_logging(self):
         crawler = get_crawler(
-            settings_dict={"DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING": True}
-        )
-        download_handler = create_instance(self.download_handler_cls, None, crawler)
+            settings_dict={"DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING": True})
+        download_handler = create_instance(self.download_handler_cls, None,
+                                           crawler)
         try:
             with LogCapture() as log_capture:
                 request = Request(self.getURL("file"))
@@ -537,9 +545,8 @@ class Https11TestCase(Http11TestCase):
                 d.addCallback(lambda r: r.body)
                 d.addCallback(self.assertEqual, b"0123456789")
                 yield d
-                log_capture.check_present(
-                    ("scrapy.core.downloader.tls", "DEBUG", self.tls_log_message)
-                )
+                log_capture.check_present(("scrapy.core.downloader.tls",
+                                           "DEBUG", self.tls_log_message))
         finally:
             yield download_handler.close()
 
@@ -577,8 +584,7 @@ class Https11InvalidDNSPattern(Https11TestCase):
             raise unittest.SkipTest("cryptography lib is too old")
         self.tls_log_message = (
             'SSL connection certificate: issuer "/C=IE/O=Scrapy/CN=127.0.0.1", '
-            'subject "/C=IE/O=Scrapy/CN=127.0.0.1"'
-        )
+            'subject "/C=IE/O=Scrapy/CN=127.0.0.1"')
         super().setUp()
 
 
@@ -600,18 +606,16 @@ class Https11CustomCiphers(unittest.TestCase):
         self.port = reactor.listenSSL(
             0,
             self.wrapper,
-            ssl_context_factory(
-                self.keyfile, self.certfile, cipher_string="CAMELLIA256-SHA"
-            ),
+            ssl_context_factory(self.keyfile,
+                                self.certfile,
+                                cipher_string="CAMELLIA256-SHA"),
             interface=self.host,
         )
         self.portno = self.port.getHost().port
         crawler = get_crawler(
-            settings_dict={"DOWNLOADER_CLIENT_TLS_CIPHERS": "CAMELLIA256-SHA"}
-        )
-        self.download_handler = create_instance(
-            self.download_handler_cls, None, crawler
-        )
+            settings_dict={"DOWNLOADER_CLIENT_TLS_CIPHERS": "CAMELLIA256-SHA"})
+        self.download_handler = create_instance(self.download_handler_cls,
+                                                None, crawler)
         self.download_request = self.download_handler.download_request
 
     @defer.inlineCallbacks
@@ -647,11 +651,8 @@ class Http11MockServerTestCase(unittest.TestCase):
         crawler = get_crawler(SingleRequestSpider)
         # http://localhost:8998/partial set Content-Length to 1024, use download_maxsize= 1000 to avoid
         # download it
-        yield crawler.crawl(
-            seed=Request(
-                url=self.mockserver.url("/partial"), meta={"download_maxsize": 1000}
-            )
-        )
+        yield crawler.crawl(seed=Request(url=self.mockserver.url("/partial"),
+                                         meta={"download_maxsize": 1000}))
         failure = crawler.spider.meta["failure"]
         self.assertIsInstance(failure.value, defer.CancelledError)
 
@@ -715,9 +716,8 @@ class HttpProxyTestCase(unittest.TestCase):
         wrapper = WrappingFactory(site)
         self.port = reactor.listenTCP(0, wrapper, interface="127.0.0.1")
         self.portno = self.port.getHost().port
-        self.download_handler = create_instance(
-            self.download_handler_cls, None, get_crawler()
-        )
+        self.download_handler = create_instance(self.download_handler_cls,
+                                                None, get_crawler())
         self.download_request = self.download_handler.download_request
 
     @defer.inlineCallbacks
@@ -748,10 +748,11 @@ class HttpProxyTestCase(unittest.TestCase):
         http_proxy = "%s?noconnect" % self.getURL("")
         request = Request("https://example.com", meta={"proxy": http_proxy})
         with self.assertWarnsRegex(
-            ScrapyDeprecationWarning,
-            r"Using HTTPS proxies in the noconnect mode is deprecated",
+                ScrapyDeprecationWarning,
+                r"Using HTTPS proxies in the noconnect mode is deprecated",
         ):
-            return self.download_request(request, Spider("foo")).addCallback(_test)
+            return self.download_request(request,
+                                         Spider("foo")).addCallback(_test)
 
     def test_download_without_proxy(self):
         def _test(response):
@@ -767,7 +768,8 @@ class Http10ProxyTestCase(HttpProxyTestCase):
     download_handler_cls = HTTP10DownloadHandler
 
     def test_download_with_proxy_https_noconnect(self):
-        raise unittest.SkipTest("noconnect is not supported in HTTP10DownloadHandler")
+        raise unittest.SkipTest(
+            "noconnect is not supported in HTTP10DownloadHandler")
 
 
 class Http11ProxyTestCase(HttpProxyTestCase):
@@ -778,7 +780,11 @@ class Http11ProxyTestCase(HttpProxyTestCase):
         """ Test TunnelingTCP4ClientEndpoint """
         http_proxy = self.getURL("")
         domain = "https://no-such-domain.nosuch"
-        request = Request(domain, meta={"proxy": http_proxy, "download_timeout": 0.2})
+        request = Request(domain,
+                          meta={
+                              "proxy": http_proxy,
+                              "download_timeout": 0.2
+                          })
         d = self.download_request(request, Spider("foo"))
         timeout = yield self.assertFailure(d, error.TimeoutError)
         self.assertIn(domain, timeout.osError)
@@ -811,7 +817,8 @@ class S3AnonTestCase(unittest.TestCase):
         httpreq = self.download_request(req, self.spider)
         self.assertEqual(hasattr(self.s3reqh, "anon"), True)
         self.assertEqual(self.s3reqh.anon, True)
-        self.assertEqual(httpreq.url, "http://aws-publicdatasets.s3.amazonaws.com/")
+        self.assertEqual(httpreq.url,
+                         "http://aws-publicdatasets.s3.amazonaws.com/")
 
 
 class S3TestCase(unittest.TestCase):
@@ -856,7 +863,10 @@ class S3TestCase(unittest.TestCase):
         try:
             crawler = get_crawler()
             create_instance(
-                objcls=S3DownloadHandler, settings=None, crawler=crawler, extra_kw=True,
+                objcls=S3DownloadHandler,
+                settings=None,
+                crawler=crawler,
+                extra_kw=True,
             )
         except Exception as e:
             self.assertIsInstance(e, (TypeError, NotConfigured))
@@ -866,7 +876,8 @@ class S3TestCase(unittest.TestCase):
     def test_request_signing1(self):
         # gets an object from the johnsmith bucket.
         date = "Tue, 27 Mar 2007 19:36:42 +0000"
-        req = Request("s3://johnsmith/photos/puppy.jpg", headers={"Date": date})
+        req = Request("s3://johnsmith/photos/puppy.jpg",
+                      headers={"Date": date})
         with self._mocked_date(date):
             httpreq = self.download_request(req, self.spider)
         self.assertEqual(
@@ -899,7 +910,10 @@ class S3TestCase(unittest.TestCase):
         req = Request(
             "s3://johnsmith/?prefix=photos&max-keys=50&marker=puppy",
             method="GET",
-            headers={"User-Agent": "Mozilla/5.0", "Date": date,},
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Date": date,
+            },
         )
         with self._mocked_date(date):
             httpreq = self.download_request(req, self.spider)
@@ -911,7 +925,9 @@ class S3TestCase(unittest.TestCase):
     def test_request_signing4(self):
         # fetches the access control policy sub-resource for the 'johnsmith' bucket.
         date = "Tue, 27 Mar 2007 19:44:46 +0000"
-        req = Request("s3://johnsmith/?acl", method="GET", headers={"Date": date})
+        req = Request("s3://johnsmith/?acl",
+                      method="GET",
+                      headers={"Date": date})
         with self._mocked_date(date):
             httpreq = self.download_request(req, self.spider)
         self.assertEqual(
@@ -926,15 +942,17 @@ class S3TestCase(unittest.TestCase):
             pass
         else:
             raise unittest.SkipTest(
-                "botocore does not support overriding date with x-amz-date"
-            )
+                "botocore does not support overriding date with x-amz-date")
         # deletes an object from the 'johnsmith' bucket using the
         # path-style and Date alternative.
         date = "Tue, 27 Mar 2007 21:20:27 +0000"
         req = Request(
             "s3://johnsmith/photos/puppy.jpg",
             method="DELETE",
-            headers={"Date": date, "x-amz-date": "Tue, 27 Mar 2007 21:20:26 +0000",},
+            headers={
+                "Date": date,
+                "x-amz-date": "Tue, 27 Mar 2007 21:20:26 +0000",
+            },
         )
         with self._mocked_date(date):
             httpreq = self.download_request(req, self.spider)
@@ -957,7 +975,8 @@ class S3TestCase(unittest.TestCase):
                 "x-amz-acl": "public-read",
                 "content-type": "application/x-download",
                 "Content-MD5": "4gJE4saaMU4BqNR0kLY+lw==",
-                "X-Amz-Meta-ReviewedBy": "joe@johnsmith.net,jane@johnsmith.net",
+                "X-Amz-Meta-ReviewedBy":
+                "joe@johnsmith.net,jane@johnsmith.net",
                 "X-Amz-Meta-FileChecksum": "0x02661779",
                 "X-Amz-Meta-ChecksumAlgorithm": "crc32",
                 "Content-Disposition": "attachment; filename=database.dat",
@@ -1017,9 +1036,8 @@ class BaseFTPTestCase(unittest.TestCase):
         self.port = reactor.listenTCP(0, self.factory, interface="127.0.0.1")
         self.portNum = self.port.getHost().port
         crawler = get_crawler()
-        self.download_handler = create_instance(
-            FTPDownloadHandler, crawler.settings, crawler
-        )
+        self.download_handler = create_instance(FTPDownloadHandler,
+                                                crawler.settings, crawler)
         self.addCleanup(self.port.stopListening)
 
     def tearDown(self):
@@ -1038,15 +1056,17 @@ class BaseFTPTestCase(unittest.TestCase):
         return deferred
 
     def test_ftp_download_success(self):
-        request = Request(
-            url="ftp://127.0.0.1:%s/file.txt" % self.portNum, meta=self.req_meta
-        )
+        request = Request(url="ftp://127.0.0.1:%s/file.txt" % self.portNum,
+                          meta=self.req_meta)
         d = self.download_handler.download_request(request, None)
 
         def _test(r):
             self.assertEqual(r.status, 200)
             self.assertEqual(r.body, b"I have the power!")
-            self.assertEqual(r.headers, {b"Local Filename": [b""], b"Size": [b"17"]})
+            self.assertEqual(r.headers, {
+                b"Local Filename": [b""],
+                b"Size": [b"17"]
+            })
 
         return self._add_test_callbacks(d, _test)
 
@@ -1060,14 +1080,16 @@ class BaseFTPTestCase(unittest.TestCase):
         def _test(r):
             self.assertEqual(r.status, 200)
             self.assertEqual(r.body, b"Moooooooooo power!")
-            self.assertEqual(r.headers, {b"Local Filename": [b""], b"Size": [b"18"]})
+            self.assertEqual(r.headers, {
+                b"Local Filename": [b""],
+                b"Size": [b"18"]
+            })
 
         return self._add_test_callbacks(d, _test)
 
     def test_ftp_download_notexist(self):
-        request = Request(
-            url="ftp://127.0.0.1:%s/notexist.txt" % self.portNum, meta=self.req_meta
-        )
+        request = Request(url="ftp://127.0.0.1:%s/notexist.txt" % self.portNum,
+                          meta=self.req_meta)
         d = self.download_handler.download_request(request, None)
 
         def _test(r):
@@ -1081,14 +1103,16 @@ class BaseFTPTestCase(unittest.TestCase):
         os.close(f)
         meta = {"ftp_local_filename": local_fname}
         meta.update(self.req_meta)
-        request = Request(url="ftp://127.0.0.1:%s/file.txt" % self.portNum, meta=meta)
+        request = Request(url="ftp://127.0.0.1:%s/file.txt" % self.portNum,
+                          meta=meta)
         d = self.download_handler.download_request(request, None)
 
         def _test(r):
             self.assertEqual(r.body, local_fname)
-            self.assertEqual(
-                r.headers, {b"Local Filename": [local_fname], b"Size": [b"17"]}
-            )
+            self.assertEqual(r.headers, {
+                b"Local Filename": [local_fname],
+                b"Size": [b"17"]
+            })
             self.assertTrue(os.path.exists(local_fname))
             with open(local_fname, "rb") as f:
                 self.assertEqual(f.read(), b"I have the power!")
@@ -1103,7 +1127,8 @@ class FTPTestCase(BaseFTPTestCase):
 
         meta = dict(self.req_meta)
         meta.update({"ftp_password": "invalid"})
-        request = Request(url="ftp://127.0.0.1:%s/file.txt" % self.portNum, meta=meta)
+        request = Request(url="ftp://127.0.0.1:%s/file.txt" % self.portNum,
+                          meta=meta)
         d = self.download_handler.download_request(request, None)
 
         def _test(r):
@@ -1132,15 +1157,15 @@ class AnonymousFTPTestCase(BaseFTPTestCase):
         # setup server for anonymous access
         realm = FTPRealm(anonymousRoot=self.directory)
         p = portal.Portal(realm)
-        p.registerChecker(checkers.AllowAnonymousAccess(), credentials.IAnonymous)
+        p.registerChecker(checkers.AllowAnonymousAccess(),
+                          credentials.IAnonymous)
 
         self.factory = FTPFactory(portal=p, userAnonymous=self.username)
         self.port = reactor.listenTCP(0, self.factory, interface="127.0.0.1")
         self.portNum = self.port.getHost().port
         crawler = get_crawler()
-        self.download_handler = create_instance(
-            FTPDownloadHandler, crawler.settings, crawler
-        )
+        self.download_handler = create_instance(FTPDownloadHandler,
+                                                crawler.settings, crawler)
         self.addCleanup(self.port.stopListening)
 
     def tearDown(self):
@@ -1150,9 +1175,8 @@ class AnonymousFTPTestCase(BaseFTPTestCase):
 class DataURITestCase(unittest.TestCase):
     def setUp(self):
         crawler = get_crawler()
-        self.download_handler = create_instance(
-            DataURIDownloadHandler, crawler.settings, crawler
-        )
+        self.download_handler = create_instance(DataURIDownloadHandler,
+                                                crawler.settings, crawler)
         self.download_request = self.download_handler.download_request
         self.spider = Spider("foo")
 
@@ -1169,7 +1193,8 @@ class DataURITestCase(unittest.TestCase):
     def test_default_mediatype_encoding(self):
         def _test(response):
             self.assertEqual(response.text, "A brief note")
-            self.assertEqual(type(response), responsetypes.from_mimetype("text/plain"))
+            self.assertEqual(type(response),
+                             responsetypes.from_mimetype("text/plain"))
             self.assertEqual(response.encoding, "US-ASCII")
 
         request = Request("data:,A%20brief%20note")
@@ -1178,7 +1203,8 @@ class DataURITestCase(unittest.TestCase):
     def test_default_mediatype(self):
         def _test(response):
             self.assertEqual(response.text, "\u038e\u03a3\u038e")
-            self.assertEqual(type(response), responsetypes.from_mimetype("text/plain"))
+            self.assertEqual(type(response),
+                             responsetypes.from_mimetype("text/plain"))
             self.assertEqual(response.encoding, "iso-8859-7")
 
         request = Request("data:;charset=iso-8859-7,%be%d3%be")
@@ -1196,14 +1222,13 @@ class DataURITestCase(unittest.TestCase):
     def test_mediatype_parameters(self):
         def _test(response):
             self.assertEqual(response.text, "\u038e\u03a3\u038e")
-            self.assertEqual(type(response), responsetypes.from_mimetype("text/plain"))
+            self.assertEqual(type(response),
+                             responsetypes.from_mimetype("text/plain"))
             self.assertEqual(response.encoding, "utf-8")
 
-        request = Request(
-            "data:text/plain;foo=%22foo;bar%5C%22%22;"
-            "charset=utf-8;bar=%22foo;%5C%22 foo ;/,%22"
-            ",%CE%8E%CE%A3%CE%8E"
-        )
+        request = Request("data:text/plain;foo=%22foo;bar%5C%22%22;"
+                          "charset=utf-8;bar=%22foo;%5C%22 foo ;/,%22"
+                          ",%CE%8E%CE%A3%CE%8E")
         return self.download_request(request, self.spider).addCallback(_test)
 
     def test_base64(self):

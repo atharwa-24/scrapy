@@ -11,12 +11,12 @@ class CheckCommandTest(CommandTest):
     def setUp(self):
         super(CheckCommandTest, self).setUp()
         self.spider_name = "check_spider"
-        self.spider = abspath(join(self.proj_mod_path, "spiders", "checkspider.py"))
+        self.spider = abspath(
+            join(self.proj_mod_path, "spiders", "checkspider.py"))
 
     def _write_contract(self, contracts, parse_def):
         with open(self.spider, "w") as file:
-            file.write(
-                """
+            file.write("""
 import scrapy
 
 class CheckSpider(scrapy.Spider):
@@ -29,10 +29,7 @@ class CheckSpider(scrapy.Spider):
         {1}
         \"\"\"
         {2}
-            """.format(
-                    self.spider_name, contracts, parse_def
-                )
-            )
+            """.format(self.spider_name, contracts, parse_def))
 
     def _test_contract(self, contracts="", parse_def="pass"):
         self._write_contract(contracts, parse_def)

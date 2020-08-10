@@ -54,7 +54,6 @@ if has_environment_marker_platform_impl_support():
 else:
     install_requires.append("lxml>=3.5.0")
 
-
 setup(
     name="Scrapy",
     version=version,

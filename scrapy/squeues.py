@@ -82,21 +82,21 @@ def _pickle_serialize(obj):
 
 
 PickleFifoDiskQueueNonRequest = _serializable_queue(
-    _with_mkdir(queue.FifoDiskQueue), _pickle_serialize, pickle.loads
-)
+    _with_mkdir(queue.FifoDiskQueue), _pickle_serialize, pickle.loads)
 PickleLifoDiskQueueNonRequest = _serializable_queue(
-    _with_mkdir(queue.LifoDiskQueue), _pickle_serialize, pickle.loads
-)
+    _with_mkdir(queue.LifoDiskQueue), _pickle_serialize, pickle.loads)
 MarshalFifoDiskQueueNonRequest = _serializable_queue(
-    _with_mkdir(queue.FifoDiskQueue), marshal.dumps, marshal.loads
-)
+    _with_mkdir(queue.FifoDiskQueue), marshal.dumps, marshal.loads)
 MarshalLifoDiskQueueNonRequest = _serializable_queue(
-    _with_mkdir(queue.LifoDiskQueue), marshal.dumps, marshal.loads
-)
+    _with_mkdir(queue.LifoDiskQueue), marshal.dumps, marshal.loads)
 
-PickleFifoDiskQueue = _scrapy_serialization_queue(PickleFifoDiskQueueNonRequest)
-PickleLifoDiskQueue = _scrapy_serialization_queue(PickleLifoDiskQueueNonRequest)
-MarshalFifoDiskQueue = _scrapy_serialization_queue(MarshalFifoDiskQueueNonRequest)
-MarshalLifoDiskQueue = _scrapy_serialization_queue(MarshalLifoDiskQueueNonRequest)
+PickleFifoDiskQueue = _scrapy_serialization_queue(
+    PickleFifoDiskQueueNonRequest)
+PickleLifoDiskQueue = _scrapy_serialization_queue(
+    PickleLifoDiskQueueNonRequest)
+MarshalFifoDiskQueue = _scrapy_serialization_queue(
+    MarshalFifoDiskQueueNonRequest)
+MarshalLifoDiskQueue = _scrapy_serialization_queue(
+    MarshalLifoDiskQueueNonRequest)
 FifoMemoryQueue = _scrapy_non_serialization_queue(queue.FifoMemoryQueue)
 LifoMemoryQueue = _scrapy_non_serialization_queue(queue.LifoMemoryQueue)

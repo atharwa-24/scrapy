@@ -41,13 +41,22 @@ class FollowAllSpider(MetaSpider):
     name = "follow"
     link_extractor = LinkExtractor()
 
-    def __init__(
-        self, total=10, show=20, order="rand", maxlatency=0.0, *args, **kwargs
-    ):
+    def __init__(self,
+                 total=10,
+                 show=20,
+                 order="rand",
+                 maxlatency=0.0,
+                 *args,
+                 **kwargs):
         super().__init__(*args, **kwargs)
         self.urls_visited = []
         self.times = []
-        qargs = {"total": total, "show": show, "order": order, "maxlatency": maxlatency}
+        qargs = {
+            "total": total,
+            "show": show,
+            "order": order,
+            "maxlatency": maxlatency
+        }
         url = self.mockserver.url("/follow?%s" % urlencode(qargs, doseq=1))
         self.start_urls = [url]
 
@@ -146,7 +155,9 @@ class AsyncDefAsyncioReqsReturnSpider(SimpleSpider):
             return
         reqs = []
         for i in range(1, 3):
-            req = Request(self.start_urls[0], dont_filter=True, meta={"req_id": i})
+            req = Request(self.start_urls[0],
+                          dont_filter=True,
+                          meta={"req_id": i})
             reqs.append(req)
         return reqs
 
@@ -200,9 +211,8 @@ class BrokenStartRequestsSpider(FollowAllSpider):
             if self.fail_yielding:
                 2 / 0
 
-        assert (
-            self.seedsseen
-        ), "All start requests consumed before any download happened"
+        assert (self.seedsseen
+                ), "All start requests consumed before any download happened"
 
     def parse(self, response):
         self.seedsseen.append(response.meta.get("seed"))
@@ -220,7 +230,9 @@ class SingleRequestSpider(MetaSpider):
         if isinstance(self.seed, Request):
             yield self.seed.replace(callback=self.parse, errback=self.on_error)
         else:
-            yield Request(self.seed, callback=self.parse, errback=self.on_error)
+            yield Request(self.seed,
+                          callback=self.parse,
+                          errback=self.on_error)
 
     def parse(self, response):
         self.meta.setdefault("responses", []).append(response)
@@ -264,7 +276,7 @@ class CrawlSpiderWithParseMethod(MockServerSpider, CrawlSpider):
     custom_settings = {
         "RETRY_HTTP_CODES": [],  # no need to retry
     }
-    rules = (Rule(LinkExtractor(), callback="parse", follow=True),)
+    rules = (Rule(LinkExtractor(), callback="parse", follow=True), )
 
     def start_requests(self):
         test_body = b"""
@@ -281,14 +293,17 @@ class CrawlSpiderWithParseMethod(MockServerSpider, CrawlSpider):
 
     def parse(self, response, foo=None):
         self.logger.info("[parse] status %i (foo: %s)", response.status, foo)
-        yield Request(
-            self.mockserver.url("/status?n=202"), self.parse, cb_kwargs={"foo": "bar"}
-        )
+        yield Request(self.mockserver.url("/status?n=202"),
+                      self.parse,
+                      cb_kwargs={"foo": "bar"})
 
 
 class CrawlSpiderWithErrback(CrawlSpiderWithParseMethod):
     name = "crawl_spider_with_errback"
-    rules = (Rule(LinkExtractor(), callback="parse", errback="errback", follow=True),)
+    rules = (Rule(LinkExtractor(),
+                  callback="parse",
+                  errback="errback",
+                  follow=True), )
 
     def start_requests(self):
         test_body = b"""
@@ -312,7 +327,7 @@ class CrawlSpiderWithErrback(CrawlSpiderWithParseMethod):
 
 class BytesReceivedCallbackSpider(MetaSpider):
 
-    full_response_length = 2 ** 18
+    full_response_length = 2**18
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):

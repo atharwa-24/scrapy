@@ -71,7 +71,8 @@ def processor_with_args(value, other=None, loader_context=None):
 class BasicItemLoaderTest(unittest.TestCase):
     def test_add_value_on_unknown_field(self):
         il = TestItemLoader()
-        self.assertRaises(KeyError, il.add_value, "wrong_field", ["lala", "lolo"])
+        self.assertRaises(KeyError, il.add_value, "wrong_field",
+                          ["lala", "lolo"])
 
     def test_load_item_using_default_loader(self):
         i = TestItem()
@@ -108,7 +109,8 @@ class InitializationTestMixin:
         il = ItemLoader(item=input_item)
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
-        self.assertEqual(ItemAdapter(loaded_item).asdict(), {"name": ["foo", "bar"]})
+        self.assertEqual(
+            ItemAdapter(loaded_item).asdict(), {"name": ["foo", "bar"]})
 
     def test_add_value_singlevalue_singlevalue(self):
         """Values added after initialization should be appended"""
@@ -117,7 +119,8 @@ class InitializationTestMixin:
         il.add_value("name", "bar")
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
-        self.assertEqual(ItemAdapter(loaded_item).asdict(), {"name": ["foo", "bar"]})
+        self.assertEqual(
+            ItemAdapter(loaded_item).asdict(), {"name": ["foo", "bar"]})
 
     def test_add_value_singlevalue_list(self):
         """Values added after initialization should be appended"""
@@ -127,8 +130,8 @@ class InitializationTestMixin:
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
         self.assertEqual(
-            ItemAdapter(loaded_item).asdict(), {"name": ["foo", "item", "loader"]}
-        )
+            ItemAdapter(loaded_item).asdict(),
+            {"name": ["foo", "item", "loader"]})
 
     def test_add_value_list_singlevalue(self):
         """Values added after initialization should be appended"""
@@ -138,8 +141,8 @@ class InitializationTestMixin:
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
         self.assertEqual(
-            ItemAdapter(loaded_item).asdict(), {"name": ["foo", "bar", "qwerty"]}
-        )
+            ItemAdapter(loaded_item).asdict(),
+            {"name": ["foo", "bar", "qwerty"]})
 
     def test_add_value_list_list(self):
         """Values added after initialization should be appended"""
@@ -160,7 +163,8 @@ class InitializationTestMixin:
         self.assertEqual(il.get_output_value("name"), ["foo"])
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
-        self.assertEqual(ItemAdapter(loaded_item).asdict(), dict({"name": ["foo"]}))
+        self.assertEqual(
+            ItemAdapter(loaded_item).asdict(), dict({"name": ["foo"]}))
 
     def test_get_output_value_list(self):
         """Getting output value must not remove value from item"""
@@ -170,8 +174,7 @@ class InitializationTestMixin:
         loaded_item = il.load_item()
         self.assertIsInstance(loaded_item, self.item_class)
         self.assertEqual(
-            ItemAdapter(loaded_item).asdict(), dict({"name": ["foo", "bar"]})
-        )
+            ItemAdapter(loaded_item).asdict(), dict({"name": ["foo", "bar"]}))
 
     def test_values_single(self):
         """Values from initial item must be added to loader._values"""
@@ -194,12 +197,14 @@ class InitializationFromItemTest(InitializationTestMixin, unittest.TestCase):
     item_class = NameItem
 
 
-class InitializationFromAttrsItemTest(InitializationTestMixin, unittest.TestCase):
+class InitializationFromAttrsItemTest(InitializationTestMixin,
+                                      unittest.TestCase):
     item_class = AttrsNameItem
 
 
 @unittest.skipIf(not make_dataclass, "dataclasses module is not available")
-class InitializationFromDataClassTest(InitializationTestMixin, unittest.TestCase):
+class InitializationFromDataClassTest(InitializationTestMixin,
+                                      unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if make_dataclass:
@@ -228,22 +233,22 @@ class NoInputReprocessingFromItemTest(unittest.TestCase):
     """
 
     def test_avoid_reprocessing_with_initial_values_single(self):
-        il = NoInputReprocessingItemLoader(item=NoInputReprocessingItem(title="foo"))
+        il = NoInputReprocessingItemLoader(item=NoInputReprocessingItem(
+            title="foo"))
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, {"title": "foo"})
         self.assertEqual(
-            NoInputReprocessingItemLoader(item=il_loaded).load_item(), {"title": "foo"}
-        )
+            NoInputReprocessingItemLoader(item=il_loaded).load_item(),
+            {"title": "foo"})
 
     def test_avoid_reprocessing_with_initial_values_list(self):
-        il = NoInputReprocessingItemLoader(
-            item=NoInputReprocessingItem(title=["foo", "bar"])
-        )
+        il = NoInputReprocessingItemLoader(item=NoInputReprocessingItem(
+            title=["foo", "bar"]))
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, {"title": "foo"})
         self.assertEqual(
-            NoInputReprocessingItemLoader(item=il_loaded).load_item(), {"title": "foo"}
-        )
+            NoInputReprocessingItemLoader(item=il_loaded).load_item(),
+            {"title": "foo"})
 
     def test_avoid_reprocessing_without_initial_values_single(self):
         il = NoInputReprocessingItemLoader()
@@ -251,8 +256,8 @@ class NoInputReprocessingFromItemTest(unittest.TestCase):
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, {"title": "FOO"})
         self.assertEqual(
-            NoInputReprocessingItemLoader(item=il_loaded).load_item(), {"title": "FOO"}
-        )
+            NoInputReprocessingItemLoader(item=il_loaded).load_item(),
+            {"title": "FOO"})
 
     def test_avoid_reprocessing_without_initial_values_list(self):
         il = NoInputReprocessingItemLoader()
@@ -260,8 +265,8 @@ class NoInputReprocessingFromItemTest(unittest.TestCase):
         il_loaded = il.load_item()
         self.assertEqual(il_loaded, {"title": "FOO"})
         self.assertEqual(
-            NoInputReprocessingItemLoader(item=il_loaded).load_item(), {"title": "FOO"}
-        )
+            NoInputReprocessingItemLoader(item=il_loaded).load_item(),
+            {"title": "FOO"})
 
 
 class TestOutputProcessorItem(unittest.TestCase):
@@ -351,9 +356,8 @@ class SelectortemLoaderTest(unittest.TestCase):
         self.assertEqual(l.get_output_value("name"), ["Marta", "Marta"])
 
         l.add_xpath("url", "//img/@src")
-        self.assertEqual(
-            l.get_output_value("url"), ["http://www.scrapy.org", "/images/logo.png"]
-        )
+        self.assertEqual(l.get_output_value("url"),
+                         ["http://www.scrapy.org", "/images/logo.png"])
 
     def test_add_xpath_re(self):
         l = TestItemLoader(response=self.response)
@@ -377,9 +381,8 @@ class SelectortemLoaderTest(unittest.TestCase):
         self.assertEqual(l.get_xpath("//p/text()", TakeFirst()), "paragraph")
         self.assertEqual(l.get_xpath("//p/text()", TakeFirst(), re="pa"), "pa")
 
-        self.assertEqual(
-            l.get_xpath(["//p/text()", "//div/text()"]), ["paragraph", "marta"]
-        )
+        self.assertEqual(l.get_xpath(["//p/text()", "//div/text()"]),
+                         ["paragraph", "marta"])
 
     def test_replace_xpath_multi_fields(self):
         l = TestItemLoader(response=self.response)
@@ -426,7 +429,8 @@ class SelectortemLoaderTest(unittest.TestCase):
         self.assertEqual(l.get_css("p::text", TakeFirst()), "paragraph")
         self.assertEqual(l.get_css("p::text", TakeFirst(), re="pa"), "pa")
 
-        self.assertEqual(l.get_css(["p::text", "div::text"]), ["paragraph", "marta"])
+        self.assertEqual(l.get_css(["p::text", "div::text"]),
+                         ["paragraph", "marta"])
         self.assertEqual(
             l.get_css(["a::attr(href)", "img::attr(src)"]),
             ["http://www.scrapy.org", "/images/logo.png"],
@@ -441,7 +445,8 @@ class SelectortemLoaderTest(unittest.TestCase):
 
         l.add_css(None, "a::attr(href)", TakeFirst(), lambda x: {"url": x})
         self.assertEqual(l.get_output_value("url"), ["http://www.scrapy.org"])
-        l.replace_css(None, "img::attr(src)", TakeFirst(), lambda x: {"url": x})
+        l.replace_css(None, "img::attr(src)",
+                      TakeFirst(), lambda x: {"url": x})
         self.assertEqual(l.get_output_value("url"), ["/images/logo.png"])
 
     def test_replace_css_re(self):
@@ -479,38 +484,40 @@ class SubselectorLoaderTest(unittest.TestCase):
         nl = l.nested_xpath("//header")
         nl.add_xpath("name", "div/text()")
         nl.add_css("name_div", "#id")
-        nl.add_value("name_value", nl.selector.xpath('div[@id = "id"]/text()').getall())
+        nl.add_value("name_value",
+                     nl.selector.xpath('div[@id = "id"]/text()').getall())
 
         self.assertEqual(l.get_output_value("name"), ["marta"])
-        self.assertEqual(l.get_output_value("name_div"), ['<div id="id">marta</div>'])
+        self.assertEqual(l.get_output_value("name_div"),
+                         ['<div id="id">marta</div>'])
         self.assertEqual(l.get_output_value("name_value"), ["marta"])
 
-        self.assertEqual(l.get_output_value("name"), nl.get_output_value("name"))
-        self.assertEqual(
-            l.get_output_value("name_div"), nl.get_output_value("name_div")
-        )
-        self.assertEqual(
-            l.get_output_value("name_value"), nl.get_output_value("name_value")
-        )
+        self.assertEqual(l.get_output_value("name"),
+                         nl.get_output_value("name"))
+        self.assertEqual(l.get_output_value("name_div"),
+                         nl.get_output_value("name_div"))
+        self.assertEqual(l.get_output_value("name_value"),
+                         nl.get_output_value("name_value"))
 
     def test_nested_css(self):
         l = NestedItemLoader(response=self.response)
         nl = l.nested_css("header")
         nl.add_xpath("name", "div/text()")
         nl.add_css("name_div", "#id")
-        nl.add_value("name_value", nl.selector.xpath('div[@id = "id"]/text()').getall())
+        nl.add_value("name_value",
+                     nl.selector.xpath('div[@id = "id"]/text()').getall())
 
         self.assertEqual(l.get_output_value("name"), ["marta"])
-        self.assertEqual(l.get_output_value("name_div"), ['<div id="id">marta</div>'])
+        self.assertEqual(l.get_output_value("name_div"),
+                         ['<div id="id">marta</div>'])
         self.assertEqual(l.get_output_value("name_value"), ["marta"])
 
-        self.assertEqual(l.get_output_value("name"), nl.get_output_value("name"))
-        self.assertEqual(
-            l.get_output_value("name_div"), nl.get_output_value("name_div")
-        )
-        self.assertEqual(
-            l.get_output_value("name_value"), nl.get_output_value("name_value")
-        )
+        self.assertEqual(l.get_output_value("name"),
+                         nl.get_output_value("name"))
+        self.assertEqual(l.get_output_value("name_div"),
+                         nl.get_output_value("name_div"))
+        self.assertEqual(l.get_output_value("name_value"),
+                         nl.get_output_value("name_value"))
 
     def test_nested_replace(self):
         l = NestedItemLoader(response=self.response)
@@ -591,7 +598,8 @@ class FunctionProcessorTestCase(unittest.TestCase):
         lo = FunctionProcessorItemLoader()
         lo.add_value("foo", "  bar  ")
         lo.add_value("foo", ["  asdf  ", "  qwerty  "])
-        self.assertEqual(dict(lo.load_item()), {"foo": ["BAR", "ASDF", "QWERTY"]})
+        self.assertEqual(dict(lo.load_item()),
+                         {"foo": ["BAR", "ASDF", "QWERTY"]})
 
 
 if __name__ == "__main__":

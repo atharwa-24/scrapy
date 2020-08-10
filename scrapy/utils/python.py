@@ -91,10 +91,8 @@ def to_unicode(text, encoding=None, errors="strict"):
     if isinstance(text, str):
         return text
     if not isinstance(text, (bytes, str)):
-        raise TypeError(
-            "to_unicode must receive a bytes or str "
-            "object, got %s" % type(text).__name__
-        )
+        raise TypeError("to_unicode must receive a bytes or str "
+                        "object, got %s" % type(text).__name__)
     if encoding is None:
         encoding = "utf-8"
     return text.decode(encoding, errors)
@@ -106,10 +104,8 @@ def to_bytes(text, encoding=None, errors="strict"):
     if isinstance(text, bytes):
         return text
     if not isinstance(text, str):
-        raise TypeError(
-            "to_bytes must receive a str or bytes "
-            "object, got %s" % type(text).__name__
-        )
+        raise TypeError("to_bytes must receive a str or bytes "
+                        "object, got %s" % type(text).__name__)
     if encoding is None:
         encoding = "utf-8"
     return text.encode(encoding, errors)
@@ -170,7 +166,8 @@ def memoizemethod_noargs(method):
     return new_method
 
 
-_BINARYCHARS = {to_bytes(chr(i)) for i in range(32)} - {b"\0", b"\t", b"\n", b"\r"}
+_BINARYCHARS = {to_bytes(chr(i))
+                for i in range(32)} - {b"\0", b"\t", b"\n", b"\r"}
 _BINARYCHARS |= {ord(ch) for ch in _BINARYCHARS}
 
 
@@ -212,8 +209,7 @@ def get_func_args(func, stripself=False):
         return []
     elif isinstance(func, partial):
         return [
-            x
-            for x in get_func_args(func.func)[len(func.args) :]
+            x for x in get_func_args(func.func)[len(func.args):]
             if not (func.keywords and x in func.keywords)
         ]
     elif hasattr(func, "__call__"):
@@ -341,7 +337,6 @@ if hasattr(sys, "pypy_version_info"):
         # Collecting weakreferences can take two collections on PyPy.
         gc.collect()
         gc.collect()
-
 
 else:
 

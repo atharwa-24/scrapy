@@ -36,7 +36,9 @@ class TopLevelFormatter(logging.Filter):
         self.loggers = loggers or []
 
     def filter(self, record):
-        if any(record.name.startswith(logger + ".") for logger in self.loggers):
+        if any(
+                record.name.startswith(logger + ".")
+                for logger in self.loggers):
             record.name = record.name.split(".", 1)[0]
         return True
 
@@ -44,7 +46,14 @@ class TopLevelFormatter(logging.Filter):
 DEFAULT_LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "loggers": {"scrapy": {"level": "DEBUG",}, "twisted": {"level": "ERROR",},},
+    "loggers": {
+        "scrapy": {
+            "level": "DEBUG",
+        },
+        "twisted": {
+            "level": "ERROR",
+        },
+    },
 }
 
 
@@ -94,10 +103,8 @@ def configure_logging(settings=None, install_root_handler=True):
 def install_scrapy_root_handler(settings):
     global _scrapy_root_handler
 
-    if (
-        _scrapy_root_handler is not None
-        and _scrapy_root_handler in logging.root.handlers
-    ):
+    if (_scrapy_root_handler is not None
+            and _scrapy_root_handler in logging.root.handlers):
         logging.root.removeHandler(_scrapy_root_handler)
     logging.root.setLevel(logging.NOTSET)
     _scrapy_root_handler = _get_handler(settings)
@@ -122,9 +129,8 @@ def _get_handler(settings):
     else:
         handler = logging.NullHandler()
 
-    formatter = logging.Formatter(
-        fmt=settings.get("LOG_FORMAT"), datefmt=settings.get("LOG_DATEFORMAT")
-    )
+    formatter = logging.Formatter(fmt=settings.get("LOG_FORMAT"),
+                                  datefmt=settings.get("LOG_DATEFORMAT"))
     handler.setFormatter(formatter)
     handler.setLevel(settings.get("LOG_LEVEL"))
     if settings.getbool("LOG_SHORT_NAMES"):
@@ -135,17 +141,20 @@ def _get_handler(settings):
 def log_scrapy_info(settings):
     logger.info(
         "Scrapy %(version)s started (bot: %(bot)s)",
-        {"version": scrapy.__version__, "bot": settings["BOT_NAME"]},
+        {
+            "version": scrapy.__version__,
+            "bot": settings["BOT_NAME"]
+        },
     )
     versions = [
         "%s %s" % (name, version)
-        for name, version in scrapy_components_versions()
-        if name != "Scrapy"
+        for name, version in scrapy_components_versions() if name != "Scrapy"
     ]
     logger.info("Versions: %(versions)s", {"versions": ", ".join(versions)})
     from twisted.internet import reactor
 
-    logger.debug("Using reactor: %s.%s", reactor.__module__, reactor.__class__.__name__)
+    logger.debug("Using reactor: %s.%s", reactor.__module__,
+                 reactor.__class__.__name__)
 
 
 class StreamLogger:
@@ -188,7 +197,8 @@ def logformatter_adapter(logkws):
     handling backward compatibility as well.
     """
     if not {"level", "msg", "args"} <= set(logkws):
-        warnings.warn("Missing keys in LogFormatter method", ScrapyDeprecationWarning)
+        warnings.warn("Missing keys in LogFormatter method",
+                      ScrapyDeprecationWarning)
 
     if "format" in logkws:
         warnings.warn(

@@ -25,9 +25,8 @@ class SiteTest:
 class NoMetaRefreshRedirect(util.Redirect):
     def render(self, request):
         content = util.Redirect.render(self, request)
-        return content.replace(
-            b'http-equiv="refresh"', b'http-no-equiv="do-not-refresh-me"'
-        )
+        return content.replace(b'http-equiv="refresh"',
+                               b'http-no-equiv="do-not-refresh-me"')
 
 
 def test_site():
@@ -45,7 +44,8 @@ def test_site():
         static.Data(b"<p>gb18030 encoding</p>", "text/html; charset=gb18030"),
     )
     r.putChild(b"redirect", util.Redirect(b"/redirected"))
-    r.putChild(b"redirect-no-meta-refresh", NoMetaRefreshRedirect(b"/redirected"))
+    r.putChild(b"redirect-no-meta-refresh",
+               NoMetaRefreshRedirect(b"/redirected"))
     r.putChild(b"redirected", static.Data(b"Redirected here", "text/plain"))
     return server.Site(r)
 

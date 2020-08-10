@@ -134,17 +134,17 @@ class S3FilesStore:
     def _get_boto_bucket(self):
         # disable ssl (is_secure=False) because of this python bug:
         # https://bugs.python.org/issue5103
-        c = self.S3Connection(
-            self.AWS_ACCESS_KEY_ID, self.AWS_SECRET_ACCESS_KEY, is_secure=False
-        )
+        c = self.S3Connection(self.AWS_ACCESS_KEY_ID,
+                              self.AWS_SECRET_ACCESS_KEY,
+                              is_secure=False)
         return c.get_bucket(self.bucket, validate=False)
 
     def _get_boto_key(self, path):
         key_name = "%s%s" % (self.prefix, path)
         if self.is_botocore:
-            return threads.deferToThread(
-                self.s3_client.head_object, Bucket=self.bucket, Key=key_name
-            )
+            return threads.deferToThread(self.s3_client.head_object,
+                                         Bucket=self.bucket,
+                                         Key=key_name)
         else:
             b = self._get_boto_bucket()
             return threads.deferToThread(b.get_key, key_name)
@@ -162,10 +162,10 @@ class S3FilesStore:
                 Bucket=self.bucket,
                 Key=key_name,
                 Body=buf,
-                Metadata={k: str(v) for k, v in (meta or {}).items()},
+                Metadata={k: str(v)
+                          for k, v in (meta or {}).items()},
                 ACL=self.POLICY,
-                **extra
-            )
+                **extra)
         else:
             b = self._get_boto_bucket()
             k = b.new_key(key_name)
@@ -186,41 +186,65 @@ class S3FilesStore:
         """ Convert headers to botocore keyword agruments.
         """
         # This is required while we need to support both boto and botocore.
-        mapping = CaselessDict(
-            {
-                "Content-Type": "ContentType",
-                "Cache-Control": "CacheControl",
-                "Content-Disposition": "ContentDisposition",
-                "Content-Encoding": "ContentEncoding",
-                "Content-Language": "ContentLanguage",
-                "Content-Length": "ContentLength",
-                "Content-MD5": "ContentMD5",
-                "Expires": "Expires",
-                "X-Amz-Grant-Full-Control": "GrantFullControl",
-                "X-Amz-Grant-Read": "GrantRead",
-                "X-Amz-Grant-Read-ACP": "GrantReadACP",
-                "X-Amz-Grant-Write-ACP": "GrantWriteACP",
-                "X-Amz-Object-Lock-Legal-Hold": "ObjectLockLegalHoldStatus",
-                "X-Amz-Object-Lock-Mode": "ObjectLockMode",
-                "X-Amz-Object-Lock-Retain-Until-Date": "ObjectLockRetainUntilDate",
-                "X-Amz-Request-Payer": "RequestPayer",
-                "X-Amz-Server-Side-Encryption": "ServerSideEncryption",
-                "X-Amz-Server-Side-Encryption-Aws-Kms-Key-Id": "SSEKMSKeyId",
-                "X-Amz-Server-Side-Encryption-Context": "SSEKMSEncryptionContext",
-                "X-Amz-Server-Side-Encryption-Customer-Algorithm": "SSECustomerAlgorithm",
-                "X-Amz-Server-Side-Encryption-Customer-Key": "SSECustomerKey",
-                "X-Amz-Server-Side-Encryption-Customer-Key-Md5": "SSECustomerKeyMD5",
-                "X-Amz-Storage-Class": "StorageClass",
-                "X-Amz-Tagging": "Tagging",
-                "X-Amz-Website-Redirect-Location": "WebsiteRedirectLocation",
-            }
-        )
+        mapping = CaselessDict({
+            "Content-Type":
+            "ContentType",
+            "Cache-Control":
+            "CacheControl",
+            "Content-Disposition":
+            "ContentDisposition",
+            "Content-Encoding":
+            "ContentEncoding",
+            "Content-Language":
+            "ContentLanguage",
+            "Content-Length":
+            "ContentLength",
+            "Content-MD5":
+            "ContentMD5",
+            "Expires":
+            "Expires",
+            "X-Amz-Grant-Full-Control":
+            "GrantFullControl",
+            "X-Amz-Grant-Read":
+            "GrantRead",
+            "X-Amz-Grant-Read-ACP":
+            "GrantReadACP",
+            "X-Amz-Grant-Write-ACP":
+            "GrantWriteACP",
+            "X-Amz-Object-Lock-Legal-Hold":
+            "ObjectLockLegalHoldStatus",
+            "X-Amz-Object-Lock-Mode":
+            "ObjectLockMode",
+            "X-Amz-Object-Lock-Retain-Until-Date":
+            "ObjectLockRetainUntilDate",
+            "X-Amz-Request-Payer":
+            "RequestPayer",
+            "X-Amz-Server-Side-Encryption":
+            "ServerSideEncryption",
+            "X-Amz-Server-Side-Encryption-Aws-Kms-Key-Id":
+            "SSEKMSKeyId",
+            "X-Amz-Server-Side-Encryption-Context":
+            "SSEKMSEncryptionContext",
+            "X-Amz-Server-Side-Encryption-Customer-Algorithm":
+            "SSECustomerAlgorithm",
+            "X-Amz-Server-Side-Encryption-Customer-Key":
+            "SSECustomerKey",
+            "X-Amz-Server-Side-Encryption-Customer-Key-Md5":
+            "SSECustomerKeyMD5",
+            "X-Amz-Storage-Class":
+            "StorageClass",
+            "X-Amz-Tagging":
+            "Tagging",
+            "X-Amz-Website-Redirect-Location":
+            "WebsiteRedirectLocation",
+        })
         extra = {}
         for key, value in headers.items():
             try:
                 kwarg = mapping[key]
             except KeyError:
-                raise TypeError('Header "%s" is not supported by botocore' % key)
+                raise TypeError('Header "%s" is not supported by botocore' %
+                                key)
             else:
                 extra[kwarg] = value
         return extra
@@ -244,8 +268,7 @@ class GCSFilesStore:
         self.bucket = client.bucket(bucket)
         self.prefix = prefix
         permissions = self.bucket.test_iam_permissions(
-            ["storage.objects.get", "storage.objects.create"]
-        )
+            ["storage.objects.get", "storage.objects.create"])
         if "storage.objects.get" not in permissions:
             logger.warning(
                 "No 'storage.objects.get' permission for GSC bucket %(bucket)s. "
@@ -267,7 +290,8 @@ class GCSFilesStore:
             else:
                 return {}
 
-        return threads.deferToThread(self.bucket.get_blob, path).addCallback(_onsuccess)
+        return threads.deferToThread(self.bucket.get_blob,
+                                     path).addCallback(_onsuccess)
 
     def _get_content_type(self, headers):
         if headers and "Content-Type" in headers:
@@ -295,7 +319,8 @@ class FTPFilesStore:
 
     def __init__(self, uri):
         if not uri.startswith("ftp://"):
-            raise ValueError("Incorrect URI scheme in %s, expected 'ftp'" % uri)
+            raise ValueError("Incorrect URI scheme in %s, expected 'ftp'" %
+                             uri)
         u = urlparse(uri)
         self.port = u.port
         self.host = u.hostname
@@ -326,10 +351,14 @@ class FTPFilesStore:
                 if self.USE_ACTIVE_MODE:
                     ftp.set_pasv(False)
                 file_path = "%s/%s" % (self.basedir, path)
-                last_modified = float(ftp.voidcmd("MDTM %s" % file_path)[4:].strip())
+                last_modified = float(
+                    ftp.voidcmd("MDTM %s" % file_path)[4:].strip())
                 m = hashlib.md5()
                 ftp.retrbinary("RETR %s" % file_path, m.update)
-                return {"last_modified": last_modified, "checksum": m.hexdigest()}
+                return {
+                    "last_modified": last_modified,
+                    "checksum": m.hexdigest()
+                }
             # The file doesn't exist
             except Exception:
                 return {}
@@ -377,20 +406,18 @@ class FilesPipeline(MediaPipeline):
 
         cls_name = "FilesPipeline"
         self.store = self._get_store(store_uri)
-        resolve = functools.partial(
-            self._key_for_pipe, base_class_name=cls_name, settings=settings
-        )
+        resolve = functools.partial(self._key_for_pipe,
+                                    base_class_name=cls_name,
+                                    settings=settings)
         self.expires = settings.getint(resolve("FILES_EXPIRES"), self.EXPIRES)
         if not hasattr(self, "FILES_URLS_FIELD"):
             self.FILES_URLS_FIELD = self.DEFAULT_FILES_URLS_FIELD
         if not hasattr(self, "FILES_RESULT_FIELD"):
             self.FILES_RESULT_FIELD = self.DEFAULT_FILES_RESULT_FIELD
-        self.files_urls_field = settings.get(
-            resolve("FILES_URLS_FIELD"), self.FILES_URLS_FIELD
-        )
-        self.files_result_field = settings.get(
-            resolve("FILES_RESULT_FIELD"), self.FILES_RESULT_FIELD
-        )
+        self.files_urls_field = settings.get(resolve("FILES_URLS_FIELD"),
+                                             self.FILES_URLS_FIELD)
+        self.files_result_field = settings.get(resolve("FILES_RESULT_FIELD"),
+                                               self.FILES_RESULT_FIELD)
 
         super().__init__(download_func=download_func, settings=settings)
 
@@ -443,7 +470,11 @@ class FilesPipeline(MediaPipeline):
             logger.debug(
                 "File (uptodate): Downloaded %(medianame)s from %(request)s "
                 "referred in <%(referer)s>",
-                {"medianame": self.MEDIA_NAME, "request": request, "referer": referer},
+                {
+                    "medianame": self.MEDIA_NAME,
+                    "request": request,
+                    "referer": referer
+                },
                 extra={"spider": info.spider},
             )
             self.inc_stats(info.spider, "uptodate")
@@ -459,13 +490,11 @@ class FilesPipeline(MediaPipeline):
         path = self.file_path(request, info=info)
         dfd = defer.maybeDeferred(self.store.stat_file, path, info)
         dfd.addCallbacks(_onsuccess, lambda _: None)
-        dfd.addErrback(
-            lambda f: logger.error(
-                self.__class__.__name__ + ".store.stat_file",
-                exc_info=failure_to_exc_info(f),
-                extra={"spider": info.spider},
-            )
-        )
+        dfd.addErrback(lambda f: logger.error(
+            self.__class__.__name__ + ".store.stat_file",
+            exc_info=failure_to_exc_info(f),
+            extra={"spider": info.spider},
+        ))
         return dfd
 
     def media_failed(self, failure, request, info):
@@ -492,7 +521,11 @@ class FilesPipeline(MediaPipeline):
             logger.warning(
                 "File (code: %(status)s): Error downloading file from "
                 "%(request)s referred in <%(referer)s>",
-                {"status": response.status, "request": request, "referer": referer},
+                {
+                    "status": response.status,
+                    "request": request,
+                    "referer": referer
+                },
                 extra={"spider": info.spider},
             )
             raise FileException("download-error")
@@ -501,7 +534,10 @@ class FilesPipeline(MediaPipeline):
             logger.warning(
                 "File (empty-content): Empty file from %(request)s referred "
                 "in <%(referer)s>: no-content",
-                {"request": request, "referer": referer},
+                {
+                    "request": request,
+                    "referer": referer
+                },
                 extra={"spider": info.spider},
             )
             raise FileException("empty-content")
@@ -510,7 +546,11 @@ class FilesPipeline(MediaPipeline):
         logger.debug(
             "File (%(status)s): Downloaded file from %(request)s referred in "
             "<%(referer)s>",
-            {"status": status, "request": request, "referer": referer},
+            {
+                "status": status,
+                "request": request,
+                "referer": referer
+            },
             extra={"spider": info.spider},
         )
         self.inc_stats(info.spider, status)
@@ -522,7 +562,11 @@ class FilesPipeline(MediaPipeline):
             logger.warning(
                 "File (error): Error processing file from %(request)s "
                 "referred in <%(referer)s>: %(errormsg)s",
-                {"request": request, "referer": referer, "errormsg": str(exc)},
+                {
+                    "request": request,
+                    "referer": referer,
+                    "errormsg": str(exc)
+                },
                 extra={"spider": info.spider},
                 exc_info=True,
             )
@@ -531,7 +575,10 @@ class FilesPipeline(MediaPipeline):
             logger.error(
                 "File (unknown-error): Error processing file from %(request)s "
                 "referred in <%(referer)s>",
-                {"request": request, "referer": referer},
+                {
+                    "request": request,
+                    "referer": referer
+                },
                 exc_info=True,
                 extra={"spider": info.spider},
             )
@@ -546,7 +593,8 @@ class FilesPipeline(MediaPipeline):
 
     def inc_stats(self, spider, status):
         spider.crawler.stats.inc_value("file_count", spider=spider)
-        spider.crawler.stats.inc_value("file_status_count/%s" % status, spider=spider)
+        spider.crawler.stats.inc_value("file_status_count/%s" % status,
+                                       spider=spider)
 
     # Overridable Interface
     def get_media_requests(self, item, info):
@@ -563,7 +611,9 @@ class FilesPipeline(MediaPipeline):
 
     def item_completed(self, results, item, info):
         with suppress(KeyError):
-            ItemAdapter(item)[self.files_result_field] = [x for ok, x in results if ok]
+            ItemAdapter(item)[self.files_result_field] = [
+                x for ok, x in results if ok
+            ]
         return item
 
     def file_path(self, request, response=None, info=None):

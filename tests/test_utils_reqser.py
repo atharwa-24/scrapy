@@ -94,8 +94,10 @@ class RequestSerializationTest(unittest.TestCase):
         )
         self._assert_serializes_ok(r, spider=self.spider)
         request_dict = request_to_dict(r, self.spider)
-        self.assertEqual(request_dict["callback"], "_TestSpider__parse_item_reference")
-        self.assertEqual(request_dict["errback"], "_TestSpider__handle_error_reference")
+        self.assertEqual(request_dict["callback"],
+                         "_TestSpider__parse_item_reference")
+        self.assertEqual(request_dict["errback"],
+                         "_TestSpider__handle_error_reference")
 
     def test_private_callback_serialization(self):
         r = Request(

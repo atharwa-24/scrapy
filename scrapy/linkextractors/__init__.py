@@ -98,7 +98,6 @@ IGNORED_EXTENSIONS = [
     "apk",
 ]
 
-
 _re_type = type(re.compile("", 0))
 
 
@@ -118,8 +117,7 @@ class FilteringLinkExtractor:
         from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 
         if issubclass(cls, FilteringLinkExtractor) and not issubclass(
-            cls, LxmlLinkExtractor
-        ):
+                cls, LxmlLinkExtractor):
             warn(
                 "scrapy.linkextractors.FilteringLinkExtractor is deprecated, "
                 "please use scrapy.linkextractors.LinkExtractor instead",
@@ -129,26 +127,28 @@ class FilteringLinkExtractor:
         return super().__new__(cls)
 
     def __init__(
-        self,
-        link_extractor,
-        allow,
-        deny,
-        allow_domains,
-        deny_domains,
-        restrict_xpaths,
-        canonicalize,
-        deny_extensions,
-        restrict_css,
-        restrict_text,
+            self,
+            link_extractor,
+            allow,
+            deny,
+            allow_domains,
+            deny_domains,
+            restrict_xpaths,
+            canonicalize,
+            deny_extensions,
+            restrict_css,
+            restrict_text,
     ):
 
         self.link_extractor = link_extractor
 
         self.allow_res = [
-            x if isinstance(x, _re_type) else re.compile(x) for x in arg_to_iter(allow)
+            x if isinstance(x, _re_type) else re.compile(x)
+            for x in arg_to_iter(allow)
         ]
         self.deny_res = [
-            x if isinstance(x, _re_type) else re.compile(x) for x in arg_to_iter(deny)
+            x if isinstance(x, _re_type) else re.compile(x)
+            for x in arg_to_iter(deny)
         ]
 
         self.allow_domains = set(arg_to_iter(allow_domains))
@@ -156,8 +156,7 @@ class FilteringLinkExtractor:
 
         self.restrict_xpaths = tuple(arg_to_iter(restrict_xpaths))
         self.restrict_xpaths += tuple(
-            map(self._csstranslator.css_to_xpath, arg_to_iter(restrict_css))
-        )
+            map(self._csstranslator.css_to_xpath, arg_to_iter(restrict_css)))
 
         self.canonicalize = canonicalize
         if deny_extensions is None:
@@ -177,14 +176,13 @@ class FilteringLinkExtractor:
             return False
         parsed_url = urlparse(link.url)
         if self.allow_domains and not url_is_from_any_domain(
-            parsed_url, self.allow_domains
-        ):
+                parsed_url, self.allow_domains):
             return False
-        if self.deny_domains and url_is_from_any_domain(parsed_url, self.deny_domains):
+        if self.deny_domains and url_is_from_any_domain(
+                parsed_url, self.deny_domains):
             return False
         if self.deny_extensions and url_has_any_extension(
-            parsed_url, self.deny_extensions
-        ):
+                parsed_url, self.deny_extensions):
             return False
         if self.restrict_text and not _matches(link.text, self.restrict_text):
             return False
@@ -192,17 +190,17 @@ class FilteringLinkExtractor:
 
     def matches(self, url):
 
-        if self.allow_domains and not url_is_from_any_domain(url, self.allow_domains):
+        if self.allow_domains and not url_is_from_any_domain(
+                url, self.allow_domains):
             return False
-        if self.deny_domains and url_is_from_any_domain(url, self.deny_domains):
+        if self.deny_domains and url_is_from_any_domain(
+                url, self.deny_domains):
             return False
 
-        allowed = (
-            (regex.search(url) for regex in self.allow_res)
-            if self.allow_res
-            else [True]
-        )
-        denied = (regex.search(url) for regex in self.deny_res) if self.deny_res else []
+        allowed = ((regex.search(url)
+                    for regex in self.allow_res) if self.allow_res else [True])
+        denied = (regex.search(url)
+                  for regex in self.deny_res) if self.deny_res else []
         return any(allowed) and not any(denied)
 
     def _process_links(self, links):

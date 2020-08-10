@@ -43,7 +43,10 @@ class ItemTest(unittest.TestCase):
         i4 = TestItem(i3)
         self.assertEqual(i4["name"], "john doe")
 
-        self.assertRaises(KeyError, TestItem, {"name": "john doe", "other": "foo"})
+        self.assertRaises(KeyError, TestItem, {
+            "name": "john doe",
+            "other": "foo"
+        })
 
     def test_invalid_field(self):
         class TestItem(Item):
@@ -164,7 +167,14 @@ class ItemTest(unittest.TestCase):
         item = D(save="X", load="Y")
         self.assertEqual(item["save"], "X")
         self.assertEqual(item["load"], "Y")
-        self.assertEqual(D.fields, {"load": {"default": "A"}, "save": {"default": "A"}})
+        self.assertEqual(D.fields, {
+            "load": {
+                "default": "A"
+            },
+            "save": {
+                "default": "A"
+            }
+        })
 
         # D class inverted
         class E(C, B):
@@ -172,7 +182,14 @@ class ItemTest(unittest.TestCase):
 
         self.assertEqual(E(save="X")["save"], "X")
         self.assertEqual(E(load="X")["load"], "X")
-        self.assertEqual(E.fields, {"load": {"default": "C"}, "save": {"default": "C"}})
+        self.assertEqual(E.fields, {
+            "load": {
+                "default": "C"
+            },
+            "save": {
+                "default": "C"
+            }
+        })
 
     def test_metaclass_multiple_inheritance_diamond(self):
         class A(Item):
@@ -196,9 +213,15 @@ class ItemTest(unittest.TestCase):
         self.assertEqual(
             D.fields,
             {
-                "save": {"default": "C"},
-                "load": {"default": "D"},
-                "update": {"default": "D"},
+                "save": {
+                    "default": "C"
+                },
+                "load": {
+                    "default": "D"
+                },
+                "update": {
+                    "default": "D"
+                },
             },
         )
 
@@ -211,9 +234,15 @@ class ItemTest(unittest.TestCase):
         self.assertEqual(
             E.fields,
             {
-                "save": {"default": "C"},
-                "load": {"default": "E"},
-                "update": {"default": "C"},
+                "save": {
+                    "default": "C"
+                },
+                "load": {
+                    "default": "E"
+                },
+                "update": {
+                    "default": "C"
+                },
             },
         )
 
@@ -235,7 +264,14 @@ class ItemTest(unittest.TestCase):
 
         self.assertRaises(KeyError, D, not_allowed="value")
         self.assertEqual(D(save="X")["save"], "X")
-        self.assertEqual(D.fields, {"save": {"default": "A"}, "load": {"default": "A"}})
+        self.assertEqual(D.fields, {
+            "save": {
+                "default": "A"
+            },
+            "load": {
+                "default": "A"
+            }
+        })
 
         # D class inverted
         class E(C, B):
@@ -243,7 +279,14 @@ class ItemTest(unittest.TestCase):
 
         self.assertRaises(KeyError, E, not_allowed="value")
         self.assertEqual(E(save="X")["save"], "X")
-        self.assertEqual(E.fields, {"save": {"default": "A"}, "load": {"default": "A"}})
+        self.assertEqual(E.fields, {
+            "save": {
+                "default": "A"
+            },
+            "load": {
+                "default": "A"
+            }
+        })
 
     def test_to_dict(self):
         class TestItem(Item):

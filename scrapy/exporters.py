@@ -46,7 +46,8 @@ class BaseItemExporter:
         self.export_empty_fields = options.pop("export_empty_fields", False)
         self.indent = options.pop("indent", None)
         if not dont_fail and options:
-            raise TypeError("Unexpected options: %s" % ", ".join(options.keys()))
+            raise TypeError("Unexpected options: %s" %
+                            ", ".join(options.keys()))
 
     def export_item(self, item):
         raise NotImplementedError
@@ -61,7 +62,10 @@ class BaseItemExporter:
     def finish_exporting(self):
         pass
 
-    def _get_serialized_fields(self, item, default_value=None, include_empty=None):
+    def _get_serialized_fields(self,
+                               item,
+                               default_value=None,
+                               include_empty=None):
         """Return the fields to export as an iterable of tuples
         (name, serialized_value)
         """
@@ -84,7 +88,8 @@ class BaseItemExporter:
         for field_name in field_iter:
             if field_name in item:
                 field_meta = item.get_field_meta(field_name)
-                value = self.serialize_field(field_meta, field_name, item[field_name])
+                value = self.serialize_field(field_meta, field_name,
+                                             item[field_name])
             else:
                 value = default_value
 
@@ -111,9 +116,8 @@ class JsonItemExporter(BaseItemExporter):
         # there is a small difference between the behaviour or JsonItemExporter.indent
         # and ScrapyJSONEncoder.indent. ScrapyJSONEncoder.indent=None is needed to prevent
         # the addition of newlines everywhere
-        json_indent = (
-            self.indent if self.indent is not None and self.indent > 0 else None
-        )
+        json_indent = (self.indent if self.indent is not None
+                       and self.indent > 0 else None)
         self._kwargs.setdefault("indent", json_indent)
         self._kwargs.setdefault("ensure_ascii", not self.encoding)
         self.encoder = ScrapyJSONEncoder(**self._kwargs)
@@ -200,7 +204,11 @@ class XmlItemExporter(BaseItemExporter):
 
 
 class CsvItemExporter(BaseItemExporter):
-    def __init__(self, file, include_headers_line=True, join_multivalued=",", **kwargs):
+    def __init__(self,
+                 file,
+                 include_headers_line=True,
+                 join_multivalued=",",
+                 **kwargs):
         super().__init__(dont_fail=True, **kwargs)
         if not self.encoding:
             self.encoding = "utf-8"
@@ -210,7 +218,8 @@ class CsvItemExporter(BaseItemExporter):
             line_buffering=False,
             write_through=True,
             encoding=self.encoding,
-            newline="",  # Windows needs this https://github.com/scrapy/scrapy/issues/3034
+            newline=
+            "",  # Windows needs this https://github.com/scrapy/scrapy/issues/3034
         )
         self.csv_writer = csv.writer(self.stream, **self._kwargs)
         self._headers_not_written = True
@@ -233,7 +242,9 @@ class CsvItemExporter(BaseItemExporter):
             self._headers_not_written = False
             self._write_headers_and_set_fields_to_export(item)
 
-        fields = self._get_serialized_fields(item, default_value="", include_empty=True)
+        fields = self._get_serialized_fields(item,
+                                             default_value="",
+                                             include_empty=True)
         values = list(self._build_row(x for _, x in fields))
         self.csv_writer.writerow(values)
 

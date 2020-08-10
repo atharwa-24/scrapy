@@ -12,7 +12,8 @@ class SignalCatcherSpider(Spider):
 
     def __init__(self, crawler, url, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        crawler.signals.connect(self.on_request_left, signal=request_left_downloader)
+        crawler.signals.connect(self.on_request_left,
+                                signal=request_left_downloader)
         self.caught_times = 0
         self.start_urls = [url]
 

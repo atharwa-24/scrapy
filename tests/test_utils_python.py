@@ -31,9 +31,8 @@ class MutableChainTest(unittest.TestCase):
         with catch_warnings(record=True) as warnings:
             self.assertEqual(m.next(), 2)
             self.assertEqual(len(warnings), 1)
-            self.assertIn(
-                "scrapy.utils.python.MutableChain.__next__", str(warnings[0].message)
-            )
+            self.assertIn("scrapy.utils.python.MutableChain.__next__",
+                          str(warnings[0].message))
         self.assertEqual(list(m), list(range(3, 13)))
 
 
@@ -44,14 +43,16 @@ class ToUnicodeTest(unittest.TestCase):
     def test_converting_a_latin_1_encoded_string_to_unicode(self):
         self.assertEqual(to_unicode(b"lel\xf1e", "latin-1"), "lel\xf1e")
 
-    def test_converting_a_unicode_to_unicode_should_return_the_same_object(self):
+    def test_converting_a_unicode_to_unicode_should_return_the_same_object(
+            self):
         self.assertEqual(to_unicode("\xf1e\xf1e\xf1e"), "\xf1e\xf1e\xf1e")
 
     def test_converting_a_strange_object_should_raise_TypeError(self):
         self.assertRaises(TypeError, to_unicode, 423)
 
     def test_errors_argument(self):
-        self.assertEqual(to_unicode(b"a\xedb", "utf-8", errors="replace"), "a\ufffdb")
+        self.assertEqual(to_unicode(b"a\xedb", "utf-8", errors="replace"),
+                         "a\ufffdb")
 
 
 class ToBytesTest(unittest.TestCase):
@@ -61,14 +62,16 @@ class ToBytesTest(unittest.TestCase):
     def test_converting_a_unicode_object_to_a_latin_1_encoded_string(self):
         self.assertEqual(to_bytes("\xa3 49", "latin-1"), b"\xa3 49")
 
-    def test_converting_a_regular_bytes_to_bytes_should_return_the_same_object(self):
+    def test_converting_a_regular_bytes_to_bytes_should_return_the_same_object(
+            self):
         self.assertEqual(to_bytes(b"lel\xf1e"), b"lel\xf1e")
 
     def test_converting_a_strange_object_should_raise_TypeError(self):
         self.assertRaises(TypeError, to_bytes, unittest)
 
     def test_errors_argument(self):
-        self.assertEqual(to_bytes("a\ufffdb", "latin-1", errors="replace"), b"a?b")
+        self.assertEqual(to_bytes("a\ufffdb", "latin-1", errors="replace"),
+                         b"a?b")
 
 
 class MemoizedMethodTest(unittest.TestCase):
@@ -209,23 +212,32 @@ class UtilsPythonTestCase(unittest.TestCase):
             self.assertEqual(get_func_args(" ".join), [])
             self.assertEqual(get_func_args(operator.itemgetter(2)), [])
         else:
+            self.assertEqual(get_func_args(str.split, stripself=True),
+                             ["sep", "maxsplit"])
             self.assertEqual(
-                get_func_args(str.split, stripself=True), ["sep", "maxsplit"]
-            )
-            self.assertEqual(
-                get_func_args(operator.itemgetter(2), stripself=True), ["obj"]
-            )
+                get_func_args(operator.itemgetter(2), stripself=True), ["obj"])
             if version_info < (3, 6):
-                self.assertEqual(get_func_args(" ".join, stripself=True), ["list"])
+                self.assertEqual(get_func_args(" ".join, stripself=True),
+                                 ["list"])
             else:
-                self.assertEqual(get_func_args(" ".join, stripself=True), ["iterable"])
+                self.assertEqual(get_func_args(" ".join, stripself=True),
+                                 ["iterable"])
 
     def test_without_none_values(self):
         self.assertEqual(without_none_values([1, None, 3, 4]), [1, 3, 4])
         self.assertEqual(without_none_values((1, None, 3, 4)), (1, 3, 4))
         self.assertEqual(
-            without_none_values({"one": 1, "none": None, "three": 3, "four": 4}),
-            {"one": 1, "three": 3, "four": 4},
+            without_none_values({
+                "one": 1,
+                "none": None,
+                "three": 3,
+                "four": 4
+            }),
+            {
+                "one": 1,
+                "three": 3,
+                "four": 4
+            },
         )
 
 

@@ -61,9 +61,8 @@ class ReturnsContract(Contract):
 
         if len(self.args) not in [1, 2, 3]:
             raise ValueError(
-                "Incorrect argument quantity: expected 1, 2 or 3, got %i"
-                % len(self.args)
-            )
+                "Incorrect argument quantity: expected 1, 2 or 3, got %i" %
+                len(self.args))
         self.obj_name = self.args[0] or None
         self.obj_type_verifier = self.object_type_verifiers[self.obj_name]
 
@@ -91,9 +90,8 @@ class ReturnsContract(Contract):
             else:
                 expected = "%s..%s" % (self.min_bound, self.max_bound)
 
-            raise ContractFail(
-                "Returned %s %s, expected %s" % (occurrences, self.obj_name, expected)
-            )
+            raise ContractFail("Returned %s %s, expected %s" %
+                               (occurrences, self.obj_name, expected))
 
 
 class ScrapesContract(Contract):
@@ -106,7 +104,9 @@ class ScrapesContract(Contract):
     def post_process(self, output):
         for x in output:
             if is_item(x):
-                missing = [arg for arg in self.args if arg not in ItemAdapter(x)]
+                missing = [
+                    arg for arg in self.args if arg not in ItemAdapter(x)
+                ]
                 if missing:
                     missing_str = ", ".join(missing)
                     raise ContractFail("Missing fields: %s" % missing_str)

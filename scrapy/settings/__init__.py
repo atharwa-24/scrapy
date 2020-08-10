@@ -28,7 +28,6 @@ def get_settings_priority(priority):
 
 
 class SettingsAttribute:
-
     """Class for storing data related to settings attributes.
 
     This class is intended for internal usage, you should try Settings class
@@ -52,8 +51,7 @@ class SettingsAttribute:
 
     def __str__(self):
         return "<SettingsAttribute value={self.value!r} priority={self.priority}>".format(
-            self=self
-        )
+            self=self)
 
     __repr__ = __str__
 
@@ -130,11 +128,9 @@ class BaseSettings(MutableMapping):
                 return True
             if got in ("False", "false"):
                 return False
-            raise ValueError(
-                "Supported values for boolean settings "
-                "are 0/1, True/False, '0'/'1', "
-                "'True'/'False' and 'true'/'false'"
-            )
+            raise ValueError("Supported values for boolean settings "
+                             "are 0/1, True/False, '0'/'1', "
+                             "'True'/'False' and 'true'/'false'")
 
     def getint(self, name, default=0):
         """

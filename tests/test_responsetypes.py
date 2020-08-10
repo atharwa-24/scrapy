@@ -29,8 +29,10 @@ class ResponseTypesTest(unittest.TestCase):
             ("attachment;filename=data£.tar.gz".encode("utf-8"), Response),
             ("attachment;filename=dataµ.tar.gz".encode("latin-1"), Response),
             ("attachment;filename=data高.doc".encode("gbk"), Response),
-            ("attachment;filename=دورهdata.html".encode("cp720"), HtmlResponse),
-            ("attachment;filename=日本語版Wikipedia.xml".encode("iso2022_jp"), XmlResponse),
+            ("attachment;filename=دورهdata.html".encode("cp720"),
+             HtmlResponse),
+            ("attachment;filename=日本語版Wikipedia.xml".encode("iso2022_jp"),
+             XmlResponse),
         ]
         for source, cls in mappings:
             retcls = responsetypes.from_content_disposition(source)
@@ -45,7 +47,8 @@ class ResponseTypesTest(unittest.TestCase):
             ("application/xml; charset=UTF-8", XmlResponse),
             ("application/octet-stream", Response),
             ("application/x-json; encoding=UTF8;charset=UTF-8", TextResponse),
-            ("application/json-amazonui-streaming;charset=UTF-8", TextResponse),
+            ("application/json-amazonui-streaming;charset=UTF-8",
+             TextResponse),
         ]
         for source, cls in mappings:
             retcls = responsetypes.from_content_type(source)
@@ -54,7 +57,8 @@ class ResponseTypesTest(unittest.TestCase):
     def test_from_body(self):
         mappings = [
             (b"\x03\x02\xdf\xdd\x23", Response),
-            (b"Some plain text\ndata with tabs\t and null bytes\0", TextResponse),
+            (b"Some plain text\ndata with tabs\t and null bytes\0",
+             TextResponse),
             (b"<html><head><title>Hello</title></head>", HtmlResponse),
             (b'<?xml version="1.0" encoding="utf-8"', XmlResponse),
         ]
@@ -64,7 +68,9 @@ class ResponseTypesTest(unittest.TestCase):
 
     def test_from_headers(self):
         mappings = [
-            ({"Content-Type": ["text/html; charset=utf-8"]}, HtmlResponse),
+            ({
+                "Content-Type": ["text/html; charset=utf-8"]
+            }, HtmlResponse),
             (
                 {
                     "Content-Type": ["text/html; charset=utf-8"],
@@ -88,21 +94,28 @@ class ResponseTypesTest(unittest.TestCase):
     def test_from_args(self):
         # TODO: add more tests that check precedence between the different arguments
         mappings = [
-            ({"url": "http://www.example.com/data.csv"}, TextResponse),
+            ({
+                "url": "http://www.example.com/data.csv"
+            }, TextResponse),
             # headers takes precedence over url
             (
                 {
-                    "headers": Headers({"Content-Type": ["text/html; charset=utf-8"]}),
-                    "url": "http://www.example.com/item/",
+                    "headers":
+                    Headers({"Content-Type": ["text/html; charset=utf-8"]}),
+                    "url":
+                    "http://www.example.com/item/",
                 },
                 HtmlResponse,
             ),
             (
                 {
-                    "headers": Headers(
-                        {"Content-Disposition": ['attachment; filename="data.xml.gz"']}
-                    ),
-                    "url": "http://www.example.com/page/",
+                    "headers":
+                    Headers({
+                        "Content-Disposition":
+                        ['attachment; filename="data.xml.gz"']
+                    }),
+                    "url":
+                    "http://www.example.com/page/",
                 },
                 Response,
             ),
@@ -114,8 +127,8 @@ class ResponseTypesTest(unittest.TestCase):
     def test_custom_mime_types_loaded(self):
         # check that mime.types files shipped with scrapy are loaded
         self.assertEqual(
-            responsetypes.mimetypes.guess_type("x.scrapytest")[0], "x-scrapy/test"
-        )
+            responsetypes.mimetypes.guess_type("x.scrapytest")[0],
+            "x-scrapy/test")
 
 
 if __name__ == "__main__":

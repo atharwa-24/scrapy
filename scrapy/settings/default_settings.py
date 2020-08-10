@@ -49,7 +49,8 @@ COOKIES_DEBUG = False
 DEFAULT_ITEM_CLASS = "scrapy.item.Item"
 
 DEFAULT_REQUEST_HEADERS = {
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept":
+    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en",
 }
 
@@ -84,11 +85,9 @@ DOWNLOAD_FAIL_ON_DATALOSS = True
 DOWNLOADER = "scrapy.core.downloader.Downloader"
 
 DOWNLOADER_HTTPCLIENTFACTORY = (
-    "scrapy.core.downloader.webclient.ScrapyHTTPClientFactory"
-)
+    "scrapy.core.downloader.webclient.ScrapyHTTPClientFactory")
 DOWNLOADER_CLIENTCONTEXTFACTORY = (
-    "scrapy.core.downloader.contextfactory.ScrapyClientContextFactory"
-)
+    "scrapy.core.downloader.contextfactory.ScrapyClientContextFactory")
 DOWNLOADER_CLIENT_TLS_CIPHERS = "DEFAULT"
 # Use highest TLS/SSL protocol version supported by the platform, also allowing negotiation:
 DOWNLOADER_CLIENT_TLS_METHOD = "TLS"
@@ -100,13 +99,16 @@ DOWNLOADER_MIDDLEWARES_BASE = {
     # Engine side
     "scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware": 100,
     "scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware": 300,
-    "scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware": 350,
-    "scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware": 400,
+    "scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware":
+    350,
+    "scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware":
+    400,
     "scrapy.downloadermiddlewares.useragent.UserAgentMiddleware": 500,
     "scrapy.downloadermiddlewares.retry.RetryMiddleware": 550,
     "scrapy.downloadermiddlewares.ajaxcrawl.AjaxCrawlMiddleware": 560,
     "scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware": 580,
-    "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware": 590,
+    "scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware":
+    590,
     "scrapy.downloadermiddlewares.redirect.RedirectMiddleware": 600,
     "scrapy.downloadermiddlewares.cookies.CookiesMiddleware": 700,
     "scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware": 750,
@@ -291,7 +293,8 @@ TEMPLATES_DIR = abspath(join(dirname(__file__), "..", "templates"))
 
 URLLENGTH_LIMIT = 2083
 
-USER_AGENT = "Scrapy/%s (+https://scrapy.org)" % import_module("scrapy").__version__
+USER_AGENT = "Scrapy/%s (+https://scrapy.org)" % import_module(
+    "scrapy").__version__
 
 TELNETCONSOLE_ENABLED = 1
 TELNETCONSOLE_PORT = [6023, 6073]

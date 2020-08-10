@@ -46,9 +46,7 @@ Disallow: /wiki/K%C3%A4ytt%C3%A4j%C3%A4:
 Disallow: /wiki/Käyttäjä:
 User-Agent: UnicödeBöt
 Disallow: /some/randome/page.html
-""".encode(
-            "utf-8"
-        )
+""".encode("utf-8")
         response = TextResponse("http://site.local/robots.txt", body=ROBOTS)
 
         def return_response(request, spider):
@@ -63,28 +61,28 @@ Disallow: /some/randome/page.html
         middleware = RobotsTxtMiddleware(self._get_successful_crawler())
         return DeferredList(
             [
-                self.assertNotIgnored(Request("http://site.local/allowed"), middleware),
-                self.assertIgnored(Request("http://site.local/admin/main"), middleware),
-                self.assertIgnored(Request("http://site.local/static/"), middleware),
+                self.assertNotIgnored(Request("http://site.local/allowed"),
+                                      middleware),
+                self.assertIgnored(Request("http://site.local/admin/main"),
+                                   middleware),
+                self.assertIgnored(Request("http://site.local/static/"),
+                                   middleware),
                 self.assertIgnored(
                     Request("http://site.local/wiki/K%C3%A4ytt%C3%A4j%C3%A4:"),
                     middleware,
                 ),
-                self.assertIgnored(
-                    Request("http://site.local/wiki/Käyttäjä:"), middleware
-                ),
+                self.assertIgnored(Request("http://site.local/wiki/Käyttäjä:"),
+                                   middleware),
             ],
             fireOnOneErrback=True,
         )
 
     def test_robotstxt_ready_parser(self):
         middleware = RobotsTxtMiddleware(self._get_successful_crawler())
-        d = self.assertNotIgnored(Request("http://site.local/allowed"), middleware)
-        d.addCallback(
-            lambda _: self.assertNotIgnored(
-                Request("http://site.local/allowed"), middleware
-            )
-        )
+        d = self.assertNotIgnored(Request("http://site.local/allowed"),
+                                  middleware)
+        d.addCallback(lambda _: self.assertNotIgnored(
+            Request("http://site.local/allowed"), middleware))
         return d
 
     def test_robotstxt_meta(self):
@@ -93,14 +91,14 @@ Disallow: /some/randome/page.html
         return DeferredList(
             [
                 self.assertNotIgnored(
-                    Request("http://site.local/allowed", meta=meta), middleware
-                ),
+                    Request("http://site.local/allowed", meta=meta),
+                    middleware),
                 self.assertNotIgnored(
-                    Request("http://site.local/admin/main", meta=meta), middleware
-                ),
+                    Request("http://site.local/admin/main", meta=meta),
+                    middleware),
                 self.assertNotIgnored(
-                    Request("http://site.local/static/", meta=meta), middleware
-                ),
+                    Request("http://site.local/static/", meta=meta),
+                    middleware),
             ],
             fireOnOneErrback=True,
         )
@@ -108,9 +106,8 @@ Disallow: /some/randome/page.html
     def _get_garbage_crawler(self):
         crawler = self.crawler
         crawler.settings.set("ROBOTSTXT_OBEY", True)
-        response = Response(
-            "http://site.local/robots.txt", body=b"GIF89a\xd3\x00\xfe\x00\xa2"
-        )
+        response = Response("http://site.local/robots.txt",
+                            body=b"GIF89a\xd3\x00\xfe\x00\xa2")
 
         def return_response(request, spider):
             deferred = Deferred()
@@ -125,12 +122,14 @@ Disallow: /some/randome/page.html
         middleware = RobotsTxtMiddleware(self._get_garbage_crawler())
         deferred = DeferredList(
             [
-                self.assertNotIgnored(Request("http://site.local"), middleware),
-                self.assertNotIgnored(Request("http://site.local/allowed"), middleware),
-                self.assertNotIgnored(
-                    Request("http://site.local/admin/main"), middleware
-                ),
-                self.assertNotIgnored(Request("http://site.local/static/"), middleware),
+                self.assertNotIgnored(Request("http://site.local"),
+                                      middleware),
+                self.assertNotIgnored(Request("http://site.local/allowed"),
+                                      middleware),
+                self.assertNotIgnored(Request("http://site.local/admin/main"),
+                                      middleware),
+                self.assertNotIgnored(Request("http://site.local/static/"),
+                                      middleware),
             ],
             fireOnOneErrback=True,
         )
@@ -154,11 +153,12 @@ Disallow: /some/randome/page.html
         middleware = RobotsTxtMiddleware(self._get_emptybody_crawler())
         return DeferredList(
             [
-                self.assertNotIgnored(Request("http://site.local/allowed"), middleware),
-                self.assertNotIgnored(
-                    Request("http://site.local/admin/main"), middleware
-                ),
-                self.assertNotIgnored(Request("http://site.local/static/"), middleware),
+                self.assertNotIgnored(Request("http://site.local/allowed"),
+                                      middleware),
+                self.assertNotIgnored(Request("http://site.local/admin/main"),
+                                      middleware),
+                self.assertNotIgnored(Request("http://site.local/static/"),
+                                      middleware),
             ],
             fireOnOneErrback=True,
         )
@@ -176,8 +176,10 @@ Disallow: /some/randome/page.html
 
         middleware = RobotsTxtMiddleware(self.crawler)
         middleware._logerror = mock.MagicMock(side_effect=middleware._logerror)
-        deferred = middleware.process_request(Request("http://site.local"), None)
-        deferred.addCallback(lambda _: self.assertTrue(middleware._logerror.called))
+        deferred = middleware.process_request(Request("http://site.local"),
+                                              None)
+        deferred.addCallback(lambda _: self.assertTrue(middleware._logerror.
+                                                       called))
         return deferred
 
     def test_robotstxt_immediate_error(self):
@@ -199,7 +201,8 @@ Disallow: /some/randome/page.html
 
         def ignore_request(request, spider):
             deferred = Deferred()
-            reactor.callFromThread(deferred.errback, failure.Failure(IgnoreRequest()))
+            reactor.callFromThread(deferred.errback,
+                                   failure.Failure(IgnoreRequest()))
             return deferred
 
         self.crawler.engine.download.side_effect = ignore_request
@@ -207,8 +210,10 @@ Disallow: /some/randome/page.html
         middleware = RobotsTxtMiddleware(self.crawler)
         mw_module_logger.error = mock.MagicMock()
 
-        d = self.assertNotIgnored(Request("http://site.local/allowed"), middleware)
-        d.addCallback(lambda _: self.assertFalse(mw_module_logger.error.called))
+        d = self.assertNotIgnored(Request("http://site.local/allowed"),
+                                  middleware)
+        d.addCallback(lambda _: self.assertFalse(mw_module_logger.error.called)
+                      )
         return d
 
     def test_robotstxt_user_agent_setting(self):
@@ -217,8 +222,10 @@ Disallow: /some/randome/page.html
         crawler.settings.set("USER_AGENT", "Mozilla/5.0 (X11; Linux x86_64)")
         middleware = RobotsTxtMiddleware(crawler)
         rp = mock.MagicMock(return_value=True)
-        middleware.process_request_2(rp, Request("http://site.local/allowed"), None)
-        rp.allowed.assert_called_once_with("http://site.local/allowed", "Examplebot")
+        middleware.process_request_2(rp, Request("http://site.local/allowed"),
+                                     None)
+        rp.allowed.assert_called_once_with("http://site.local/allowed",
+                                           "Examplebot")
 
     def assertNotIgnored(self, request, middleware):
         spider = None  # not actually used
@@ -229,8 +236,8 @@ Disallow: /some/randome/page.html
     def assertIgnored(self, request, middleware):
         spider = None  # not actually used
         return self.assertFailure(
-            maybeDeferred(middleware.process_request, request, spider), IgnoreRequest
-        )
+            maybeDeferred(middleware.process_request, request, spider),
+            IgnoreRequest)
 
 
 class RobotsTxtMiddlewareWithRerpTest(RobotsTxtMiddlewareTest):
@@ -239,9 +246,8 @@ class RobotsTxtMiddlewareWithRerpTest(RobotsTxtMiddlewareTest):
 
     def setUp(self):
         super().setUp()
-        self.crawler.settings.set(
-            "ROBOTSTXT_PARSER", "scrapy.robotstxt.RerpRobotParser"
-        )
+        self.crawler.settings.set("ROBOTSTXT_PARSER",
+                                  "scrapy.robotstxt.RerpRobotParser")
 
 
 class RobotsTxtMiddlewareWithReppyTest(RobotsTxtMiddlewareTest):
@@ -250,6 +256,5 @@ class RobotsTxtMiddlewareWithReppyTest(RobotsTxtMiddlewareTest):
 
     def setUp(self):
         super().setUp()
-        self.crawler.settings.set(
-            "ROBOTSTXT_PARSER", "scrapy.robotstxt.ReppyRobotParser"
-        )
+        self.crawler.settings.set("ROBOTSTXT_PARSER",
+                                  "scrapy.robotstxt.ReppyRobotParser")

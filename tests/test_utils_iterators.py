@@ -37,17 +37,14 @@ class XmliterTestCase(unittest.TestCase):
         response = XmlResponse(url="http://example.com", body=body)
         attrs = []
         for x in self.xmliter(response, "product"):
-            attrs.append(
-                (
-                    x.attrib["id"],
-                    x.xpath("name/text()").getall(),
-                    x.xpath("./type/text()").getall(),
-                )
-            )
+            attrs.append((
+                x.attrib["id"],
+                x.xpath("name/text()").getall(),
+                x.xpath("./type/text()").getall(),
+            ))
 
-        self.assertEqual(
-            attrs, [("001", ["Name 1"], ["Type 1"]), ("002", ["Name 2"], ["Type 2"])]
-        )
+        self.assertEqual(attrs, [("001", ["Name 1"], ["Type 1"]),
+                                 ("002", ["Name 2"], ["Type 2"])])
 
     def test_xmliter_unusual_node(self):
         body = b"""<?xml version="1.0" encoding="UTF-8"?>
@@ -58,7 +55,8 @@ class XmliterTestCase(unittest.TestCase):
         """
         response = XmlResponse(url="http://example.com", body=body)
         nodenames = [
-            e.xpath("name()").getall() for e in self.xmliter(response, "matchme...")
+            e.xpath("name()").getall()
+            for e in self.xmliter(response, "matchme...")
         ]
         self.assertEqual(nodenames, [["matchme..."]])
 
@@ -101,24 +99,27 @@ class XmliterTestCase(unittest.TestCase):
             </þingflokkar>"""
 
         for r in (
-            # with bytes
-            XmlResponse(url="http://example.com", body=body.encode("utf-8")),
-            # Unicode body needs encoding information
-            XmlResponse(url="http://example.com", body=body, encoding="utf-8"),
+                # with bytes
+                XmlResponse(url="http://example.com",
+                            body=body.encode("utf-8")),
+                # Unicode body needs encoding information
+                XmlResponse(url="http://example.com",
+                            body=body,
+                            encoding="utf-8"),
         ):
             attrs = []
             for x in self.xmliter(r, "þingflokkur"):
-                attrs.append(
-                    (
-                        x.attrib["id"],
-                        x.xpath("./skammstafanir/stuttskammstöfun/text()").getall(),
-                        x.xpath("./tímabil/fyrstaþing/text()").getall(),
-                    )
-                )
+                attrs.append((
+                    x.attrib["id"],
+                    x.xpath(
+                        "./skammstafanir/stuttskammstöfun/text()").getall(),
+                    x.xpath("./tímabil/fyrstaþing/text()").getall(),
+                ))
 
             self.assertEqual(
                 attrs,
-                [("26", ["-"], ["80"]), ("21", ["Ab"], ["76"]), ("27", ["A"], ["27"])],
+                [("26", ["-"], ["80"]), ("21", ["Ab"], ["76"]),
+                 ("27", ["A"], ["27"])],
             )
 
     def test_xmliter_text(self):
@@ -128,7 +129,10 @@ class XmliterTestCase(unittest.TestCase):
         )
 
         self.assertEqual(
-            [x.xpath("text()").getall() for x in self.xmliter(body, "product")],
+            [
+                x.xpath("text()").getall()
+                for x in self.xmliter(body, "product")
+            ],
             [["one"], ["two"]],
         )
 
@@ -157,7 +161,8 @@ class XmliterTestCase(unittest.TestCase):
         node = next(my_iter)
         node.register_namespace("g", "http://base.google.com/ns/1.0")
         self.assertEqual(node.xpath("title/text()").getall(), ["Item 1"])
-        self.assertEqual(node.xpath("description/text()").getall(), ["This is item 1"])
+        self.assertEqual(
+            node.xpath("description/text()").getall(), ["This is item 1"])
         self.assertEqual(
             node.xpath("link/text()").getall(),
             ["http://www.mydummycompany.com/items/1"],
@@ -193,8 +198,7 @@ class XmliterTestCase(unittest.TestCase):
             b'<?xml version="1.0" encoding="ISO-8859-9"?>\n'
             b"<xml>\n"
             b"    <item>Some Turkish Characters \xd6\xc7\xde\xdd\xd0\xdc \xfc\xf0\xfd\xfe\xe7\xf6</item>\n"
-            b"</xml>\n\n"
-        )
+            b"</xml>\n\n")
         response = XmlResponse("http://www.example.com", body=body)
         self.assertEqual(
             next(self.xmliter(response, "item")).get(),
@@ -228,9 +232,8 @@ class LxmlXmliterTestCase(XmliterTestCase):
         no_namespace_iter = self.xmliter(response, "image_link")
         self.assertEqual(len(list(no_namespace_iter)), 0)
 
-        namespace_iter = self.xmliter(
-            response, "image_link", "http://base.google.com/ns/1.0"
-        )
+        namespace_iter = self.xmliter(response, "image_link",
+                                      "http://base.google.com/ns/1.0")
         node = next(namespace_iter)
         self.assertEqual(
             node.xpath("text()").getall(),
@@ -262,19 +265,22 @@ class LxmlXmliterTestCase(XmliterTestCase):
         </root>
         """
         response = XmlResponse(url="http://mydummycompany.com", body=body)
-        my_iter = self.xmliter(response, "table", "http://www.w3.org/TR/html4/", "h")
+        my_iter = self.xmliter(response, "table",
+                               "http://www.w3.org/TR/html4/", "h")
 
         node = next(my_iter)
         self.assertEqual(len(node.xpath("h:tr/h:td").getall()), 2)
-        self.assertEqual(node.xpath("h:tr/h:td[1]/text()").getall(), ["Apples"])
-        self.assertEqual(node.xpath("h:tr/h:td[2]/text()").getall(), ["Bananas"])
+        self.assertEqual(
+            node.xpath("h:tr/h:td[1]/text()").getall(), ["Apples"])
+        self.assertEqual(
+            node.xpath("h:tr/h:td[2]/text()").getall(), ["Bananas"])
 
-        my_iter = self.xmliter(
-            response, "table", "http://www.w3schools.com/furniture", "f"
-        )
+        my_iter = self.xmliter(response, "table",
+                               "http://www.w3schools.com/furniture", "f")
 
         node = next(my_iter)
-        self.assertEqual(node.xpath("f:name/text()").getall(), ["African Coffee Table"])
+        self.assertEqual(
+            node.xpath("f:name/text()").getall(), ["African Coffee Table"])
 
     def test_xmliter_objtype_exception(self):
         i = self.xmliter(42, "product")
@@ -282,9 +288,8 @@ class LxmlXmliterTestCase(XmliterTestCase):
 
 
 class UtilsCsvTestCase(unittest.TestCase):
-    sample_feeds_dir = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "sample_data", "feeds"
-    )
+    sample_feeds_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                    "sample_data", "feeds")
     sample_feed_path = os.path.join(sample_feeds_dir, "feed-sample3.csv")
     sample_feed2_path = os.path.join(sample_feeds_dir, "feed-sample4.csv")
     sample_feed3_path = os.path.join(sample_feeds_dir, "feed-sample5.csv")
@@ -298,17 +303,35 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             result,
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
         # explicit type check cuz' we no like stinkin' autocasting! yarrr
         for result_row in result:
-            self.assertTrue(all((isinstance(k, str) for k in result_row.keys())))
-            self.assertTrue(all((isinstance(v, str) for v in result_row.values())))
+            self.assertTrue(
+                all((isinstance(k, str) for k in result_row.keys())))
+            self.assertTrue(
+                all((isinstance(v, str) for v in result_row.values())))
 
     def test_csviter_delimiter(self):
         body = get_testdata("feeds", "feed-sample3.csv").replace(b",", b"\t")
@@ -318,10 +341,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -335,10 +374,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv1],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -348,10 +403,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv2],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -363,14 +434,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv],
             [
-                {"'id'": "1", "'name'": "'alpha'", "'value'": "'foobar'"},
+                {
+                    "'id'": "1",
+                    "'name'": "'alpha'",
+                    "'value'": "'foobar'"
+                },
                 {
                     "'id'": "2",
                     "'name'": "'unicode'",
                     "'value'": "'\xfan\xedc\xf3d\xe9\u203d'",
                 },
-                {"'id'": "'3'", "'name'": "'multi'", "'value'": "'foo"},
-                {"'id'": "4", "'name'": "'empty'", "'value'": ""},
+                {
+                    "'id'": "'3'",
+                    "'name'": "'multi'",
+                    "'value'": "'foo"
+                },
+                {
+                    "'id'": "4",
+                    "'name'": "'empty'",
+                    "'value'": ""
+                },
             ],
         )
 
@@ -382,10 +465,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -399,10 +498,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": "foo\nbar"},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": "foo\nbar"
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -416,10 +531,26 @@ class UtilsCsvTestCase(unittest.TestCase):
         self.assertEqual(
             [row for row in csv],
             [
-                {"id": "1", "name": "alpha", "value": "foobar"},
-                {"id": "2", "name": "unicode", "value": "\xfan\xedc\xf3d\xe9\u203d"},
-                {"id": "3", "name": "multi", "value": FOOBAR_NL},
-                {"id": "4", "name": "empty", "value": ""},
+                {
+                    "id": "1",
+                    "name": "alpha",
+                    "value": "foobar"
+                },
+                {
+                    "id": "2",
+                    "name": "unicode",
+                    "value": "\xfan\xedc\xf3d\xe9\u203d"
+                },
+                {
+                    "id": "3",
+                    "name": "multi",
+                    "value": FOOBAR_NL
+                },
+                {
+                    "id": "4",
+                    "name": "empty",
+                    "value": ""
+                },
             ],
         )
 
@@ -439,24 +570,38 @@ class UtilsCsvTestCase(unittest.TestCase):
         body1 = get_testdata("feeds", "feed-sample4.csv")
         body2 = get_testdata("feeds", "feed-sample5.csv")
 
-        response = TextResponse(
-            url="http://example.com/", body=body1, encoding="latin1"
-        )
+        response = TextResponse(url="http://example.com/",
+                                body=body1,
+                                encoding="latin1")
         csv = csviter(response)
         self.assertEqual(
             list(csv),
             [
-                {"id": "1", "name": "latin1", "value": "test"},
-                {"id": "2", "name": "something", "value": "\xf1\xe1\xe9\xf3"},
+                {
+                    "id": "1",
+                    "name": "latin1",
+                    "value": "test"
+                },
+                {
+                    "id": "2",
+                    "name": "something",
+                    "value": "\xf1\xe1\xe9\xf3"
+                },
             ],
         )
 
-        response = TextResponse(url="http://example.com/", body=body2, encoding="cp852")
+        response = TextResponse(url="http://example.com/",
+                                body=body2,
+                                encoding="cp852")
         csv = csviter(response)
         self.assertEqual(
             list(csv),
             [
-                {"id": "1", "name": "cp852", "value": "test"},
+                {
+                    "id": "1",
+                    "name": "cp852",
+                    "value": "test"
+                },
                 {
                     "id": "2",
                     "name": "something",
@@ -469,7 +614,9 @@ class UtilsCsvTestCase(unittest.TestCase):
 class TestHelper(unittest.TestCase):
     bbody = b"utf8-body"
     ubody = bbody.decode("utf8")
-    txtresponse = TextResponse(url="http://example.org/", body=bbody, encoding="utf-8")
+    txtresponse = TextResponse(url="http://example.org/",
+                               body=bbody,
+                               encoding="utf-8")
     response = Response(url="http://example.org/", body=bbody)
 
     def test_body_or_str(self):

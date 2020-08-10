@@ -36,14 +36,14 @@ _default_link_extractor = LinkExtractor()
 
 class Rule:
     def __init__(
-        self,
-        link_extractor=None,
-        callback=None,
-        cb_kwargs=None,
-        follow=None,
-        process_links=None,
-        process_request=None,
-        errback=None,
+            self,
+            link_extractor=None,
+            callback=None,
+            cb_kwargs=None,
+            follow=None,
+            process_links=None,
+            process_request=None,
+            errback=None,
     ):
         self.link_extractor = link_extractor or _default_link_extractor
         self.callback = callback
@@ -59,7 +59,8 @@ class Rule:
         self.errback = _get_method(self.errback, spider)
         self.process_links = _get_method(self.process_links, spider)
         self.process_request = _get_method(self.process_request, spider)
-        self.process_request_argcount = len(get_func_args(self.process_request))
+        self.process_request_argcount = len(get_func_args(
+            self.process_request))
         if self.process_request_argcount == 1:
             warnings.warn(
                 "Rule.process_request should accept two arguments "
@@ -73,7 +74,9 @@ class Rule:
         Wrapper around the request processing function to maintain backward
         compatibility with functions that do not take a Response object
         """
-        args = [request] if self.process_request_argcount == 1 else [request, response]
+        args = [request] if self.process_request_argcount == 1 else [
+            request, response
+        ]
         return self.process_request(*args)
 
 
@@ -113,8 +116,7 @@ class CrawlSpider(Spider):
         seen = set()
         for rule_index, rule in enumerate(self._rules):
             links = [
-                lnk
-                for lnk in rule.link_extractor.extract_links(response)
+                lnk for lnk in rule.link_extractor.extract_links(response)
                 if lnk not in seen
             ]
             for link in rule.process_links(links):
@@ -124,9 +126,8 @@ class CrawlSpider(Spider):
 
     def _callback(self, response):
         rule = self._rules[response.meta["rule"]]
-        return self._parse_response(
-            response, rule.callback, rule.cb_kwargs, rule.follow
-        )
+        return self._parse_response(response, rule.callback, rule.cb_kwargs,
+                                    rule.follow)
 
     def _errback(self, failure):
         rule = self._rules[failure.request.meta["rule"]]
@@ -159,6 +160,5 @@ class CrawlSpider(Spider):
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super().from_crawler(crawler, *args, **kwargs)
         spider._follow_links = crawler.settings.getbool(
-            "CRAWLSPIDER_FOLLOW_LINKS", True
-        )
+            "CRAWLSPIDER_FOLLOW_LINKS", True)
         return spider

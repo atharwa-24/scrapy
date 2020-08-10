@@ -23,33 +23,32 @@ class ScrapyClientContextFactory(BrowserLikePolicyForHTTPS):
      understand the SSLv3, TLSv1, TLSv1.1 and TLSv1.2 protocols.'
     """
 
-    def __init__(
-        self,
-        method=SSL.SSLv23_METHOD,
-        tls_verbose_logging=False,
-        tls_ciphers=None,
-        *args,
-        **kwargs
-    ):
+    def __init__(self,
+                 method=SSL.SSLv23_METHOD,
+                 tls_verbose_logging=False,
+                 tls_ciphers=None,
+                 *args,
+                 **kwargs):
         super().__init__(*args, **kwargs)
         self._ssl_method = method
         self.tls_verbose_logging = tls_verbose_logging
         if tls_ciphers:
-            self.tls_ciphers = AcceptableCiphers.fromOpenSSLCipherString(tls_ciphers)
+            self.tls_ciphers = AcceptableCiphers.fromOpenSSLCipherString(
+                tls_ciphers)
         else:
             self.tls_ciphers = DEFAULT_CIPHERS
 
     @classmethod
-    def from_settings(cls, settings, method=SSL.SSLv23_METHOD, *args, **kwargs):
-        tls_verbose_logging = settings.getbool("DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING")
+    def from_settings(cls, settings, method=SSL.SSLv23_METHOD, *args,
+                      **kwargs):
+        tls_verbose_logging = settings.getbool(
+            "DOWNLOADER_CLIENT_TLS_VERBOSE_LOGGING")
         tls_ciphers = settings["DOWNLOADER_CLIENT_TLS_CIPHERS"]
-        return cls(
-            method=method,
-            tls_verbose_logging=tls_verbose_logging,
-            tls_ciphers=tls_ciphers,
-            *args,
-            **kwargs
-        )
+        return cls(method=method,
+                   tls_verbose_logging=tls_verbose_logging,
+                   tls_ciphers=tls_ciphers,
+                   *args,
+                   **kwargs)
 
     def getCertificateOptions(self):
         # setting verify=True will require you to provide CAs

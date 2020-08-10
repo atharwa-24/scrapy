@@ -25,17 +25,20 @@ class CmdlineTest(unittest.TestCase):
         return comm.decode(encoding)
 
     def test_default_settings(self):
-        self.assertEqual(self._execute("settings", "--get", "TEST1"), "default")
+        self.assertEqual(self._execute("settings", "--get", "TEST1"),
+                         "default")
 
     def test_override_settings_using_set_arg(self):
         self.assertEqual(
-            self._execute("settings", "--get", "TEST1", "-s", "TEST1=override"),
+            self._execute("settings", "--get", "TEST1", "-s",
+                          "TEST1=override"),
             "override",
         )
 
     def test_override_settings_using_envvar(self):
         self.env["SCRAPY_TEST1"] = "override"
-        self.assertEqual(self._execute("settings", "--get", "TEST1"), "override")
+        self.assertEqual(self._execute("settings", "--get", "TEST1"),
+                         "override")
 
     def test_profiling(self):
         path = tempfile.mkdtemp()
@@ -48,7 +51,8 @@ class CmdlineTest(unittest.TestCase):
             stats.print_stats()
             out.seek(0)
             stats = out.read()
-            self.assertIn(os.path.join("scrapy", "commands", "version.py"), stats)
+            self.assertIn(os.path.join("scrapy", "commands", "version.py"),
+                          stats)
             self.assertIn("tottime", stats)
         finally:
             shutil.rmtree(path)

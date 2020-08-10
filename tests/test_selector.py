@@ -12,7 +12,9 @@ class SelectorTestCase(unittest.TestCase):
     def test_simple_selection(self):
         """Simple selector tests"""
         body = b"<p><input name='a'value='1'/><input name='b'value='2'/></p>"
-        response = TextResponse(url="http://example.com", body=body, encoding="utf-8")
+        response = TextResponse(url="http://example.com",
+                                body=body,
+                                encoding="utf-8")
         sel = Selector(response)
 
         xl = sel.xpath("//input")
@@ -21,25 +23,23 @@ class SelectorTestCase(unittest.TestCase):
             assert isinstance(x, Selector)
 
         self.assertEqual(
-            sel.xpath("//input").getall(), [x.get() for x in sel.xpath("//input")]
-        )
+            sel.xpath("//input").getall(),
+            [x.get() for x in sel.xpath("//input")])
         self.assertEqual(
-            [x.get() for x in sel.xpath("//input[@name='a']/@name")], ["a"]
-        )
+            [x.get() for x in sel.xpath("//input[@name='a']/@name")], ["a"])
         self.assertEqual(
             [
-                x.get()
-                for x in sel.xpath(
+                x.get() for x in sel.xpath(
                     "number(concat(//input[@name='a']/@value, //input[@name='b']/@value))"
                 )
             ],
             ["12.0"],
         )
-        self.assertEqual(sel.xpath("concat('xpath', 'rules')").getall(), ["xpathrules"])
+        self.assertEqual(
+            sel.xpath("concat('xpath', 'rules')").getall(), ["xpathrules"])
         self.assertEqual(
             [
-                x.get()
-                for x in sel.xpath(
+                x.get() for x in sel.xpath(
                     "concat(//input[@name='a']/@value, //input[@name='b']/@value)"
                 )
             ],
@@ -55,18 +55,20 @@ class SelectorTestCase(unittest.TestCase):
 
     def test_flavor_detection(self):
         text = b'<div><img src="a.jpg"><p>Hello</div>'
-        sel = Selector(XmlResponse("http://example.com", body=text, encoding="utf-8"))
+        sel = Selector(
+            XmlResponse("http://example.com", body=text, encoding="utf-8"))
         self.assertEqual(sel.type, "xml")
         self.assertEqual(
             sel.xpath("//div").getall(),
             ['<div><img src="a.jpg"><p>Hello</p></img></div>'],
         )
 
-        sel = Selector(HtmlResponse("http://example.com", body=text, encoding="utf-8"))
+        sel = Selector(
+            HtmlResponse("http://example.com", body=text, encoding="utf-8"))
         self.assertEqual(sel.type, "html")
         self.assertEqual(
-            sel.xpath("//div").getall(), ['<div><img src="a.jpg"><p>Hello</p></div>']
-        )
+            sel.xpath("//div").getall(),
+            ['<div><img src="a.jpg"><p>Hello</p></div>'])
 
     def test_http_header_encoding_precedence(self):
         # '\xa3'     = pound symbol in unicode
@@ -84,11 +86,12 @@ class SelectorTestCase(unittest.TestCase):
         html_utf8 = html.encode(encoding)
 
         headers = {"Content-Type": ["text/html; charset=utf-8"]}
-        response = HtmlResponse(
-            url="http://example.com", headers=headers, body=html_utf8
-        )
+        response = HtmlResponse(url="http://example.com",
+                                headers=headers,
+                                body=html_utf8)
         x = Selector(response)
-        self.assertEqual(x.xpath("//span[@id='blank']/text()").getall(), ["\xa3"])
+        self.assertEqual(
+            x.xpath("//span[@id='blank']/text()").getall(), ["\xa3"])
 
     def test_badly_encoded_body(self):
         # \xe9 alone isn't valid utf8 sequence
@@ -103,10 +106,10 @@ class SelectorTestCase(unittest.TestCase):
         """Check that classes are using slots and are weak-referenceable"""
         x = Selector(text="")
         weakref.ref(x)
-        assert not hasattr(x, "__dict__"), (
-            "%s does not use __slots__" % x.__class__.__name__
-        )
+        assert not hasattr(x, "__dict__"), ("%s does not use __slots__" %
+                                            x.__class__.__name__)
 
     def test_selector_bad_args(self):
-        with self.assertRaisesRegex(ValueError, "received both response and text"):
+        with self.assertRaisesRegex(ValueError,
+                                    "received both response and text"):
             Selector(TextResponse(url="http://example.com", body=b""), text="")

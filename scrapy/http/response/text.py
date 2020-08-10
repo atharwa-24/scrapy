@@ -50,9 +50,8 @@ class TextResponse(Response):
         if isinstance(body, str):
             if self._encoding is None:
                 raise TypeError(
-                    "Cannot convert unicode body - %s has no encoding"
-                    % type(self).__name__
-                )
+                    "Cannot convert unicode body - %s has no encoding" %
+                    type(self).__name__)
             self._body = body.encode(self._encoding)
         else:
             super()._set_body(body)
@@ -66,9 +65,8 @@ class TextResponse(Response):
         return self._declared_encoding() or self._body_inferred_encoding()
 
     def _declared_encoding(self):
-        return (
-            self._encoding or self._headers_encoding() or self._body_declared_encoding()
-        )
+        return (self._encoding or self._headers_encoding()
+                or self._body_declared_encoding())
 
     def body_as_unicode(self):
         """Return body as unicode"""
@@ -151,20 +149,20 @@ class TextResponse(Response):
         return self.selector.css(query)
 
     def follow(
-        self,
-        url,
-        callback=None,
-        method="GET",
-        headers=None,
-        body=None,
-        cookies=None,
-        meta=None,
-        encoding=None,
-        priority=0,
-        dont_filter=False,
-        errback=None,
-        cb_kwargs=None,
-        flags=None,
+            self,
+            url,
+            callback=None,
+            method="GET",
+            headers=None,
+            body=None,
+            cookies=None,
+            meta=None,
+            encoding=None,
+            priority=0,
+            dont_filter=False,
+            errback=None,
+            cb_kwargs=None,
+            flags=None,
     ):
         # type: (...) -> Request
         """
@@ -205,22 +203,22 @@ class TextResponse(Response):
         )
 
     def follow_all(
-        self,
-        urls=None,
-        callback=None,
-        method="GET",
-        headers=None,
-        body=None,
-        cookies=None,
-        meta=None,
-        encoding=None,
-        priority=0,
-        dont_filter=False,
-        errback=None,
-        cb_kwargs=None,
-        flags=None,
-        css=None,
-        xpath=None,
+            self,
+            urls=None,
+            callback=None,
+            method="GET",
+            headers=None,
+            body=None,
+            cookies=None,
+            meta=None,
+            encoding=None,
+            priority=0,
+            dont_filter=False,
+            errback=None,
+            cb_kwargs=None,
+            flags=None,
+            css=None,
+            xpath=None,
     ):
         # type: (...) -> Generator[Request, None, None]
         """
@@ -294,11 +292,10 @@ def _url_from_selector(sel):
         raise _InvalidSelector("Unsupported selector: %s" % sel)
     if sel.root.tag not in ("a", "link"):
         raise _InvalidSelector(
-            "Only <a> and <link> elements are supported; got <%s>" % sel.root.tag
-        )
+            "Only <a> and <link> elements are supported; got <%s>" %
+            sel.root.tag)
     href = sel.root.get("href")
     if href is None:
-        raise _InvalidSelector(
-            "<%s> element has no href attribute: %s" % (sel.root.tag, sel)
-        )
+        raise _InvalidSelector("<%s> element has no href attribute: %s" %
+                               (sel.root.tag, sel))
     return strip_html5_whitespace(href)

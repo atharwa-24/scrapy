@@ -13,13 +13,11 @@ from scrapy.utils.ssl import x509name_to_string
 
 logger = logging.getLogger(__name__)
 
-
 METHOD_SSLv3 = "SSLv3"
 METHOD_TLS = "TLS"
 METHOD_TLSv10 = "TLSv1.0"
 METHOD_TLSv11 = "TLSv1.1"
 METHOD_TLSv12 = "TLSv1.2"
-
 
 openssl_methods = {
     # protocol negotiation (recommended)
@@ -31,11 +29,9 @@ openssl_methods = {
     METHOD_TLSv12: getattr(SSL, "TLSv1_2_METHOD", 6),  # TLS 1.2 only
 }
 
-
 if twisted_version < (17, 0, 0):
     from twisted.internet._sslverify import (
-        _maybeSetHostNameIndication as set_tlsext_host_name,
-    )
+        _maybeSetHostNameIndication as set_tlsext_host_name, )
 else:
 
     def set_tlsext_host_name(connection, hostNameBytes):
@@ -62,10 +58,10 @@ class ScrapyClientTLSOptions(ClientTLSOptions):
             set_tlsext_host_name(connection, self._hostnameBytes)
         elif where & SSL.SSL_CB_HANDSHAKE_DONE:
             if self.verbose_logging:
-                if hasattr(connection, "get_cipher_name"):  # requires pyOPenSSL 0.15
-                    if hasattr(
-                        connection, "get_protocol_version_name"
-                    ):  # requires pyOPenSSL 16.0.0
+                if hasattr(connection,
+                           "get_cipher_name"):  # requires pyOPenSSL 0.15
+                    if hasattr(connection, "get_protocol_version_name"
+                               ):  # requires pyOPenSSL 16.0.0
                         logger.debug(
                             "SSL connection to %s using protocol %s, cipher %s",
                             self._hostnameASCII,
@@ -92,18 +88,13 @@ class ScrapyClientTLSOptions(ClientTLSOptions):
                 verifyHostname(connection, self._hostnameASCII)
             except (CertificateError, VerificationError) as e:
                 logger.warning(
-                    'Remote certificate is not valid for hostname "{}"; {}'.format(
-                        self._hostnameASCII, e
-                    )
-                )
+                    'Remote certificate is not valid for hostname "{}"; {}'.
+                    format(self._hostnameASCII, e))
 
             except ValueError as e:
-                logger.warning(
-                    "Ignoring error while verifying certificate "
-                    'from host "{}" (exception: {})'.format(
-                        self._hostnameASCII, repr(e)
-                    )
-                )
+                logger.warning("Ignoring error while verifying certificate "
+                               'from host "{}" (exception: {})'.format(
+                                   self._hostnameASCII, repr(e)))
 
 
 DEFAULT_CIPHERS = AcceptableCiphers.fromOpenSSLCipherString("DEFAULT")

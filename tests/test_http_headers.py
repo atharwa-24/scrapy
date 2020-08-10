@@ -76,23 +76,33 @@ class HeadersTest(unittest.TestCase):
         assert h.getlist("X-Forwarded-For") is olist
 
     def test_iterables(self):
-        idict = {"Content-Type": "text/html", "X-Forwarded-For": ["ip1", "ip2"]}
+        idict = {
+            "Content-Type": "text/html",
+            "X-Forwarded-For": ["ip1", "ip2"]
+        }
 
         h = Headers(idict)
         self.assertDictEqual(
             dict(h),
-            {b"Content-Type": [b"text/html"], b"X-Forwarded-For": [b"ip1", b"ip2"]},
+            {
+                b"Content-Type": [b"text/html"],
+                b"X-Forwarded-For": [b"ip1", b"ip2"]
+            },
         )
         self.assertSortedEqual(h.keys(), [b"X-Forwarded-For", b"Content-Type"])
         self.assertSortedEqual(
             h.items(),
-            [(b"X-Forwarded-For", [b"ip1", b"ip2"]), (b"Content-Type", [b"text/html"])],
+            [(b"X-Forwarded-For", [b"ip1", b"ip2"]),
+             (b"Content-Type", [b"text/html"])],
         )
         self.assertSortedEqual(h.values(), [b"ip2", b"text/html"])
 
     def test_update(self):
         h = Headers()
-        h.update({"Content-Type": "text/html", "X-Forwarded-For": ["ip1", "ip2"]})
+        h.update({
+            "Content-Type": "text/html",
+            "X-Forwarded-For": ["ip1", "ip2"]
+        })
         self.assertEqual(h.getlist("Content-Type"), [b"text/html"])
         self.assertEqual(h.getlist("X-Forwarded-For"), [b"ip1", b"ip2"])
 
@@ -146,15 +156,11 @@ class HeadersTest(unittest.TestCase):
         self.assertEqual(h1.getlist("hey"), [b"5"])
 
     def test_invalid_value(self):
-        self.assertRaisesRegex(
-            TypeError, "Unsupported value type", Headers, {"foo": object()}
-        )
-        self.assertRaisesRegex(
-            TypeError, "Unsupported value type", Headers().__setitem__, "foo", object()
-        )
-        self.assertRaisesRegex(
-            TypeError, "Unsupported value type", Headers().setdefault, "foo", object()
-        )
-        self.assertRaisesRegex(
-            TypeError, "Unsupported value type", Headers().setlist, "foo", [object()]
-        )
+        self.assertRaisesRegex(TypeError, "Unsupported value type", Headers,
+                               {"foo": object()})
+        self.assertRaisesRegex(TypeError, "Unsupported value type",
+                               Headers().__setitem__, "foo", object())
+        self.assertRaisesRegex(TypeError, "Unsupported value type",
+                               Headers().setdefault, "foo", object())
+        self.assertRaisesRegex(TypeError, "Unsupported value type",
+                               Headers().setlist, "foo", [object()])

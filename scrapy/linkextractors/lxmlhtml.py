@@ -25,7 +25,8 @@ _collect_string_content = etree.XPath("string()")
 
 def _nons(tag):
     if isinstance(tag, str):
-        if tag[0] == "{" and tag[1 : len(XHTML_NAMESPACE) + 1] == XHTML_NAMESPACE:
+        if tag[0] == "{" and tag[1:len(XHTML_NAMESPACE) +
+                                 1] == XHTML_NAMESPACE:
             return tag.split("}")[-1]
     return tag
 
@@ -40,22 +41,21 @@ def _canonicalize_link_url(link):
 
 class LxmlParserLinkExtractor:
     def __init__(
-        self,
-        tag="a",
-        attr="href",
-        process=None,
-        unique=False,
-        strip=True,
-        canonicalized=False,
+            self,
+            tag="a",
+            attr="href",
+            process=None,
+            unique=False,
+            strip=True,
+            canonicalized=False,
     ):
         self.scan_tag = tag if callable(tag) else partial(operator.eq, tag)
         self.scan_attr = attr if callable(attr) else partial(operator.eq, attr)
         self.process_attr = process if callable(process) else _identity
         self.unique = unique
         self.strip = strip
-        self.link_key = (
-            operator.attrgetter("url") if canonicalized else _canonicalize_link_url
-        )
+        self.link_key = (operator.attrgetter("url")
+                         if canonicalized else _canonicalize_link_url)
 
     def _iter_links(self, document):
         for el in document.iter(etree.Element):
@@ -67,7 +67,8 @@ class LxmlParserLinkExtractor:
                     continue
                 yield (el, attrib, attribs[attrib])
 
-    def _extract_links(self, selector, response_url, response_encoding, base_url):
+    def _extract_links(self, selector, response_url, response_encoding,
+                       base_url):
         links = []
         # hacky way to get the underlying lxml parsed document
         for el, attr, attr_val in self._iter_links(selector.root):
@@ -95,9 +96,8 @@ class LxmlParserLinkExtractor:
 
     def extract_links(self, response):
         base_url = get_base_url(response)
-        return self._extract_links(
-            response.selector, response.url, response.encoding, base_url
-        )
+        return self._extract_links(response.selector, response.url,
+                                   response.encoding, base_url)
 
     def _process_links(self, links):
         """ Normalize and filter extracted links
@@ -114,21 +114,21 @@ class LxmlParserLinkExtractor:
 
 class LxmlLinkExtractor(FilteringLinkExtractor):
     def __init__(
-        self,
-        allow=(),
-        deny=(),
-        allow_domains=(),
-        deny_domains=(),
-        restrict_xpaths=(),
-        tags=("a", "area"),
-        attrs=("href",),
-        canonicalize=False,
-        unique=True,
-        process_value=None,
-        deny_extensions=None,
-        restrict_css=(),
-        strip=True,
-        restrict_text=None,
+            self,
+            allow=(),
+            deny=(),
+            allow_domains=(),
+            deny_domains=(),
+            restrict_xpaths=(),
+            tags=("a", "area"),
+            attrs=("href", ),
+            canonicalize=False,
+            unique=True,
+            process_value=None,
+            deny_extensions=None,
+            restrict_css=(),
+            strip=True,
+            restrict_text=None,
     ):
         tags, attrs = set(arg_to_iter(tags)), set(arg_to_iter(attrs))
         lx = LxmlParserLinkExtractor(
@@ -164,12 +164,14 @@ class LxmlLinkExtractor(FilteringLinkExtractor):
         base_url = get_base_url(response)
         if self.restrict_xpaths:
             docs = [
-                subdoc for x in self.restrict_xpaths for subdoc in response.xpath(x)
+                subdoc for x in self.restrict_xpaths
+                for subdoc in response.xpath(x)
             ]
         else:
             docs = [response.selector]
         all_links = []
         for doc in docs:
-            links = self._extract_links(doc, response.url, response.encoding, base_url)
+            links = self._extract_links(doc, response.url, response.encoding,
+                                        base_url)
             all_links.extend(self._process_links(links))
         return unique_list(all_links)

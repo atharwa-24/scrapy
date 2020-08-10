@@ -34,7 +34,7 @@ class TextTestResult(_TextTestResult):
             write("OK")
 
         if infos:
-            writeln(" (%s)" % (", ".join(infos),))
+            writeln(" (%s)" % (", ".join(infos), ))
         else:
             write("\n")
 
@@ -69,10 +69,12 @@ class Command(ScrapyCommand):
 
     def run(self, args, opts):
         # load contracts
-        contracts = build_component_list(self.settings.getwithbase("SPIDER_CONTRACTS"))
+        contracts = build_component_list(
+            self.settings.getwithbase("SPIDER_CONTRACTS"))
         conman = ContractsManager(load_object(c) for c in contracts)
         runner = TextTestRunner(verbosity=2 if opts.verbose else 1)
-        result = TextTestResult(runner.stream, runner.descriptions, runner.verbosity)
+        result = TextTestResult(runner.stream, runner.descriptions,
+                                runner.verbosity)
 
         # contract requests
         contract_reqs = defaultdict(list)
@@ -82,9 +84,11 @@ class Command(ScrapyCommand):
         with set_environ(SCRAPY_CHECK="true"):
             for spidername in args or spider_loader.list():
                 spidercls = spider_loader.load(spidername)
-                spidercls.start_requests = lambda s: conman.from_spider(s, result)
+                spidercls.start_requests = lambda s: conman.from_spider(
+                    s, result)
 
-                tested_methods = conman.tested_methods_from_spidercls(spidercls)
+                tested_methods = conman.tested_methods_from_spidercls(
+                    spidercls)
                 if opts.list:
                     for method in tested_methods:
                         contract_reqs[spidercls.name].append(method)

@@ -46,14 +46,16 @@ class ImagesPipeline(FilesPipeline):
     DEFAULT_IMAGES_RESULT_FIELD = "images"
 
     def __init__(self, store_uri, download_func=None, settings=None):
-        super().__init__(store_uri, settings=settings, download_func=download_func)
+        super().__init__(store_uri,
+                         settings=settings,
+                         download_func=download_func)
 
         if isinstance(settings, dict) or settings is None:
             settings = Settings(settings)
 
-        resolve = functools.partial(
-            self._key_for_pipe, base_class_name="ImagesPipeline", settings=settings
-        )
+        resolve = functools.partial(self._key_for_pipe,
+                                    base_class_name="ImagesPipeline",
+                                    settings=settings)
         self.expires = settings.getint(resolve("IMAGES_EXPIRES"), self.EXPIRES)
 
         if not hasattr(self, "IMAGES_RESULT_FIELD"):
@@ -61,14 +63,14 @@ class ImagesPipeline(FilesPipeline):
         if not hasattr(self, "IMAGES_URLS_FIELD"):
             self.IMAGES_URLS_FIELD = self.DEFAULT_IMAGES_URLS_FIELD
 
-        self.images_urls_field = settings.get(
-            resolve("IMAGES_URLS_FIELD"), self.IMAGES_URLS_FIELD
-        )
-        self.images_result_field = settings.get(
-            resolve("IMAGES_RESULT_FIELD"), self.IMAGES_RESULT_FIELD
-        )
-        self.min_width = settings.getint(resolve("IMAGES_MIN_WIDTH"), self.MIN_WIDTH)
-        self.min_height = settings.getint(resolve("IMAGES_MIN_HEIGHT"), self.MIN_HEIGHT)
+        self.images_urls_field = settings.get(resolve("IMAGES_URLS_FIELD"),
+                                              self.IMAGES_URLS_FIELD)
+        self.images_result_field = settings.get(resolve("IMAGES_RESULT_FIELD"),
+                                                self.IMAGES_RESULT_FIELD)
+        self.min_width = settings.getint(resolve("IMAGES_MIN_WIDTH"),
+                                         self.MIN_WIDTH)
+        self.min_height = settings.getint(resolve("IMAGES_MIN_HEIGHT"),
+                                          self.MIN_HEIGHT)
         self.thumbs = settings.get(resolve("IMAGES_THUMBS"), self.THUMBS)
 
     @classmethod
@@ -108,7 +110,10 @@ class ImagesPipeline(FilesPipeline):
                 path,
                 buf,
                 info,
-                meta={"width": width, "height": height},
+                meta={
+                    "width": width,
+                    "height": height
+                },
                 headers={"Content-Type": "image/jpeg"},
             )
         return checksum
@@ -120,17 +125,17 @@ class ImagesPipeline(FilesPipeline):
         width, height = orig_image.size
         if width < self.min_width or height < self.min_height:
             raise ImageException(
-                "Image too small (%dx%d < %dx%d)"
-                % (width, height, self.min_width, self.min_height)
-            )
+                "Image too small (%dx%d < %dx%d)" %
+                (width, height, self.min_width, self.min_height))
 
         image, buf = self.convert_image(orig_image)
         yield path, image, buf
 
         for thumb_id, size in self.thumbs.items():
-            thumb_path = self.thumb_path(
-                request, thumb_id, response=response, info=info
-            )
+            thumb_path = self.thumb_path(request,
+                                         thumb_id,
+                                         response=response,
+                                         info=info)
             thumb_image, thumb_buf = self.convert_image(image, size)
             yield thumb_path, thumb_image, thumb_buf
 
@@ -161,7 +166,9 @@ class ImagesPipeline(FilesPipeline):
 
     def item_completed(self, results, item, info):
         with suppress(KeyError):
-            ItemAdapter(item)[self.images_result_field] = [x for ok, x in results if ok]
+            ItemAdapter(item)[self.images_result_field] = [
+                x for ok, x in results if ok
+            ]
         return item
 
     def file_path(self, request, response=None, info=None):
