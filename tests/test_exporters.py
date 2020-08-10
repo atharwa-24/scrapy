@@ -1,28 +1,21 @@
-import re
 import json
 import marshal
 import pickle
+import re
 import tempfile
 import unittest
-from io import BytesIO
 from datetime import datetime
+from io import BytesIO
 
 import lxml.etree
 from itemadapter import ItemAdapter
-
-from scrapy.item import Item, Field
+from scrapy.exporters import (BaseItemExporter, CsvItemExporter,
+                              JsonItemExporter, JsonLinesItemExporter,
+                              MarshalItemExporter, PickleItemExporter,
+                              PprintItemExporter, PythonItemExporter,
+                              XmlItemExporter)
+from scrapy.item import Field, Item
 from scrapy.utils.python import to_unicode
-from scrapy.exporters import (
-    BaseItemExporter,
-    PprintItemExporter,
-    PickleItemExporter,
-    CsvItemExporter,
-    XmlItemExporter,
-    JsonLinesItemExporter,
-    JsonItemExporter,
-    PythonItemExporter,
-    MarshalItemExporter,
-)
 
 
 class TestItem(Item):

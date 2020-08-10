@@ -1,8 +1,8 @@
 import unittest
 
-from scrapy.http import Request, FormRequest
+from scrapy.http import FormRequest, Request
 from scrapy.spiders import Spider
-from scrapy.utils.reqser import request_to_dict, request_from_dict
+from scrapy.utils.reqser import request_from_dict, request_to_dict
 
 
 class RequestSerializationTest(unittest.TestCase):

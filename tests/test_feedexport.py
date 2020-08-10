@@ -13,41 +13,30 @@ from logging import getLogger
 from pathlib import Path
 from string import ascii_letters, digits
 from unittest import mock
-from urllib.parse import urljoin, urlparse, quote
+from urllib.parse import quote, urljoin, urlparse
 from urllib.request import pathname2url
 
 import lxml.etree
+import scrapy
+from scrapy.crawler import CrawlerRunner
+from scrapy.exceptions import NotConfigured
+from scrapy.exporters import CsvItemExporter
+from scrapy.extensions.feedexport import (BlockingFeedStorage, FeedExporter,
+                                          FileFeedStorage, FTPFeedStorage,
+                                          GCSFeedStorage, IFeedStorage,
+                                          S3FeedStorage, StdoutFeedStorage)
+from scrapy.settings import Settings
+from scrapy.utils.python import to_unicode
+from scrapy.utils.test import (assert_aws_environ, get_crawler,
+                               get_s3_content_and_delete,
+                               mock_google_cloud_storage)
 from testfixtures import LogCapture
+from tests.mockserver import MockServer
 from twisted.internet import defer
 from twisted.trial import unittest
 from w3lib.url import file_uri_to_path, path_to_file_uri
 from zope.interface import implementer
 from zope.interface.verify import verifyObject
-
-import scrapy
-from scrapy.crawler import CrawlerRunner
-from scrapy.exceptions import NotConfigured
-from scrapy.exporters import CsvItemExporter
-from scrapy.extensions.feedexport import (
-    BlockingFeedStorage,
-    FeedExporter,
-    FileFeedStorage,
-    FTPFeedStorage,
-    GCSFeedStorage,
-    IFeedStorage,
-    S3FeedStorage,
-    StdoutFeedStorage,
-)
-from scrapy.settings import Settings
-from scrapy.utils.python import to_unicode
-from scrapy.utils.test import (
-    assert_aws_environ,
-    get_s3_content_and_delete,
-    get_crawler,
-    mock_google_cloud_storage,
-)
-
-from tests.mockserver import MockServer
 
 
 class FileFeedStorageTest(unittest.TestCase):

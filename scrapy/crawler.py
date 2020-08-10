@@ -3,8 +3,22 @@ import pprint
 import signal
 import warnings
 
+from scrapy import Spider, signals
+from scrapy.core.engine import ExecutionEngine
+from scrapy.exceptions import ScrapyDeprecationWarning
+from scrapy.extension import ExtensionManager
+from scrapy.interfaces import ISpiderLoader
+from scrapy.settings import Settings, overridden_settings
+from scrapy.signalmanager import SignalManager
+from scrapy.utils.log import (LogCounterHandler, configure_logging,
+                              get_scrapy_root_handler,
+                              install_scrapy_root_handler, log_scrapy_info)
+from scrapy.utils.misc import create_instance, load_object
+from scrapy.utils.ossignal import install_shutdown_handlers, signal_names
+from scrapy.utils.reactor import install_reactor, verify_installed_reactor
 from twisted.internet import defer
 from zope.interface.exceptions import DoesNotImplement
+from zope.interface.verify import verifyClass
 
 try:
     # zope >= 5.0 only supports MultipleInvalid
@@ -12,25 +26,7 @@ try:
 except ImportError:
     MultipleInvalid = None
 
-from zope.interface.verify import verifyClass
 
-from scrapy import signals, Spider
-from scrapy.core.engine import ExecutionEngine
-from scrapy.exceptions import ScrapyDeprecationWarning
-from scrapy.extension import ExtensionManager
-from scrapy.interfaces import ISpiderLoader
-from scrapy.settings import overridden_settings, Settings
-from scrapy.signalmanager import SignalManager
-from scrapy.utils.log import (
-    configure_logging,
-    get_scrapy_root_handler,
-    install_scrapy_root_handler,
-    log_scrapy_info,
-    LogCounterHandler,
-)
-from scrapy.utils.misc import create_instance, load_object
-from scrapy.utils.ossignal import install_shutdown_handlers, signal_names
-from scrapy.utils.reactor import install_reactor, verify_installed_reactor
 
 
 logger = logging.getLogger(__name__)

@@ -7,8 +7,7 @@ import os
 import pickle
 
 from queuelib import queue
-
-from scrapy.utils.reqser import request_to_dict, request_from_dict
+from scrapy.utils.reqser import request_from_dict, request_to_dict
 
 
 def _with_mkdir(queue_class):

@@ -12,19 +12,14 @@ from typing import Generator
 from urllib.parse import urljoin
 
 import parsel
-from w3lib.encoding import (
-    html_body_declared_encoding,
-    html_to_unicode,
-    http_content_type_encoding,
-    resolve_encoding,
-)
-from w3lib.html import strip_html5_whitespace
-
 from scrapy.exceptions import ScrapyDeprecationWarning
 from scrapy.http import Request
 from scrapy.http.response import Response
 from scrapy.utils.python import memoizemethod_noargs, to_unicode
 from scrapy.utils.response import get_base_url
+from w3lib.encoding import (html_body_declared_encoding, html_to_unicode,
+                            http_content_type_encoding, resolve_encoding)
+from w3lib.html import strip_html5_whitespace
 
 _NONE = object()
 

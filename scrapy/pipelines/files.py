@@ -17,8 +17,6 @@ from io import BytesIO
 from urllib.parse import urlparse
 
 from itemadapter import ItemAdapter
-from twisted.internet import defer, threads
-
 from scrapy.exceptions import IgnoreRequest, NotConfigured
 from scrapy.http import Request
 from scrapy.pipelines.media import MediaPipeline
@@ -30,7 +28,7 @@ from scrapy.utils.log import failure_to_exc_info
 from scrapy.utils.misc import md5sum
 from scrapy.utils.python import to_bytes
 from scrapy.utils.request import referer_str
-
+from twisted.internet import defer, threads
 
 logger = logging.getLogger(__name__)
 

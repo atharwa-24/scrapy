@@ -1,10 +1,11 @@
 import os
-from os.path import join, abspath, isfile, exists
-from twisted.internet import defer
-from scrapy.utils.testsite import SiteTest
-from scrapy.utils.testproc import ProcessTest
+from os.path import abspath, exists, isfile, join
+
 from scrapy.utils.python import to_unicode
+from scrapy.utils.testproc import ProcessTest
+from scrapy.utils.testsite import SiteTest
 from tests.test_commands import CommandTest
+from twisted.internet import defer
 
 
 def _textmode(bstr):

@@ -1,9 +1,9 @@
-from twisted.internet import defer
-from twisted.trial.unittest import TestCase
 from scrapy.signals import request_left_downloader
 from scrapy.spiders import Spider
 from scrapy.utils.test import get_crawler
 from tests.mockserver import MockServer
+from twisted.internet import defer
+from twisted.trial.unittest import TestCase
 
 
 class SignalCatcherSpider(Spider):

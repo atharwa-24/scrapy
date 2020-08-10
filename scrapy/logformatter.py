@@ -1,9 +1,8 @@
-import os
 import logging
-
-from twisted.python.failure import Failure
+import os
 
 from scrapy.utils.request import referer_str
+from twisted.python.failure import Failure
 
 SCRAPEDMSG = "Scraped from %(src)s" + os.linesep + "%(item)s"
 DROPPEDMSG = "Dropped: %(exception)s" + os.linesep + "%(item)s"

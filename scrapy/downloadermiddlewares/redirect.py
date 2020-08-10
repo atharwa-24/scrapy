@@ -1,12 +1,10 @@
 import logging
 from urllib.parse import urljoin, urlparse
 
-from w3lib.url import safe_url_string
-
+from scrapy.exceptions import IgnoreRequest, NotConfigured
 from scrapy.http import HtmlResponse
 from scrapy.utils.response import get_meta_refresh
-from scrapy.exceptions import IgnoreRequest, NotConfigured
-
+from w3lib.url import safe_url_string
 
 logger = logging.getLogger(__name__)
 

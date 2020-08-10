@@ -1,11 +1,10 @@
-import json
 import datetime
 import decimal
+import json
 
-from itemadapter import is_item, ItemAdapter
-from twisted.internet import defer
-
+from itemadapter import ItemAdapter, is_item
 from scrapy.http import Request, Response
+from twisted.internet import defer
 
 
 class ScrapyJSONEncoder(json.JSONEncoder):

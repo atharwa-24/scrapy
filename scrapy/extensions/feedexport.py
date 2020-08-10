@@ -13,10 +13,6 @@ from datetime import datetime
 from tempfile import NamedTemporaryFile
 from urllib.parse import unquote, urlparse
 
-from twisted.internet import defer, threads
-from w3lib.url import file_uri_to_path
-from zope.interface import implementer, Interface
-
 from scrapy import signals
 from scrapy.exceptions import NotConfigured, ScrapyDeprecationWarning
 from scrapy.utils.boto import is_botocore
@@ -25,7 +21,9 @@ from scrapy.utils.ftp import ftp_store_file
 from scrapy.utils.log import failure_to_exc_info
 from scrapy.utils.misc import create_instance, load_object
 from scrapy.utils.python import without_none_values
-
+from twisted.internet import defer, threads
+from w3lib.url import file_uri_to_path
+from zope.interface import Interface, implementer
 
 logger = logging.getLogger(__name__)
 

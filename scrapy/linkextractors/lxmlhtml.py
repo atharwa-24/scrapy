@@ -6,15 +6,13 @@ from functools import partial
 from urllib.parse import urljoin
 
 import lxml.etree as etree
-from w3lib.html import strip_html5_whitespace
-from w3lib.url import canonicalize_url, safe_url_string
-
 from scrapy.link import Link
 from scrapy.linkextractors import FilteringLinkExtractor
 from scrapy.utils.misc import arg_to_iter, rel_has_nofollow
 from scrapy.utils.python import unique as unique_list
 from scrapy.utils.response import get_base_url
-
+from w3lib.html import strip_html5_whitespace
+from w3lib.url import canonicalize_url, safe_url_string
 
 # from lxml/src/lxml/html/__init__.py
 XHTML_NAMESPACE = "http://www.w3.org/1999/xhtml"

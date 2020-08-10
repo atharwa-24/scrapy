@@ -7,16 +7,9 @@ import unittest
 import warnings
 from functools import partial
 
-from itemloaders.processors import (
-    Compose,
-    Identity,
-    Join,
-    MapCompose,
-    SelectJmes,
-    TakeFirst,
-)
-
-from scrapy.item import Item, Field
+from itemloaders.processors import (Compose, Identity, Join, MapCompose,
+                                    SelectJmes, TakeFirst)
+from scrapy.item import Field, Item
 from scrapy.loader import ItemLoader
 from scrapy.loader.common import wrap_loader_context
 from scrapy.utils.deprecate import ScrapyDeprecationWarning

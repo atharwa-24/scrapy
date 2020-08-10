@@ -9,7 +9,7 @@ import copy
 import warnings
 
 from scrapy.exceptions import ScrapyDeprecationWarning
-from scrapy.http import Request, HtmlResponse
+from scrapy.http import HtmlResponse, Request
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import Spider
 from scrapy.utils.python import get_func_args

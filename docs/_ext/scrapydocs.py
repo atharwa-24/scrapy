@@ -1,8 +1,9 @@
-from docutils.parsers.rst.roles import set_classes
+from operator import itemgetter
+
 from docutils import nodes
 from docutils.parsers.rst import Directive
+from docutils.parsers.rst.roles import set_classes
 from sphinx.util.nodes import make_refnode
-from operator import itemgetter
 
 
 class settingslist_node(nodes.General, nodes.Element):

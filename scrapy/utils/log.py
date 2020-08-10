@@ -3,14 +3,12 @@ import sys
 import warnings
 from logging.config import dictConfig
 
-from twisted.python import log as twisted_log
-from twisted.python.failure import Failure
-
 import scrapy
 from scrapy.exceptions import ScrapyDeprecationWarning
 from scrapy.settings import Settings
 from scrapy.utils.versions import scrapy_components_versions
-
+from twisted.python import log as twisted_log
+from twisted.python.failure import Failure
 
 logger = logging.getLogger(__name__)
 

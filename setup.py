@@ -1,7 +1,8 @@
 from os.path import dirname, join
-from pkg_resources import parse_version
-from setuptools import setup, find_packages, __version__ as setuptools_version
 
+from pkg_resources import parse_version
+from setuptools import __version__ as setuptools_version
+from setuptools import find_packages, setup
 
 with open(join(dirname(__file__), "scrapy/VERSION"), "rb") as f:
     version = f.read().decode("ascii").strip()
