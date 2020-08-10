@@ -13,10 +13,10 @@ class UrlContract(Contract):
         @url http://scrapy.org
     """
 
-    name = 'url'
+    name = "url"
 
     def adjust_request_args(self, args):
-        args['url'] = self.args[0]
+        args["url"] = self.args[0]
         return args
 
 
@@ -27,10 +27,10 @@ class CallbackKeywordArgumentsContract(Contract):
         @cb_kwargs {"arg1": "some value"}
     """
 
-    name = 'cb_kwargs'
+    name = "cb_kwargs"
 
     def adjust_request_args(self, args):
-        args['cb_kwargs'] = json.loads(' '.join(self.args))
+        args["cb_kwargs"] = json.loads(" ".join(self.args))
         return args
 
 
@@ -47,12 +47,12 @@ class ReturnsContract(Contract):
         @returns request 0 10
     """
 
-    name = 'returns'
+    name = "returns"
     object_type_verifiers = {
-        'request': lambda x: isinstance(x, Request),
-        'requests': lambda x: isinstance(x, Request),
-        'item': is_item,
-        'items': is_item,
+        "request": lambda x: isinstance(x, Request),
+        "requests": lambda x: isinstance(x, Request),
+        "item": is_item,
+        "items": is_item,
     }
 
     def __init__(self, *args, **kwargs):
@@ -74,7 +74,7 @@ class ReturnsContract(Contract):
         try:
             self.max_bound = int(self.args[2])
         except IndexError:
-            self.max_bound = float('inf')
+            self.max_bound = float("inf")
 
     def post_process(self, output):
         occurrences = 0
@@ -82,16 +82,17 @@ class ReturnsContract(Contract):
             if self.obj_type_verifier(x):
                 occurrences += 1
 
-        assertion = (self.min_bound <= occurrences <= self.max_bound)
+        assertion = self.min_bound <= occurrences <= self.max_bound
 
         if not assertion:
             if self.min_bound == self.max_bound:
                 expected = self.min_bound
             else:
-                expected = '%s..%s' % (self.min_bound, self.max_bound)
+                expected = "%s..%s" % (self.min_bound, self.max_bound)
 
-            raise ContractFail("Returned %s %s, expected %s" %
-                               (occurrences, self.obj_name, expected))
+            raise ContractFail(
+                "Returned %s %s, expected %s" % (occurrences, self.obj_name, expected)
+            )
 
 
 class ScrapesContract(Contract):
@@ -99,13 +100,12 @@ class ScrapesContract(Contract):
         @scrapes page_name page_body
     """
 
-    name = 'scrapes'
+    name = "scrapes"
 
     def post_process(self, output):
         for x in output:
             if is_item(x):
-                missing = [
-                    arg for arg in self.args if arg not in ItemAdapter(x)]
+                missing = [arg for arg in self.args if arg not in ItemAdapter(x)]
                 if missing:
                     missing_str = ", ".join(missing)
                     raise ContractFail("Missing fields: %s" % missing_str)

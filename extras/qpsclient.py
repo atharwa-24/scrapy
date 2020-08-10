@@ -13,8 +13,8 @@ from scrapy.http import Request
 
 class QPSSpider(Spider):
 
-    name = 'qps'
-    benchurl = 'http://localhost:8880/'
+    name = "qps"
+    benchurl = "http://localhost:8880/"
 
     # Max concurrency is limited by global CONCURRENT_REQUESTS setting
     max_concurrent_requests = 8
@@ -37,12 +37,13 @@ class QPSSpider(Spider):
     def start_requests(self):
         url = self.benchurl
         if self.latency is not None:
-            url += '?latency={0}'.format(self.latency)
+            url += "?latency={0}".format(self.latency)
 
         slots = int(self.slots)
         if slots > 1:
-            urls = [url.replace('localhost', '127.0.0.%d' % (x + 1))
-                    for x in range(slots)]
+            urls = [
+                url.replace("localhost", "127.0.0.%d" % (x + 1)) for x in range(slots)
+            ]
         else:
             urls = [url]
 

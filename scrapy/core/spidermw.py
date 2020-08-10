@@ -15,49 +15,40 @@ from scrapy.utils.python import MutableChain
 
 
 def _isiterable(possible_iterator):
-    return hasattr(possible_iterator, '__iter__')
+    return hasattr(possible_iterator, "__iter__")
 
 
 def _fname(f):
-    return "{}.{}".format(
-        f.__self__.__class__.__name__,
-        f.__func__.__name__
-    )
+    return "{}.{}".format(f.__self__.__class__.__name__, f.__func__.__name__)
 
 
 class SpiderMiddlewareManager(MiddlewareManager):
 
-    component_name = 'spider middleware'
+    component_name = "spider middleware"
 
     @classmethod
     def _get_mwlist_from_settings(cls, settings):
-        return build_component_list(settings.getwithbase('SPIDER_MIDDLEWARES'))
+        return build_component_list(settings.getwithbase("SPIDER_MIDDLEWARES"))
 
     def _add_middleware(self, mw):
         super()._add_middleware(mw)
-        if hasattr(mw, 'process_spider_input'):
-            self.methods['process_spider_input'].append(
-                mw.process_spider_input)
-        if hasattr(mw, 'process_start_requests'):
-            self.methods['process_start_requests'].appendleft(
-                mw.process_start_requests)
-        process_spider_output = getattr(mw, 'process_spider_output', None)
-        self.methods['process_spider_output'].appendleft(process_spider_output)
-        process_spider_exception = getattr(
-            mw, 'process_spider_exception', None)
-        self.methods['process_spider_exception'].appendleft(
-            process_spider_exception)
+        if hasattr(mw, "process_spider_input"):
+            self.methods["process_spider_input"].append(mw.process_spider_input)
+        if hasattr(mw, "process_start_requests"):
+            self.methods["process_start_requests"].appendleft(mw.process_start_requests)
+        process_spider_output = getattr(mw, "process_spider_output", None)
+        self.methods["process_spider_output"].appendleft(process_spider_output)
+        process_spider_exception = getattr(mw, "process_spider_exception", None)
+        self.methods["process_spider_exception"].appendleft(process_spider_exception)
 
     def scrape_response(self, scrape_func, response, request, spider):
-
         def process_spider_input(response):
-            for method in self.methods['process_spider_input']:
+            for method in self.methods["process_spider_input"]:
                 try:
                     result = method(response=response, spider=spider)
                     if result is not None:
                         msg = "Middleware {} must return None or raise an exception, got {}"
-                        raise _InvalidOutput(msg.format(
-                            _fname(method), type(result)))
+                        raise _InvalidOutput(msg.format(_fname(method), type(result)))
                 except _InvalidOutput:
                     raise
                 except Exception:
@@ -70,7 +61,8 @@ class SpiderMiddlewareManager(MiddlewareManager):
                     yield r
             except Exception as ex:
                 exception_result = process_spider_exception(
-                    Failure(ex), exception_processor_index)
+                    Failure(ex), exception_processor_index
+                )
                 if isinstance(exception_result, Failure):
                     raise
                 recover_to.extend(exception_result)
@@ -81,12 +73,12 @@ class SpiderMiddlewareManager(MiddlewareManager):
             if isinstance(exception, _InvalidOutput):
                 return _failure
             method_list = islice(
-                self.methods['process_spider_exception'], start_index, None)
+                self.methods["process_spider_exception"], start_index, None
+            )
             for method_index, method in enumerate(method_list, start=start_index):
                 if method is None:
                     continue
-                result = method(response=response,
-                                exception=exception, spider=spider)
+                result = method(response=response, exception=exception, spider=spider)
                 if _isiterable(result):
                     # stop exception handling by handing control over to the
                     # process_spider_output chain if an iterable has been returned
@@ -95,8 +87,7 @@ class SpiderMiddlewareManager(MiddlewareManager):
                     continue
                 else:
                     msg = "Middleware {} must return None or an iterable, got {}"
-                    raise _InvalidOutput(msg.format(
-                        _fname(method), type(result)))
+                    raise _InvalidOutput(msg.format(_fname(method), type(result)))
             return _failure
 
         def process_spider_output(result, start_index=0):
@@ -105,27 +96,26 @@ class SpiderMiddlewareManager(MiddlewareManager):
             recovered = MutableChain()
 
             method_list = islice(
-                self.methods['process_spider_output'], start_index, None)
+                self.methods["process_spider_output"], start_index, None
+            )
             for method_index, method in enumerate(method_list, start=start_index):
                 if method is None:
                     continue
                 try:
                     # might fail directly if the output value is not a generator
-                    result = method(response=response,
-                                    result=result, spider=spider)
+                    result = method(response=response, result=result, spider=spider)
                 except Exception as ex:
                     exception_result = process_spider_exception(
-                        Failure(ex), method_index + 1)
+                        Failure(ex), method_index + 1
+                    )
                     if isinstance(exception_result, Failure):
                         raise
                     return exception_result
                 if _isiterable(result):
-                    result = _evaluate_iterable(
-                        result, method_index + 1, recovered)
+                    result = _evaluate_iterable(result, method_index + 1, recovered)
                 else:
                     msg = "Middleware {} must return an iterable, got {}"
-                    raise _InvalidOutput(msg.format(
-                        _fname(method), type(result)))
+                    raise _InvalidOutput(msg.format(_fname(method), type(result)))
 
             return MutableChain(result, recovered)
 
@@ -135,9 +125,10 @@ class SpiderMiddlewareManager(MiddlewareManager):
             return MutableChain(process_spider_output(result), recovered)
 
         dfd = mustbe_deferred(process_spider_input, response)
-        dfd.addCallbacks(callback=process_callback_output,
-                         errback=process_spider_exception)
+        dfd.addCallbacks(
+            callback=process_callback_output, errback=process_spider_exception
+        )
         return dfd
 
     def process_start_requests(self, start_requests, spider):
-        return self._process_chain('process_start_requests', start_requests, spider)
+        return self._process_chain("process_start_requests", start_requests, spider)
