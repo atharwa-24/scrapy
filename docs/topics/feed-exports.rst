@@ -304,7 +304,7 @@ For instance::
             'store_empty': False,
             'fields': None,
             'indent': 4,
-        }, 
+        },
         '/home/user/documents/items.xml': {
             'format': 'xml',
             'fields': ['name', 'price'],
@@ -321,7 +321,7 @@ The following is a list of the accepted keys and the setting that is used
 as a fallback value if that key is not provided for a specific feed definition.
 
 * ``format``: the serialization format to be used for the feed.
-  See :ref:`topics-feed-format` for possible values. 
+  See :ref:`topics-feed-format` for possible values.
   Mandatory, no fallback setting
 * ``encoding``: falls back to :setting:`FEED_EXPORT_ENCODING`
 * ``fields``: falls back to :setting:`FEED_EXPORT_FIELDS`
